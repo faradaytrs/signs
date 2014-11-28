@@ -1,0 +1,10 @@
+{
+  "version": 3,
+  "file": "signs.js",
+  "sourceRoot": "",
+  "sources": [
+    "signs.coffee"
+  ],
+  "names": [],
+  "mappings": ";AAAA;AAAA,EAAA,CAAA,CAAE,SAAA,GAAA;WACD,CAAA,CAAE,eAAF,CAAkB,CAAC,YAAnB,CAAA,EADC;EAAA,CAAF,CAAA,CAAA;AAAA"
+}
