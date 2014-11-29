@@ -1,5 +1,4 @@
 $ ->
-
 	#settings
 	settings =
 		forms:
@@ -24,36 +23,55 @@ $ ->
 		selects = $('.selects')
 
 		#select for forms
-		forms = $('<select></select>')
-		forms.attr('id', 'forms');
-		option = $('<option selected disabled>Forms</option>')
-		option.appendTo forms
+		$('<h4>Forms:</h4>').appendTo selects
 		for form of settings.forms
-			option = $("<option>#{form}</option>")
-			option.appendTo forms
-		forms.appendTo selects
+			forms = $('<div></div>').addClass("radio")
+			label = $("<label></label>")
+			input = $("<input type='radio'>")
+			input.addClass(form)
+			input.attr('value', form)
+			input.attr('name', "forms")
+			input.appendTo label
+			span = $("<span>#{form}</span>")
+			span.appendTo label
+			label.appendTo forms
+			forms.appendTo selects
 
-		#holes select
-		holes = $('<select multiple></select>')
-		holes.attr('id', 'holes');
-		option = $('<option disabled>Holes</option>')
-		option.appendTo holes
+		#holes
+		$('<h4>Holes:</h4>').appendTo selects
 		for hole in settings.holes
-			option = $("<option>#{hole}</option>")
-			option.appendTo holes
-		holes.appendTo selects
+			holes = $('<div></div>').addClass("checkbox")
+			label = $("<label></label>")
+			input = $("<input type='checkbox'>")
+			input.addClass(hole)
+			input.attr('value', hole)
+			input.attr('name', "holes")
+			input.appendTo label
+			span = $("<span>#{hole}</span>")
+			span.appendTo label
+			label.appendTo holes
+			holes.appendTo selects
 
-		#materials select
-		materials = $('<select></select>')
-		materials.attr('id', 'materials');
-		option = $('<option selected disabled>Materials</option>')
-		for hole in settings.materials
-			option = $("<option>#{hole}</option>")
-			option.appendTo materials
-		materials.appendTo selects
+		#select for forms
+		$('<h4>Materials:</h4>').appendTo selects
+		for material in settings.materials
+			materials = $('<div></div>').addClass("radio")
+			label = $("<label></label>")
+			input = $("<input type='radio'>")
+			input.addClass(material)
+			input.attr('value', material)
+			input.attr('name', "materials")
+			input.appendTo label
+			span = $("<span>#{material}</span>")
+			span.appendTo label
+			label.appendTo materials
+			materials.appendTo selects
 
 
 	getConfiguration = ->
+		configuration =
+			forms: $('#forms').val()
+
 		#todo get information from selects
 
 	render = ->

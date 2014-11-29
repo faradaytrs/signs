@@ -12,40 +12,63 @@
       materials: ["Steel", "Mystic material"]
     };
     buildSelects = function() {
-      var form, forms, hole, holes, materials, option, selects, _i, _j, _len, _len1, _ref, _ref1;
+      var form, forms, hole, holes, input, label, material, materials, selects, span, _i, _j, _len, _len1, _ref, _ref1, _results;
       selects = $('.selects');
-      forms = $('<select></select>');
-      forms.attr('id', 'forms');
-      option = $('<option selected disabled>Forms</option>');
-      option.appendTo(forms);
+      $('<h4>Forms:</h4>').appendTo(selects);
       for (form in settings.forms) {
-        option = $("<option>" + form + "</option>");
-        option.appendTo(forms);
+        forms = $('<div></div>').addClass("radio");
+        label = $("<label></label>");
+        input = $("<input type='radio'>");
+        input.addClass(form);
+        input.attr('value', form);
+        input.attr('name', "forms");
+        input.appendTo(label);
+        span = $("<span>" + form + "</span>");
+        span.appendTo(label);
+        label.appendTo(forms);
+        forms.appendTo(selects);
       }
-      forms.appendTo(selects);
-      holes = $('<select multiple></select>');
-      holes.attr('id', 'holes');
-      option = $('<option disabled>Holes</option>');
-      option.appendTo(holes);
+      $('<h4>Holes:</h4>').appendTo(selects);
       _ref = settings.holes;
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
         hole = _ref[_i];
-        option = $("<option>" + hole + "</option>");
-        option.appendTo(holes);
+        holes = $('<div></div>').addClass("checkbox");
+        label = $("<label></label>");
+        input = $("<input type='checkbox'>");
+        input.addClass(hole);
+        input.attr('value', hole);
+        input.attr('name', "holes");
+        input.appendTo(label);
+        span = $("<span>" + hole + "</span>");
+        span.appendTo(label);
+        label.appendTo(holes);
+        holes.appendTo(selects);
       }
-      holes.appendTo(selects);
-      materials = $('<select></select>');
-      materials.attr('id', 'materials');
-      option = $('<option selected disabled>Materials</option>');
+      $('<h4>Materials:</h4>').appendTo(selects);
       _ref1 = settings.materials;
+      _results = [];
       for (_j = 0, _len1 = _ref1.length; _j < _len1; _j++) {
-        hole = _ref1[_j];
-        option = $("<option>" + hole + "</option>");
-        option.appendTo(materials);
+        material = _ref1[_j];
+        materials = $('<div></div>').addClass("radio");
+        label = $("<label></label>");
+        input = $("<input type='radio'>");
+        input.addClass(material);
+        input.attr('value', material);
+        input.attr('name', "materials");
+        input.appendTo(label);
+        span = $("<span>" + material + "</span>");
+        span.appendTo(label);
+        label.appendTo(materials);
+        _results.push(materials.appendTo(selects));
       }
-      return materials.appendTo(selects);
+      return _results;
     };
-    getConfiguration = function() {};
+    getConfiguration = function() {
+      var configuration;
+      return configuration = {
+        forms: $('#forms').val()
+      };
+    };
     render = function() {
       var conf, field;
       conf = getConfiguration();
