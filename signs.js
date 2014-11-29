@@ -3,7 +3,7 @@
   $(function() {
     var buildSelects, getConfiguration, render, settings;
     settings = {
-      forms: {
+      shapes: {
         round: "link image",
         square: "link image"
       },
@@ -13,21 +13,24 @@
       color: "#ffffff"
     };
     buildSelects = function() {
-      var bgColor, form, forms, hole, holes, input, label, material, materials, selects, span, _i, _j, _len, _len1, _ref, _ref1;
+      var bgColor, hole, holes, input, label, material, materials, selects, shape, shapes, span, _i, _j, _len, _len1, _ref, _ref1, _results;
       selects = $('.selects');
-      $('<h4>Forms:</h4>').appendTo(selects);
-      for (form in settings.forms) {
-        forms = $('<div></div>').addClass("radio");
+      $('<h4>Background color:</h4>').appendTo(selects);
+      bgColor = $("<input type='text' value=\"" + settings.color + "\" name=\"bgcolor\" class='color form-control'>");
+      bgColor.appendTo(selects);
+      $('<h4>Shapes:</h4>').appendTo(selects);
+      for (shape in settings.shapes) {
+        shapes = $('<div></div>').addClass("radio");
         label = $("<label></label>");
         input = $("<input type='radio'>");
-        input.addClass(form);
-        input.attr('value', form);
-        input.attr('name', "forms");
+        input.addClass(shape);
+        input.attr('value', shape);
+        input.attr('name', "shapes");
         input.appendTo(label);
-        span = $("<span>" + form + "</span>");
+        span = $("<span>" + shape + "</span>");
         span.appendTo(label);
-        label.appendTo(forms);
-        forms.appendTo(selects);
+        label.appendTo(shapes);
+        shapes.appendTo(selects);
       }
       $('<h4>Holes:</h4>').appendTo(selects);
       _ref = settings.holes;
@@ -47,6 +50,7 @@
       }
       $('<h4>Materials:</h4>').appendTo(selects);
       _ref1 = settings.materials;
+      _results = [];
       for (_j = 0, _len1 = _ref1.length; _j < _len1; _j++) {
         material = _ref1[_j];
         materials = $('<div></div>').addClass("radio");
@@ -59,15 +63,13 @@
         span = $("<span>" + material + "</span>");
         span.appendTo(label);
         label.appendTo(materials);
-        materials.appendTo(selects);
+        _results.push(materials.appendTo(selects));
       }
-      $('<h4>Background color:</h4>').appendTo(selects);
-      bgColor = $("<input type='text' value=\"" + settings.color + "\" name=\"bgcolor\" class='color form-control'>");
-      return bgColor.appendTo(selects);
+      return _results;
     };
     getConfiguration = function() {
-      var color, configuration, form, holes, material;
-      form = $('input[name=forms]:checked').val();
+      var color, configuration, holes, material, shape;
+      shape = $('input[name=shapes]:checked').val();
       holes = [];
       $('input[name=holes]:checked').each(function() {
         return holes.push(this.value);
@@ -75,7 +77,7 @@
       material = $('input[name=materials]:checked').val();
       color = $('input[name=bgcolor]').val();
       configuration = {
-        form: form,
+        shape: shape,
         holes: holes,
         material: material,
         bgcolor: color
@@ -89,10 +91,8 @@
     };
     buildSelects();
     $(".color").pickAColor();
-    $('input').each(function() {
-      return this.onclick = render;
-    });
     return $('input').each(function() {
+      this.onclick = render;
       return this.onchange = render;
     });
   });

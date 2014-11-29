@@ -1,7 +1,7 @@
 $ ->
 	#settings
 	settings =
-		forms:
+		shapes:
 			round: "link image"
 			square: "link image"
 		holes: [
@@ -25,20 +25,25 @@ $ ->
 	buildSelects = ->
 		selects = $('.selects')
 
+		#background color
+		$('<h4>Background color:</h4>').appendTo selects
+		bgColor = $("<input type='text' value=\"#{settings.color}\" name=\"bgcolor\" class='color form-control'>")
+		bgColor.appendTo selects
+
 		#select for forms
-		$('<h4>Forms:</h4>').appendTo selects
-		for form of settings.forms
-			forms = $('<div></div>').addClass("radio")
+		$('<h4>Shapes:</h4>').appendTo selects
+		for shape of settings.shapes
+			shapes = $('<div></div>').addClass("radio")
 			label = $("<label></label>")
 			input = $("<input type='radio'>")
-			input.addClass(form)
-			input.attr('value', form)
-			input.attr('name', "forms")
+			input.addClass(shape)
+			input.attr('value', shape)
+			input.attr('name', "shapes")
 			input.appendTo label
-			span = $("<span>#{form}</span>")
+			span = $("<span>#{shape}</span>")
 			span.appendTo label
-			label.appendTo forms
-			forms.appendTo selects
+			label.appendTo shapes
+			shapes.appendTo selects
 
 		#holes
 		$('<h4>Holes:</h4>').appendTo selects
@@ -70,13 +75,9 @@ $ ->
 			label.appendTo materials
 			materials.appendTo selects
 
-		$('<h4>Background color:</h4>').appendTo selects
-		bgColor = $("<input type='text' value=\"#{settings.color}\" name=\"bgcolor\" class='color form-control'>")
-		bgColor.appendTo selects
-
 	getConfiguration = ->
-		#getting form
-		form = $('input[name=forms]:checked').val()
+		#getting shape
+		shape = $('input[name=shapes]:checked').val()
 
 		#getting holes
 		holes = []
@@ -90,7 +91,7 @@ $ ->
 		color = $('input[name=bgcolor]').val()
 
 		configuration =
-			form: form
+			shape: shape
 			holes: holes
 			material: material
 			bgcolor: color
@@ -106,5 +107,4 @@ $ ->
 
 	$('input').each ->
 		@.onclick = render
-	$('input').each ->
 		@.onchange = render
