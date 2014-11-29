@@ -7,6 +7,8 @@ $ ->
 		holes: [
 			"Top left corner"
 			"Top right corner"
+			"Middle left"
+			"Middle right"
 			"Bottom left corner"
 			"Bottom right corner"
 		]
@@ -18,6 +20,7 @@ $ ->
 			"Steel",
 			"Mystic material"
 		]
+		color: "#ffffff"
 
 	buildSelects = ->
 		selects = $('.selects')
@@ -67,6 +70,9 @@ $ ->
 			label.appendTo materials
 			materials.appendTo selects
 
+		$('<h4>Background color:</h4>').appendTo selects
+		bgColor = $("<input type='text' value=\"#{settings.color}\" name=\"bgcolor\" class='color form-control'>")
+		bgColor.appendTo selects
 
 	getConfiguration = ->
 		#getting form
@@ -80,10 +86,14 @@ $ ->
 		#getting material
 		material = $('input[name=materials]:checked').val()
 
+		#getting color
+		color = $('input[name=bgcolor]').val()
+
 		configuration =
 			form: form
 			holes: holes
 			material: material
+			bgcolor: color
 
 		console.log configuration
 
@@ -92,6 +102,9 @@ $ ->
 		field = $('preview')
 
 	buildSelects()
+	$(".color").pickAColor()
 
 	$('input').each ->
-		@.onclick = render;
+		@.onclick = render
+	$('input').each ->
+		@.onchange = render

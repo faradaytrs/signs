@@ -7,12 +7,13 @@
         round: "link image",
         square: "link image"
       },
-      holes: ["Top left corner", "Top right corner", "Bottom left corner", "Bottom right corner"],
+      holes: ["Top left corner", "Top right corner", "Middle left", "Middle right", "Bottom left corner", "Bottom right corner"],
       fonts: ["Times New Roman", "Arial"],
-      materials: ["Steel", "Mystic material"]
+      materials: ["Steel", "Mystic material"],
+      color: "#ffffff"
     };
     buildSelects = function() {
-      var form, forms, hole, holes, input, label, material, materials, selects, span, _i, _j, _len, _len1, _ref, _ref1, _results;
+      var bgColor, form, forms, hole, holes, input, label, material, materials, selects, span, _i, _j, _len, _len1, _ref, _ref1;
       selects = $('.selects');
       $('<h4>Forms:</h4>').appendTo(selects);
       for (form in settings.forms) {
@@ -46,7 +47,6 @@
       }
       $('<h4>Materials:</h4>').appendTo(selects);
       _ref1 = settings.materials;
-      _results = [];
       for (_j = 0, _len1 = _ref1.length; _j < _len1; _j++) {
         material = _ref1[_j];
         materials = $('<div></div>').addClass("radio");
@@ -59,22 +59,26 @@
         span = $("<span>" + material + "</span>");
         span.appendTo(label);
         label.appendTo(materials);
-        _results.push(materials.appendTo(selects));
+        materials.appendTo(selects);
       }
-      return _results;
+      $('<h4>Background color:</h4>').appendTo(selects);
+      bgColor = $("<input type='text' value=\"" + settings.color + "\" name=\"bgcolor\" class='color form-control'>");
+      return bgColor.appendTo(selects);
     };
     getConfiguration = function() {
-      var configuration, form, holes, material;
+      var color, configuration, form, holes, material;
       form = $('input[name=forms]:checked').val();
       holes = [];
       $('input[name=holes]:checked').each(function() {
         return holes.push(this.value);
       });
       material = $('input[name=materials]:checked').val();
+      color = $('input[name=bgcolor]').val();
       configuration = {
         form: form,
         holes: holes,
-        material: material
+        material: material,
+        bgcolor: color
       };
       return console.log(configuration);
     };
@@ -84,8 +88,12 @@
       return field = $('preview');
     };
     buildSelects();
-    return $('input').each(function() {
+    $(".color").pickAColor();
+    $('input').each(function() {
       return this.onclick = render;
+    });
+    return $('input').each(function() {
+      return this.onchange = render;
     });
   });
 
