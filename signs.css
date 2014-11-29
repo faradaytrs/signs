@@ -2,9 +2,11 @@ body .container {
   margin-top: 100px; }
   body .container .preview {
     height: 500px;
-    width: 500px;
+    width: 550px;
     border: 1px gainsboro solid; }
-body .bootstrap-select .btn:focus {
-  outline: none !important; }
+body .bootstrap-select {
+  margin-bottom: 10px; }
+  body .bootstrap-select .btn:focus {
+    outline: none !important; }
 
 /*# sourceMappingURL=signs.css.map */

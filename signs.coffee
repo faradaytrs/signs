@@ -11,9 +11,13 @@ $ ->
 			"Mystic material"
 		]
 
+	getConfiguration = ->
+		#todo get information from selects
 
+	render = ->
+		field = $('preview')
 
-	$('.selectpicker').selectpicker();
+	$('.selectpicker').selectpicker()
 	$('select').each ->
 		 $(@).change ->
-			 console.log @
+			 render()
