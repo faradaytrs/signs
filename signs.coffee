@@ -69,10 +69,23 @@ $ ->
 
 
 	getConfiguration = ->
-		configuration =
-			forms: $('#forms').val()
+		#getting form
+		form = $('input[name=forms]:checked').val()
 
-		#todo get information from selects
+		#getting holes
+		holes = []
+		$('input[name=holes]:checked').each ->
+			holes.push(@.value)
+
+		#getting material
+		material = $('input[name=materials]:checked').val()
+
+		configuration =
+			form: form
+			holes: holes
+			material: material
+
+		console.log configuration
 
 	render = ->
 		conf = getConfiguration()
@@ -80,7 +93,5 @@ $ ->
 
 	buildSelects()
 
-	$('select').selectpicker()
-	$('select').each ->
-		 $(@).change ->
-			 render()
+	$('input').each ->
+		@.onclick = render;

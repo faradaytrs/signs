@@ -64,10 +64,19 @@
       return _results;
     };
     getConfiguration = function() {
-      var configuration;
-      return configuration = {
-        forms: $('#forms').val()
+      var configuration, form, holes, material;
+      form = $('input[name=forms]:checked').val();
+      holes = [];
+      $('input[name=holes]:checked').each(function() {
+        return holes.push(this.value);
+      });
+      material = $('input[name=materials]:checked').val();
+      configuration = {
+        form: form,
+        holes: holes,
+        material: material
       };
+      return console.log(configuration);
     };
     render = function() {
       var conf, field;
@@ -75,11 +84,8 @@
       return field = $('preview');
     };
     buildSelects();
-    $('select').selectpicker();
-    return $('select').each(function() {
-      return $(this).change(function() {
-        return render();
-      });
+    return $('input').each(function() {
+      return this.onclick = render;
     });
   });
 
