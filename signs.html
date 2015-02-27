@@ -1,55 +1,182 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" ng-app="Signs">
 <head>
 	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=Edge" />
 	<title>Online signs</title>
+	<script src="bower_components/konva/konva.min.js"></script>
 	<script src="bower_components/jquery/dist/jquery.min.js"></script>
 	<link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.min.css"/>
 	<link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap-theme.css"/>
 	<script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
-	<link rel="stylesheet" href="bower_components/bootstrap-select/dist/css/bootstrap-select.min.css"/>
 	<script src="bower_components/bootstrap-select/dist/js/bootstrap-select.min.js"></script>
-	<link rel="stylesheet" href="bower_components/pick-a-color/build/1.2.3/css/pick-a-color-1.2.3.min.css"/>
-	<script src="bower_components/tinycolor/dist/tinycolor-min.js"></script>
-	<script src="bower_components/pick-a-color/build/1.2.3/js/pick-a-color-1.2.3.min.js"></script>
-	<script src=""></script>
+	<link rel="stylesheet" href="bower_components/bootstrap-select/dist/css/bootstrap-select.min.css"/>
+	<script src="bower_components/js-xls/dist/xls.min.js"></script>
+	<script src="bower_components/angular/angular.min.js"></script>
+	<script src='bower_components/angular-file-model/angular-file-model.js'></script>
 	<script src="signs.js"></script>
-	<link rel="stylesheet" href="signs.css"/>
+	<link rel="stylesheet" href="style/signs.css"/>
 </head>
 <body>
-	<div class="container">
+	<div class="container" ng-controller="modelsController">
 		<div class="row">
-			<div class="col-md-2"></div>
-			<div class="col-md-6">
+			<div class="col-md-2">
+				<h3>Cost: <span class="label" ng-class="(calcPrice() == 0) ? 'label-danger' : 'label-success'">{{calcPrice()}} kr</span></h3>
+			</div>
+			<div class="col-md-3">
 				<div class="form-group">
 					<div class="input-group">
-						<label class="sr-only" for="exampleInputEmail2">Please enter your email</label>
-						<div class="input-group-addon">@</div>
-						<input type="email" class="form-control" id="exampleInputEmail2" placeholder="Please enter your email">
+						<label class="sr-only" for="signName">Name of Sign</label>
+						<div class="input-group-addon">Name of Sign</div>
+						<input type="text" id="signName" maxlength="18" ng-model="model.name" class="form-control" placeholder="Name of Sign" value="{{model.name}}"/>
 					</div>
 				</div>
 			</div>
-			<div class="col-md-4"></div>
+			<div class="col-md-3">
+				<div class="form-group">
+					<div class="input-group">
+						<label class="sr-only" for="order">Order</label>
+						<div class="input-group-addon">Order</div>
+						<input type="number" min="0" max="10000" id="order" maxlength="18" ng-model="model.order" class="form-control" placeholder="Amount" value="{{model.order}}"/>
+					</div>
+				</div>
+			</div>
+			<div class="col-md-4">
+
+			</div>
 		</div>
 		<div class="row">
 			<div class="col-md-2">
-
 				<h4>Signs:</h4>
-
-				<button class="btn btn-block btn-default active">Sign 1</button>
-				<button class="btn btn-block btn-default">Sign 2</button>
-				<button class="btn btn-block btn-default">Sign 3</button>
-				<button class="btn btn-block btn-default">Sign 4</button>
-
+				<button ng-repeat="model in models track by $index" ng-click="updateCurrentModel($index)" ng-class="{'active': $index == current}" class="btn btn-block btn-default">{{model.name}}  x {{model.order}}</button>
+				<button class="btn btn-block btn-primary" ng-click="new()"><span class="glyphicon glyphicon-plus"></span> Add Sign</button>
+				<button class="btn btn-block btn-success" ng-click="triggerImport()"><span class="glyphicon glyphicon-upload"></span> Import Sign</button>
+				<input id="file" type="file" file-model='file' ng-hide="true"/>
 			</div>
 			<div class="col-md-6">
-				<canvas class="preview"></canvas>
+				<div ng-init="init()" id="preview"></div>
+				<div ng-hide="false" class="order">
+					<h3>Your order:</h3>
+					<table class="table">
+						<thead>
+							<tr>
+								<th>#</th>
+								<th>Name</th>
+								<th>Amount</th>
+								<th>Cost</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr ng-repeat="template in models track by $index" ng-hide="calcPrice(template) == 0">
+								<td>{{$index + 1}}</td>
+								<td>{{template.name}}</td>
+								<td>{{template.order}}</td>
+								<td><span class="label label-success">{{calcPrice(template)}} kr</span></td>
+							</tr>
+						</tbody>
+						<tfoot>
+							<tr>
+								<td>#</td>
+								<td><b>Summary</b></td>
+								<td>{{summary(models).order}}</td>
+								<td><span class="label label-success">{{summary(models).price}} kr</span></td>
+							</tr>
+						</tfoot>
+					</table>
+					<button class="btn btn-success btn-lg">Order everything</button>
+				</div>
 			</div>
 			<div class="col-md-4 selects">
+				<div ng-controller="shapesController">
+					<h4>Shapes:</h4>
+					<div class="radio" ng-repeat="shape in shapes">
+						<label>
+							<input ng-value="shape" ng-model="model.shape" name="shapes" type="radio"/>
+							<span>{{shape}}</span>
+						</label>
+					</div>
+				</div>
+				<!--<div ng-controller="holesController">-->
+					<!--<h4>Holes:</h4>-->
+					<!--<div class="checkbox" ng-repeat="hole in holes">-->
+						<!--<label>-->
+							<!--<input ng-value="hole" ng-model="model.holes[hole]" name="holes" type="checkbox"/>-->
+							<!--<span>{{hole}}</span>-->
+						<!--</label>-->
+					<!--</div>-->
+				<!--</div>-->
+				<div ng-controller="sizeController">
+					<h4>Size:</h4>
+					<div class="width">
+						<span>Auto: </span><input ng-value="false" ng-model="model.size.autoWidth" name="width" type="checkbox"/>
+						<div class="input-group">
 
+							<span class="input-group-addon">
+					            <span>Width: </span>
+					        </span>
+							<input ng-readonly="model.size.autoWidth" ng-value="model.size.width" class="form-control" type="number"/>
+						</div>
+					</div>
+					<div class="height">
+						<span>Auto: </span><input ng-value="false" ng-model="model.size.autoHeight" name="height" type="checkbox"/>
+						<div class="input-group">
+
+							<span class="input-group-addon">
+					            <span>Height: </span>
+					        </span>
+							<input ng-readonly="model.size.autoHeight" ng-value="model.size.height" class="form-control" type="number"/>
+						</div>
+					</div>
+
+				</div>
+				<div ng-controller="materialsController">
+					<h4>Materials:</h4>
+					<div class="radio" ng-repeat="material in materials">
+						<label>
+							<input ng-value="material" ng-model="model.material" name="holes" type="radio"/>
+							<span>{{material}}</span>
+						</label>
+					</div>
+				</div>
+				<div ng-controller="themesController">
+					<h4>Themes:</h4>
+					<select ng-init="model.theme = themes[0]" ng-options="theme as theme.name for theme in themes" ng-model="model.theme" class="themes" name="" id="">
+					</select>
+				</div>
+				<div ng-controller="fontController">
+					<h4>Fonts:</h4>
+					<div class="radio" ng-repeat="font in fonts">
+						<label>
+							<input ng-value="font" ng-model="model.font" name="fonts" type="radio"/>
+							<span>{{font}}</span>
+						</label>
+					</div>
+				</div>
+
+				<div ng-controller="textController">
+					<h4>Text:</h4>
+					<div class="text-form" ng-repeat="text in model.texts track by $index">
+						<div class="input-group">
+							<input class="text form-control" ng-value="model.texts[$index].text" ng-model="model.texts[$index].text" name="text" type="text"/>
+							<span class="input-group-btn">
+	                             <button ng-click="removeText($index)" class="btn btn-danger" type="button">-</button>
+	                        </span>
+						</div>
+						<div class="btn-group align" role="group">
+							<button ng-repeat="align in alignment" type="button" ng-click="setAlign(align, $parent.$index)" ng-class="{'active': model.texts[$parent.$index].align == align}" class="btn btn-default btn-xs">{{align}}</button>
+						</div>
+						<div class="size">
+							<button ng-click="decreaseSize($index)" class="btn btn-danger btn-xs">-</button>
+							<span>{{model.texts[$index].size}}</span>
+							<button ng-click="increaseSize($index)" class="btn btn-success btn-xs">+</button>
+						</div>
+					</div>
+
+					<button ng-click="addText()" ng-hide="isDisabled()" class="btn btn-success">+</button>
+
+				</div>
 			</div>
 		</div>
-
 	</div>
 </body>
 </html>
