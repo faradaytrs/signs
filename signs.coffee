@@ -7,7 +7,7 @@ $ ->
 signs = angular.module('Signs', ['file-model'])
 #first one is default
 settings =
-	PIXEL_SIZE: 3.77
+	PIXEL_SIZE: 8
 	canvasHeight: 500
 	canvasWidth: 555
 	shapes: [
