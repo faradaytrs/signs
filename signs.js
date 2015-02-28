@@ -185,7 +185,7 @@
         maxLen = size.width;
       }
     }
-        return maxLen + 2 * padding;
+        return maxLen;
   };
 
   getTextHeight = function(sizes, padding) {
@@ -234,7 +234,7 @@
     top = 0;
     padding = 15;
     sizes = getSizesTexts(model);
-      textWidth = getTextWidth(sizes, padding);
+      textWidth = getTextWidth(sizes);
     textHeight = getTextHeight(sizes, padding);
     signWidth = textWidth + 2 * padding;
     signHeight = textHeight + 2 * padding;

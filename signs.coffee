@@ -188,7 +188,7 @@ getTextWidth = (sizes, padding) ->
 	maxLen = 0
 	for size in sizes
 		if size.width > maxLen then maxLen = size.width
-	maxLen + 2 * padding
+	maxLen
 
 getTextHeight = (sizes, padding) ->
 	sum = 0
@@ -232,7 +232,7 @@ reRender = (stage, model) ->
 	padding = 15
 
 	sizes = getSizesTexts(model)
-	textWidth = getTextWidth(sizes, padding)
+	textWidth = getTextWidth(sizes)
 	textHeight = getTextHeight(sizes, padding)
 	signWidth = textWidth + 2 * padding # в функцию getWidthSign для каждого model.shape
 	signHeight = textHeight + 2 * padding
