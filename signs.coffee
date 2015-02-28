@@ -116,9 +116,6 @@ getModels = ->
 saveModels = (models) ->
 	models
 
-getSpace = (width, squareWidth) ->
-	width/2-squareWidth/2
-
 roundRect = (x, y, width, height, radius, borderWidth, fillColor, strokeColor) ->
 	new Konva.Shape
 		drawFunc: (ctx) ->
@@ -142,16 +139,12 @@ roundRect = (x, y, width, height, radius, borderWidth, fillColor, strokeColor) -
 		shadowBlur : 15
 
 simpleRect = (x, y, width, height) ->
-	new Konva.Shape
-		drawFunc: (ctx) ->
-			ctx.beginPath();
-			ctx.moveTo(x, y)
-			ctx.lineTo(x + width, y)
-			ctx.lineTo(x + width, y + height)
-			ctx.lineTo(x, y + height)
-			ctx.lineTo(x, y)
-			ctx.closePath()
-		fill: 'white'
+	new Konva.Rect
+		x: x,
+		y: y,
+		width: width,
+		height: height,
+#		fill: 'white'
 		stroke: 'black'
 		strokeWidth: 1
 
@@ -185,6 +178,10 @@ simpleCreateText = (layer, model, obj) ->
 	layer.add textObj
 	textObj
 
+
+getSpace = (width, squareWidth) ->
+	width/2-squareWidth/2
+
 getSizesTexts = (model) ->
 	sizes = []
 	for text in model.texts
@@ -197,8 +194,7 @@ getSizesTexts = (model) ->
 		}
 	sizes
 
-
-getTextWidth = (sizes, padding) ->
+getTextWidth = (sizes) ->
 	maxLen = 0
 	for size in sizes
 		if size.width > maxLen then maxLen = size.width
@@ -209,6 +205,13 @@ getTextHeight = (sizes, padding) ->
 	for size in sizes
 		sum += size.height
 	sum + padding * (sizes.length-1)
+
+getSignWidth = (size, padding) ->
+	size + 2 * padding
+
+getSignHeight = (size, padding) ->
+	size + 2 * padding
+
 
 getBalancingCoefficient = (width, height, canvasWidth, canvasHeight) ->
 	fatalWidth = width/canvasWidth
@@ -239,47 +242,40 @@ reRender = (stage, model) ->
 	stage.add shapeLayer
 	stage.add textLayer
 
-#	objects
-#	console.log(model.texts)
-
-	top = 0
 	padding = 15
+	paddingX = padding
+	paddingY = padding
 	paddingText = 0
 
 	sizes = getSizesTexts(model)
-	textWidth = getTextWidth(sizes)
+	textWidth  = getTextWidth(sizes)
 	textHeight = getTextHeight(sizes, paddingText)
-	signWidth = textWidth + 2 * padding # в функцию getWidthSign для каждого model.shape
-	signHeight = textHeight + 2 * padding
 
-	# Запихиваем размеры знака в модель
-	model.size.width = Math.round(signWidth / settings.PIXEL_SIZE)
-	model.size.height = Math.round(signHeight / settings.PIXEL_SIZE)
+	signWidth  = getSignWidth(textWidth, paddingX) # в функцию getWidthSign для каждого model.shape
+	signHeight = getSignHeight(textHeight, paddingY)
 
 	k = getBalancingCoefficient(signWidth, signHeight, settings.canvasWidth, settings.canvasHeight)
 
-	signBeginX = getSpace(settings.canvasWidth,  k*signWidth)
-	signBeginY = getSpace(settings.canvasHeight, k*signHeight)
+	signBeginX = getSpace(settings.canvasWidth,  k * signWidth)
+	signBeginY = getSpace(settings.canvasHeight, k * signHeight)
 
-	textBeginX = signBeginX + k * padding
-	textBeginY = signBeginY + k * padding
+	textBeginX = signBeginX + k * paddingX
+	textBeginY = signBeginY + k * paddingY
 
 	console.log("width: #{signWidth}; height: #{signHeight}")
 	console.log("sign x: #{signBeginX};	y: #{signBeginY}")
 	console.log("text x: #{textBeginX - signBeginX};	y: #{textBeginY - signBeginY }")
-
-#	console.log "K: #{k}"
-#	console.log "padding:", k * padding
 
 	for text, id in model.texts
 		textKonva = createText(text.align, text.text, textBeginX, textBeginY, k * textWidth + 1,
 			model.font, k * text.size, model.theme.textColor)
 		textLayer.add(textKonva)
 
-		rect = simpleRect(textBeginX, textBeginY, 10, 10)
+		rect = simpleRect(textBeginX, textBeginY, k * textWidth + 1, textKonva.getHeight())
 		textLayer.add(rect)
 
 		textBeginY += textKonva.getHeight() + k * paddingText
+	# forEnd
 
 	rectKonva = roundRect(signBeginX, signBeginY, k * signWidth, k * signHeight,
 		k * settings.radius, settings.borderWidth, model.theme.bgColor, model.theme.textColor)
@@ -287,6 +283,10 @@ reRender = (stage, model) ->
 
 	shapeLayer.draw()
 	textLayer.draw()
+
+	# Запихиваем размеры знака в модель
+	model.size.width = Math.round(signWidth / settings.PIXEL_SIZE)
+	model.size.height = Math.round(signHeight / settings.PIXEL_SIZE)
 
 reRender_ = (stage, model) ->
 
