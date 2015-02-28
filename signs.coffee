@@ -236,6 +236,11 @@ reRender = (stage, model) ->
 	textHeight = getTextHeight(sizes, padding)
 	signWidth = textWidth + 2 * padding # в функцию getWidthSign для каждого model.shape
 	signHeight = textHeight + 2 * padding
+
+	# Запихиваем размеры знака в модель
+	model.size.width = Math.round(signWidth / settings.PIXEL_SIZE)
+	model.size.height = Math.round(signHeight / settings.PIXEL_SIZE)
+
 	console.log("width: #{signWidth}; height: #{signHeight}")
 
 	k = getBalancingCoefficient(signWidth, signHeight, settings.canvasWidth, settings.canvasHeight)

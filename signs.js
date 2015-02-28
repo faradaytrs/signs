@@ -238,6 +238,8 @@
     textHeight = getTextHeight(sizes, padding);
     signWidth = textWidth + 2 * padding;
     signHeight = textHeight + 2 * padding;
+      model.size.width = Math.round(signWidth / settings.PIXEL_SIZE);
+      model.size.height = Math.round(signHeight / settings.PIXEL_SIZE);
     console.log("width: " + signWidth + "; height: " + signHeight);
     k = getBalancingCoefficient(signWidth, signHeight, settings.canvasWidth, settings.canvasHeight);
     signBeginX = getSpace(settings.canvasWidth, k * signWidth);
