@@ -242,7 +242,6 @@ reRender = (stage, model) ->
 	stage.add shapeLayer
 	stage.add textLayer
 
-	top = 0
 	padding = 15
 	paddingX = padding
 	paddingY = padding
@@ -254,10 +253,6 @@ reRender = (stage, model) ->
 
 	signWidth  = getSignWidth(textWidth, paddingX) # в функцию getWidthSign для каждого model.shape
 	signHeight = getSignHeight(textHeight, paddingY)
-
-	# Запихиваем размеры знака в модель
-	model.size.width = Math.round(signWidth / settings.PIXEL_SIZE)
-	model.size.height = Math.round(signHeight / settings.PIXEL_SIZE)
 
 	k = getBalancingCoefficient(signWidth, signHeight, settings.canvasWidth, settings.canvasHeight)
 
@@ -271,9 +266,6 @@ reRender = (stage, model) ->
 	console.log("sign x: #{signBeginX};	y: #{signBeginY}")
 	console.log("text x: #{textBeginX - signBeginX};	y: #{textBeginY - signBeginY }")
 
-#	console.log "K: #{k}"
-#	console.log "padding:", k * padding
-
 	for text, id in model.texts
 		textKonva = createText(text.align, text.text, textBeginX, textBeginY, k * textWidth + 1,
 			model.font, k * text.size, model.theme.textColor)
@@ -283,6 +275,7 @@ reRender = (stage, model) ->
 		textLayer.add(rect)
 
 		textBeginY += textKonva.getHeight() + k * paddingText
+	# forEnd
 
 	rectKonva = roundRect(signBeginX, signBeginY, k * signWidth, k * signHeight,
 		k * settings.radius, settings.borderWidth, model.theme.bgColor, model.theme.textColor)
@@ -290,6 +283,10 @@ reRender = (stage, model) ->
 
 	shapeLayer.draw()
 	textLayer.draw()
+
+	# Запихиваем размеры знака в модель
+	model.size.width = Math.round(signWidth / settings.PIXEL_SIZE)
+	model.size.height = Math.round(signHeight / settings.PIXEL_SIZE)
 
 reRender_ = (stage, model) ->
 

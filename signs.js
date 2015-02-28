@@ -244,13 +244,12 @@
   };
 
   reRender = function(stage, model) {
-    var id, j, k, len, padding, paddingText, paddingX, paddingY, rect, rectKonva, ref, shapeLayer, signBeginX, signBeginY, signHeight, signWidth, sizes, text, textBeginX, textBeginY, textHeight, textKonva, textLayer, textWidth, top;
+    var id, j, k, len, padding, paddingText, paddingX, paddingY, rect, rectKonva, ref, shapeLayer, signBeginX, signBeginY, signHeight, signWidth, sizes, text, textBeginX, textBeginY, textHeight, textKonva, textLayer, textWidth;
     clearStage(stage);
     shapeLayer = new Konva.Layer();
     textLayer = new Konva.Layer();
     stage.add(shapeLayer);
     stage.add(textLayer);
-    top = 0;
     padding = 15;
     paddingX = padding;
     paddingY = padding;
@@ -260,8 +259,6 @@
     textHeight = getTextHeight(sizes, paddingText);
     signWidth = getSignWidth(textWidth, paddingX);
     signHeight = getSignHeight(textHeight, paddingY);
-    model.size.width = Math.round(signWidth / settings.PIXEL_SIZE);
-    model.size.height = Math.round(signHeight / settings.PIXEL_SIZE);
     k = getBalancingCoefficient(signWidth, signHeight, settings.canvasWidth, settings.canvasHeight);
     signBeginX = getSpace(settings.canvasWidth, k * signWidth);
     signBeginY = getSpace(settings.canvasHeight, k * signHeight);
@@ -282,7 +279,9 @@
     rectKonva = roundRect(signBeginX, signBeginY, k * signWidth, k * signHeight, k * settings.radius, settings.borderWidth, model.theme.bgColor, model.theme.textColor);
     shapeLayer.add(rectKonva);
     shapeLayer.draw();
-    return textLayer.draw();
+    textLayer.draw();
+    model.size.width = Math.round(signWidth / settings.PIXEL_SIZE);
+    return model.size.height = Math.round(signHeight / settings.PIXEL_SIZE);
   };
 
   reRender_ = function(stage, model) {
