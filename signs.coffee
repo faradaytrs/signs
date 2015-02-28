@@ -141,6 +141,20 @@ roundRect = (x, y, width, height, radius, borderWidth, fillColor, strokeColor) -
 		shadowOffsetY : 2
 		shadowBlur : 15
 
+simpleRect = (x, y, width, height) ->
+	new Konva.Shape
+		drawFunc: (ctx) ->
+			ctx.beginPath();
+			ctx.moveTo(x, y)
+			ctx.lineTo(x + width, y)
+			ctx.lineTo(x + width, y + height)
+			ctx.lineTo(x, y + height)
+			ctx.lineTo(x, y)
+			ctx.closePath()
+		fill: 'white'
+		stroke: 'black'
+		strokeWidth: 1
+
 createText = (align, str, x, y, width, font, size, color) ->
 	textObj = new Konva.Text
 		x: x
@@ -230,10 +244,11 @@ reRender = (stage, model) ->
 
 	top = 0
 	padding = 15
+	paddingText = 0
 
 	sizes = getSizesTexts(model)
 	textWidth = getTextWidth(sizes)
-	textHeight = getTextHeight(sizes, padding)
+	textHeight = getTextHeight(sizes, paddingText)
 	signWidth = textWidth + 2 * padding # в функцию getWidthSign для каждого model.shape
 	signHeight = textHeight + 2 * padding
 
@@ -241,28 +256,33 @@ reRender = (stage, model) ->
 	model.size.width = Math.round(signWidth / settings.PIXEL_SIZE)
 	model.size.height = Math.round(signHeight / settings.PIXEL_SIZE)
 
-	console.log("width: #{signWidth}; height: #{signHeight}")
-
 	k = getBalancingCoefficient(signWidth, signHeight, settings.canvasWidth, settings.canvasHeight)
 
-	signBeginX = getSpace(settings.canvasWidth, k*signWidth)
+	signBeginX = getSpace(settings.canvasWidth,  k*signWidth)
 	signBeginY = getSpace(settings.canvasHeight, k*signHeight)
-	textBeginX = getSpace(settings.canvasWidth, k*textWidth)
-	textBeginY = getSpace(settings.canvasHeight, k*textHeight)
+
+	textBeginX = signBeginX + k * padding
+	textBeginY = signBeginY + k * padding
+
+	console.log("width: #{signWidth}; height: #{signHeight}")
+	console.log("sign x: #{signBeginX};	y: #{signBeginY}")
+	console.log("text x: #{textBeginX - signBeginX};	y: #{textBeginY - signBeginY }")
 
 #	console.log "K: #{k}"
 #	console.log "padding:", k * padding
 
-#	textBeginX += k * padding
-#	textBeginY += k * padding
 	for text, id in model.texts
 		textKonva = createText(text.align, text.text, textBeginX, textBeginY, k * textWidth + 1,
 			model.font, k * text.size, model.theme.textColor)
 		textLayer.add(textKonva)
-		textBeginY += textKonva.getHeight() + k * padding
+
+		rect = simpleRect(textBeginX, textBeginY, 10, 10)
+		textLayer.add(rect)
+
+		textBeginY += textKonva.getHeight() + k * paddingText
 
 	rectKonva = roundRect(signBeginX, signBeginY, k * signWidth, k * signHeight,
-		settings.radius, settings.borderWidth, model.theme.bgColor, model.theme.textColor)
+		k * settings.radius, settings.borderWidth, model.theme.bgColor, model.theme.textColor)
 	shapeLayer.add(rectKonva)
 
 	shapeLayer.draw()
@@ -337,24 +357,6 @@ reRender_ = (stage, model) ->
 		# todo тут нужно отрендерить текст реально, с значение ширины, чтобы работал alignment
 		# todo отрендерить стрелки с указанием размеров (в конфа есть даже готовая форма для стрелок)
 		# todo ну и отрефакторить всю функцию к чертовой матери
-
-initDraw = (layer, model) ->
-	model.shapeObj =
-		roundRect(0, 0, 10, 10, settings.radius, settings.borderWidth, model.theme.bgColor, model.theme.textColor);
-	layer.add(model.shapeObj)
-
-	# модель есть, а объекта нет
-	def_model = model.texts[0]
-	textObj = createText(def_model.align, def_model.text, 0, 0, 0,
-		model.font, def_model.size, model.theme.textColor)
-	def_model.textObj = textObj
-	layer.add textObj
-
-#	simpleCreateText(layer, model, 'simple', 8, 'left')
-#	simpleCreateText(layer, model, 'simple text', 8, 'left')
-#	simpleCreateText(layer, model, 'simple text true', 8, 'left')
-
-	reRender(layer, model)
 
 #controllers
 signs.controller 'shapesController', ($scope) ->
