@@ -184,7 +184,7 @@ getSizesTexts = (model) ->
 	sizes
 
 
-getTextWidth = (sizes) ->
+getTextWidth = (sizes, padding) ->
 	maxLen = 0
 	for size in sizes
 		if size.width > maxLen then maxLen = size.width

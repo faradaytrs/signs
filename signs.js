@@ -176,7 +176,7 @@
     return sizes;
   };
 
-  getTextWidth = function(sizes) {
+    getTextWidth = function (sizes, padding) {
     var maxLen, size, _i, _len;
     maxLen = 0;
     for (_i = 0, _len = sizes.length; _i < _len; _i++) {
@@ -185,7 +185,7 @@
         maxLen = size.width;
       }
     }
-    return maxLen;
+        return maxLen;
   };
 
   getTextHeight = function(sizes, padding) {
@@ -234,7 +234,7 @@
     top = 0;
     padding = 15;
     sizes = getSizesTexts(model);
-    textWidth = getTextWidth(sizes);
+      textWidth = getTextWidth(sizes);
     textHeight = getTextHeight(sizes, padding);
     signWidth = textWidth + 2 * padding;
     signHeight = textHeight + 2 * padding;
