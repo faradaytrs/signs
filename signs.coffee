@@ -207,11 +207,30 @@ getTextHeight = (sizes, padding) ->
 	sum + padding * (sizes.length-1)
 
 getSignWidth = (size, padding) ->
-	size + 2 * padding
+	size + padding
 
 getSignHeight = (size, padding) ->
-	size + 2 * padding
+	size + padding
 
+getPadding = (model) ->
+	h = model.holes
+	left = h["Middle left"] || h["Top left corner"] || h["Bottom left corner"]
+	right = h["Middle right"] || h["Top right corner"] || h["Bottom right corner"]
+	{
+		u: 15
+		b: 15
+		l: if left then 45 else 15
+		r: if right then 45 else 15
+		w: () -> this.l + this.r
+		h: () -> this.u + this.b
+		text: 0
+	}
+
+createSizeObj = () ->
+	{
+		w: 0
+		h: 0
+	}
 
 getBalancingCoefficient = (width, height, canvasWidth, canvasHeight) ->
 	fatalWidth = width/canvasWidth
@@ -242,42 +261,44 @@ reRender = (stage, model) ->
 	stage.add shapeLayer
 	stage.add textLayer
 
-	padding = 15
-	paddingX = padding
-	paddingY = padding
-	paddingText = 0
+	padding = getPadding(model)
+	textSize = createSizeObj()
+	signSize = createSizeObj()
 
 	sizes = getSizesTexts(model)
-	textWidth  = getTextWidth(sizes)
-	textHeight = getTextHeight(sizes, paddingText)
+	textSize.w = getTextWidth(sizes)
+	textSize.h = getTextHeight(sizes, padding.text)
 
-	signWidth  = getSignWidth(textWidth, paddingX) # в функцию getWidthSign для каждого model.shape
-	signHeight = getSignHeight(textHeight, paddingY)
+#	padding += 2 * textSize.w/100
 
-	k = getBalancingCoefficient(signWidth, signHeight, settings.canvasWidth, settings.canvasHeight)
+	signSize.w = getSignWidth(textSize.w, padding.w()) # в функцию getWidthSign для каждого model.shape
+	signSize.h = getSignHeight(textSize.h, padding.h())
 
-	signBeginX = getSpace(settings.canvasWidth,  k * signWidth)
-	signBeginY = getSpace(settings.canvasHeight, k * signHeight)
+	k = getBalancingCoefficient(signSize.w, signSize.h, settings.canvasWidth, settings.canvasHeight)
 
-	textBeginX = signBeginX + k * paddingX
-	textBeginY = signBeginY + k * paddingY
+	signBeginX = getSpace(settings.canvasWidth,  k * signSize.w)
+	signBeginY = getSpace(settings.canvasHeight, k * signSize.h)
 
-	console.log("width: #{signWidth}; height: #{signHeight}")
+	textBeginX = signBeginX + k * padding.l
+	textBeginY = signBeginY + k * padding.b
+
+	console.log("padding.x: #{padding.w()}; padding.y: #{padding.h()}")
 	console.log("sign x: #{signBeginX};	y: #{signBeginY}")
-	console.log("text x: #{textBeginX - signBeginX};	y: #{textBeginY - signBeginY }")
+	console.log("text x: #{textBeginX};	y: #{textBeginY}")
+	console.log("width: #{signSize.w}; height: #{signSize.h}")
 
 	for text, id in model.texts
-		textKonva = createText(text.align, text.text, textBeginX, textBeginY, k * textWidth + 1,
+		textKonva = createText(text.align, text.text, textBeginX, textBeginY, k * textSize.w + 1,
 			model.font, k * text.size, model.theme.textColor)
 		textLayer.add(textKonva)
 
-		rect = simpleRect(textBeginX, textBeginY, k * textWidth + 1, textKonva.getHeight())
+		rect = simpleRect(textBeginX, textBeginY, k * textSize.w + 1, textKonva.getHeight())
 		textLayer.add(rect)
 
-		textBeginY += textKonva.getHeight() + k * paddingText
+		textBeginY += textKonva.getHeight() + k * padding.text
 	# forEnd
 
-	rectKonva = roundRect(signBeginX, signBeginY, k * signWidth, k * signHeight,
+	rectKonva = roundRect(signBeginX, signBeginY, k * signSize.w, k * signSize.h,
 		k * settings.radius, settings.borderWidth, model.theme.bgColor, model.theme.textColor)
 	shapeLayer.add(rectKonva)
 
@@ -285,8 +306,8 @@ reRender = (stage, model) ->
 	textLayer.draw()
 
 	# Запихиваем размеры знака в модель
-	model.size.width = Math.round(signWidth / settings.PIXEL_SIZE)
-	model.size.height = Math.round(signHeight / settings.PIXEL_SIZE)
+	model.size.width = Math.round(signSize.w / settings.PIXEL_SIZE)
+	model.size.height = Math.round(signSize.h / settings.PIXEL_SIZE)
 
 reRender_ = (stage, model) ->
 
