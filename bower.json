@@ -19,6 +19,6 @@
     "js-xls": "~0.7.4",
     "angular-file-model": "~0.3.0",
     "bootstrap-select": "~1.6.3",
-    "konva": "~0.8.0"
+    "konva": ">0.8.0"
   }
 }
