@@ -226,7 +226,13 @@ getPadding = (model) ->
 		text: 0
 	}
 
-createSizeObj = () ->
+resizeWidthPadding = (padding, text_w)->
+	text_w /= 100
+	padding.l += text_w
+	padding.r += text_w
+	padding
+
+createSizeObj = ->
 	{
 		w: 0
 		h: 0
@@ -269,7 +275,7 @@ reRender = (stage, model) ->
 	textSize.w = getTextWidth(sizes)
 	textSize.h = getTextHeight(sizes, padding.text)
 
-#	padding += 2 * textSize.w/100
+	padding = resizeWidthPadding(padding, textSize.w)
 
 	signSize.w = getSignWidth(textSize.w, padding.w()) # в функцию getWidthSign для каждого model.shape
 	signSize.h = getSignHeight(textSize.h, padding.h())
