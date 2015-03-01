@@ -289,13 +289,13 @@ onChange = (stage, model) ->
 		sign:
 			x: signBegin.x
 			y: signBegin.y
-			width: signSize.width
-			height: signSize.height
+			width: k * signSize.width
+			height: k * signSize.height
 		text:
 			x: textBegin.x
 			y: textBegin.y
-			width: textSize.width
-			height: textSize.height
+			width: k * textSize.width
+			height: k * textSize.height
 		padding: padding #to delete probably
 	}
 
@@ -316,12 +316,12 @@ reRender = (stage, model, size) ->
 
 	for text, id in model.texts
 		textKonva = createText(text.align, text.text,
-			size.text.x, size.text.y, size.k * size.text.width + 1,
+			size.text.x, size.text.y, size.text.width + 1,
 			model.font, size.k * text.size, model.theme.textColor)
 
 		rect = simpleRect(
-			size.text.x, size.text.y, size.k * size.text.width + 1, textKonva.getHeight())
-		size.text.y += textKonva.getHeight() + size.k * size.padding.text
+			size.text.x, size.text.y, size.text.width + 1, textKonva.getHeight())
+		size.text.y += textKonva.getHeight() + size.padding.text
 
 		textLayer.add(textKonva)
 		textLayer.add(rect)
