@@ -38,6 +38,11 @@ settings =
 	]
 	themes: [
 		{
+			name: "white / black"
+			bgColor: "white"
+			textColor: "black"
+		}
+		{
 			name: "black / yellow"
 			bgColor: "yellow"
 			textColor: "black"
@@ -226,10 +231,10 @@ getPadding = (model) ->
 		text: 0
 	}
 
-resizeWidthPadding = (padding, text_w)->
-	text_w /= 100
-	padding.l += text_w
-	padding.r += text_w
+balancePadding = (padding, text_width)->
+	text_width /= 100
+	padding.l += text_width
+	padding.r += text_width
 	padding
 
 getBalancingCoefficient = (width, height, canvasWidth, canvasHeight) ->
@@ -260,34 +265,35 @@ onChange = (stage, model) ->
 	textSize.w = getTextWidth(sizes)
 	textSize.h = getTextHeight(sizes, padding.text)
 
-	padding = resizeWidthPadding(padding, textSize.w)
+	padding = balancePadding(padding, textSize.w)
+
 	signSize = {}
 	signSize.w = getSignWidth(textSize.w, padding.w()) # в функцию getWidthSign для каждого model.shape
 	signSize.h = getSignHeight(textSize.h, padding.h())
 
 	k = getBalancingCoefficient(signSize.w, signSize.h, settings.canvasWidth, settings.canvasHeight)
 
-	signBeginX = getSpace(settings.canvasWidth, k * signSize.w)
-	signBeginY = getSpace(settings.canvasHeight, k * signSize.h)
+	signBegin = {}
+	signBegin.x = getSpace(settings.canvasWidth, k * signSize.w)
+	signBegin.y = getSpace(settings.canvasHeight, k * signSize.h)
 
-	textBeginX = signBeginX + k * padding.l
-	textBeginY = signBeginY + k * padding.b
+	textBegin = {}
+	textBegin.x = signBegin.x ###+ k * padding.l###
+	textBegin.y = signBegin.y ###+ k * padding.b###
 
 	#model.size.width = Math.round(signSize.w / settings.PIXEL_SIZE)
 	#model.size.height = Math.round(signSize.h / settings.PIXEL_SIZE)
 
-	size =
+	size = {
 		k: k #to delete
 		sign: signSize
 		text: textSize
 		padding: padding #to delete probably
-		indent:
-			sign:
-				x: signBeginX
-				y: signBeginY
-			text:
-				x: textBeginX
-				y: textBeginY
+		indent: {
+			sign: signBegin
+			text: textBegin
+		}
+	}
 
 	console.log("padding.x: #{size.padding.w()}; padding.y: #{size.padding.h()}")
 	console.log("sign x: #{size.indent.sign.x};	y: #{size.indent.sign.y}")
@@ -305,19 +311,20 @@ reRender = (stage, model, size) ->
 	stage.add textLayer
 
 	for text, id in model.texts
-		textKonva = createText(text.align, text.text, size.indent.text.x, size.indent.sign.y, size.k * size.text.w + 1,
+		textKonva = createText(text.align, text.text,
+			size.indent.text.x, size.indent.sign.y, size.k * size.text.w + 1,
 			model.font, size.k * text.size, model.theme.textColor)
-		textLayer.add(textKonva)
 
-		rect = simpleRect(size.indent.text.x, size.indent.text.y, size.k * size.text.w + 1, textKonva.getHeight())
-		textLayer.add(rect)
-
+		rect = simpleRect(
+			size.indent.text.x, size.indent.text.y, size.k * size.text.w + 1, textKonva.getHeight())
 		size.indent.text.y += textKonva.getHeight() + size.k * size.padding.text
+
+		textLayer.add(textKonva)
+		textLayer.add(rect)
 	# forEnd
 
-	rectKonva = roundRect(size.indent.sign.x, size.indent.text.y, size.sign.w, size.sign.h,
+	rectKonva = roundRect(size.indent.sign.x, size.indent.sign.y, size.sign.w, size.sign.h,
 		settings.radius, settings.borderWidth, model.theme.bgColor, model.theme.textColor)
-
 	shapeLayer.add(rectKonva)
 
 	shapeLayer.draw()
