@@ -232,12 +232,6 @@ resizeWidthPadding = (padding, text_w)->
 	padding.r += text_w
 	padding
 
-createSizeObj = ->
-	{
-		w: 0
-		h: 0
-	}
-
 getBalancingCoefficient = (width, height, canvasWidth, canvasHeight) ->
 	fatalWidth = width/canvasWidth
 	fatalHeight = height/canvasHeight
