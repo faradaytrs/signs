@@ -258,8 +258,51 @@ clearStage = (stage) ->
 		layer.destroy()
 	return
 
+onChange = (stage, model) ->
+	padding = getPadding(model)
 
-reRender = (stage, model) ->
+	sizes = getSizesTexts(model)
+	textSize = {}
+	textSize.w = getTextWidth(sizes)
+	textSize.h = getTextHeight(sizes, padding.text)
+
+	padding = resizeWidthPadding(padding, textSize.w)
+	signSize = {}
+	signSize.w = getSignWidth(textSize.w, padding.w()) # в функцию getWidthSign для каждого model.shape
+	signSize.h = getSignHeight(textSize.h, padding.h())
+
+	k = getBalancingCoefficient(signSize.w, signSize.h, settings.canvasWidth, settings.canvasHeight)
+
+	signBeginX = getSpace(settings.canvasWidth, k * signSize.w)
+	signBeginY = getSpace(settings.canvasHeight, k * signSize.h)
+
+	textBeginX = signBeginX + k * padding.l
+	textBeginY = signBeginY + k * padding.b
+
+	#model.size.width = Math.round(signSize.w / settings.PIXEL_SIZE)
+	#model.size.height = Math.round(signSize.h / settings.PIXEL_SIZE)
+
+	size =
+		k: k #to delete
+		sign: signSize
+		text: textSize
+		padding: padding #to delete probably
+		indent:
+			sign:
+				x: signBeginX
+				y: signBeginY
+			text:
+				x: textBeginX
+				y: textBeginY
+
+	console.log("padding.x: #{size.padding.w()}; padding.y: #{size.padding.h()}")
+	console.log("sign x: #{size.indent.sign.x};	y: #{size.indent.sign.y}")
+	console.log("text x: #{size.indent.text.x};	y: #{size.indent.sign.y}")
+	console.log("width: #{size.sign.w}; height: #{size.sign.h}")
+
+	reRender(stage, model, size)
+
+reRender = (stage, model, size) ->
 	clearStage(stage)
 
 	shapeLayer = new Konva.Layer()
@@ -267,123 +310,24 @@ reRender = (stage, model) ->
 	stage.add shapeLayer
 	stage.add textLayer
 
-	padding = getPadding(model)
-	textSize = createSizeObj()
-	signSize = createSizeObj()
-
-	sizes = getSizesTexts(model)
-	textSize.w = getTextWidth(sizes)
-	textSize.h = getTextHeight(sizes, padding.text)
-
-	padding = resizeWidthPadding(padding, textSize.w)
-
-	signSize.w = getSignWidth(textSize.w, padding.w()) # в функцию getWidthSign для каждого model.shape
-	signSize.h = getSignHeight(textSize.h, padding.h())
-
-	k = getBalancingCoefficient(signSize.w, signSize.h, settings.canvasWidth, settings.canvasHeight)
-
-	signBeginX = getSpace(settings.canvasWidth,  k * signSize.w)
-	signBeginY = getSpace(settings.canvasHeight, k * signSize.h)
-
-	textBeginX = signBeginX + k * padding.l
-	textBeginY = signBeginY + k * padding.b
-
-	console.log("padding.x: #{padding.w()}; padding.y: #{padding.h()}")
-	console.log("sign x: #{signBeginX};	y: #{signBeginY}")
-	console.log("text x: #{textBeginX};	y: #{textBeginY}")
-	console.log("width: #{signSize.w}; height: #{signSize.h}")
-
 	for text, id in model.texts
-		textKonva = createText(text.align, text.text, textBeginX, textBeginY, k * textSize.w + 1,
-			model.font, k * text.size, model.theme.textColor)
+		textKonva = createText(text.align, text.text, size.indent.text.x, size.indent.sign.y, size.k * size.text.w + 1,
+			model.font, size.k * text.size, model.theme.textColor)
 		textLayer.add(textKonva)
 
-		rect = simpleRect(textBeginX, textBeginY, k * textSize.w + 1, textKonva.getHeight())
+		rect = simpleRect(size.indent.text.x, size.indent.text.y, size.k * size.text.w + 1, textKonva.getHeight())
 		textLayer.add(rect)
 
-		textBeginY += textKonva.getHeight() + k * padding.text
+		size.indent.text.y += textKonva.getHeight() + size.k * size.padding.text
 	# forEnd
 
-	rectKonva = roundRect(signBeginX, signBeginY, k * signSize.w, k * signSize.h,
-		k * settings.radius, settings.borderWidth, model.theme.bgColor, model.theme.textColor)
+	rectKonva = roundRect(size.indent.sign.x, size.indent.text.y, size.sign.w, size.sign.h,
+		settings.radius, settings.borderWidth, model.theme.bgColor, model.theme.textColor)
+
 	shapeLayer.add(rectKonva)
 
 	shapeLayer.draw()
 	textLayer.draw()
-
-	# Запихиваем размеры знака в модель
-	model.size.width = Math.round(signSize.w / settings.PIXEL_SIZE)
-	model.size.height = Math.round(signSize.h / settings.PIXEL_SIZE)
-
-reRender_ = (stage, model) ->
-
-	stage.clear()
-
-	width = stage.width()
-	height = stage.height()
-
-	#render shape
-
-	if model.shape == "rectangle"
-
-		shapeLayer = new Konva.Layer()
-
-		stage.add shapeLayer
-
-		textLayer = new Konva.Layer()
-
-		textSizes = []
-
-		top = 15 + rectStartHeight
-
-		for text, index in model.texts
-
-			# этот цикл используется только для определения реальных размеров текста
-			text = renderText(text.align, text.text, rectStartWidth, rectStartWidth, top, model.font, text.size, model.theme.textColor)
-			# top += text.size().height
-			textSizes.push text.size()
-
-		getTextWidth = (sizes) ->
-			# todo отступы добавить, слева и справа, добавить этот пункт в настройки (размер отступов)
-			max = 0
-			for i in textSizes
-				max = if (i.width > max) then i.width else max
-			max
-		getTextHeight = (sizes) ->
-			# todo учитывать отступы между строками, над строкой под, здесь и везде
-			summ = 0
-			for i in textSizes
-				summ += i.height
-			summ
-
-		signWidth = getTextWidth(textSizes)
-		signHeight = getTextHeight(textSizes)
-
-		getBalancingCoefficient = (width, height, canvasWidth, canvasHeight) ->
-			fatalWidth = width/canvasWidth
-			fatalHeight = height/canvasHeight
-			oneWeUse = if fatalHeight > fatalWidth then fatalHeight else fatalWidth
-			if oneWeUse > 0.8
-				0.8/oneWeUse
-			else
-				1
-
-		k = getBalancingCoefficient(signWidth, signHeight, width, height)
-
-		balancedSignHeight = signHeight * k
-		balancedSignWidth = signWidth * k
-
-		rectStartWidth = getSpace(width, signWidth)
-		rectStartHeight = getSpace(height, signHeight)
-
-		rectangle = roundRect(rectStartWidth, rectStartHeight, balancedSignWidth, balancedSignHeight, settings.radius, settings.borderWidth, model.theme.bgColor, model.theme.textColor)
-
-		shapeLayer.add rectangle
-		stage.add shapeLayer
-
-		# todo тут нужно отрендерить текст реально, с значение ширины, чтобы работал alignment
-		# todo отрендерить стрелки с указанием размеров (в конфа есть даже готовая форма для стрелок)
-		# todo ну и отрефакторить всю функцию к чертовой матери
 
 #controllers
 signs.controller 'shapesController', ($scope) ->
@@ -439,12 +383,12 @@ signs.controller 'modelsController', ($scope) ->
 		reader.onerror = (event) ->
 			console.error("Problems reading file, code:  " + event.target.error.code)
 
-		reader.readAsBinaryString(newVal)
+	#reader.readAsBinaryString(newVal)
 
 	$scope.triggerImport = ->
 		$('#file').trigger('click')
 
-	$scope.reRender = reRender
+	$scope.onChange = onChange
 	$scope.models = getModels()
 	$scope.current = 0; #by default
 
@@ -457,7 +401,7 @@ signs.controller 'modelsController', ($scope) ->
 
 	$scope.$watch 'model', ->
 		# todo rework rerender system to improve performance
-		$scope.reRender($scope.stage, $scope.model)
+		$scope.onChange($scope.stage, $scope.model)
 	, true
 	$scope.calcPrice = (model = $scope.model) ->
 		model.order * 20
