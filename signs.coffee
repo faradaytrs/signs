@@ -219,22 +219,22 @@ getSignHeight = (size, padding) ->
 
 getPadding = (model) ->
 	h = model.holes
-	left = h["Middle left"] || h["Top left corner"] || h["Bottom left corner"]
-	right = h["Middle right"] || h["Top right corner"] || h["Bottom right corner"]
+	is_left = h["Middle left"] || h["Top left corner"] || h["Bottom left corner"]
+	is_right = h["Middle right"] || h["Top right corner"] || h["Bottom right corner"]
 	{
-		u: 15
-		b: 15
-		l: if left then 45 else 15
-		r: if right then 45 else 15
-		w: () -> this.l + this.r
-		h: () -> this.u + this.b
+		top: 15
+		bottom: 15
+		left: is_left ? 45 : 15
+		right: 	is_right ?  45 : 15
+		width: () -> this.left + this.right
+		height: () -> this.top + this.bottom
 		text: 0
 	}
 
 balancePadding = (padding, text_width)->
 	text_width /= 100
-	padding.l += text_width
-	padding.r += text_width
+	padding.left += text_width
+	padding.right += text_width
 	padding
 
 getBalancingCoefficient = (width, height, canvasWidth, canvasHeight) ->
@@ -262,43 +262,47 @@ onChange = (stage, model) ->
 
 	sizes = getSizesTexts(model)
 	textSize = {}
-	textSize.w = getTextWidth(sizes)
-	textSize.h = getTextHeight(sizes, padding.text)
+	textSize.width = getTextWidth(sizes)
+	textSize.height = getTextHeight(sizes, padding.text)
 
-	padding = balancePadding(padding, textSize.w)
+	padding = balancePadding(padding, textSize.width)
 
 	signSize = {}
-	signSize.w = getSignWidth(textSize.w, padding.w()) # в функцию getWidthSign для каждого model.shape
-	signSize.h = getSignHeight(textSize.h, padding.h())
+	signSize.width = getSignWidth(textSize.width, padding.width()) # в функцию getWidthSign для каждого model.shape
+	signSize.height = getSignHeight(textSize.height, padding.height())
 
-	k = getBalancingCoefficient(signSize.w, signSize.h, settings.canvasWidth, settings.canvasHeight)
+	k = getBalancingCoefficient(signSize.width, signSize.height, settings.canvasWidth, settings.canvasHeight)
 
 	signBegin = {}
-	signBegin.x = getSpace(settings.canvasWidth, k * signSize.w)
-	signBegin.y = getSpace(settings.canvasHeight, k * signSize.h)
+	signBegin.x = getSpace(settings.canvasWidth, k * signSize.width)
+	signBegin.y = getSpace(settings.canvasHeight, k * signSize.height)
 
 	textBegin = {}
-	textBegin.x = signBegin.x ###+ k * padding.l###
-	textBegin.y = signBegin.y ###+ k * padding.b###
+	textBegin.x = signBegin.x + k * padding.left
+	textBegin.y = signBegin.y + k * padding.top
 
-	#model.size.width = Math.round(signSize.w / settings.PIXEL_SIZE)
-	#model.size.height = Math.round(signSize.h / settings.PIXEL_SIZE)
+	#model.size.width = Math.round(signSize.width / settings.PIXEL_SIZE)
+	#model.size.height = Math.round(signSize.height / settings.PIXEL_SIZE)
 
 	size = {
 		k: k #to delete
-		sign: signSize
-		text: textSize
+		sign:
+			x: signBegin.x
+			y: signBegin.y
+			width: signSize.width
+			height: signSize.height
+		text:
+			x: textBegin.x
+			y: textBegin.y
+			width: textSize.width
+			height: textSize.height
 		padding: padding #to delete probably
-		indent: {
-			sign: signBegin
-			text: textBegin
-		}
 	}
 
-	console.log("padding.x: #{size.padding.w()}; padding.y: #{size.padding.h()}")
-	console.log("sign x: #{size.indent.sign.x};	y: #{size.indent.sign.y}")
-	console.log("text x: #{size.indent.text.x};	y: #{size.indent.sign.y}")
-	console.log("width: #{size.sign.w}; height: #{size.sign.h}")
+	console.log("padding.x: #{size.padding.width()}; padding.y: #{size.padding.height()}")
+	console.log("sign x: #{size.sign.x};	y: #{size.sign.y}")
+	console.log("text x: #{size.text.x};	y: #{size.sign.y}")
+	console.log("width: #{size.sign.width}; height: #{size.sign.height}")
 
 	reRender(stage, model, size)
 
@@ -312,18 +316,18 @@ reRender = (stage, model, size) ->
 
 	for text, id in model.texts
 		textKonva = createText(text.align, text.text,
-			size.indent.text.x, size.indent.sign.y, size.k * size.text.w + 1,
+			size.text.x, size.text.y, size.k * size.text.width + 1,
 			model.font, size.k * text.size, model.theme.textColor)
 
 		rect = simpleRect(
-			size.indent.text.x, size.indent.text.y, size.k * size.text.w + 1, textKonva.getHeight())
-		size.indent.text.y += textKonva.getHeight() + size.k * size.padding.text
+			size.text.x, size.text.y, size.k * size.text.width + 1, textKonva.getHeight())
+		size.text.y += textKonva.getHeight() + size.k * size.padding.text
 
 		textLayer.add(textKonva)
 		textLayer.add(rect)
 	# forEnd
 
-	rectKonva = roundRect(size.indent.sign.x, size.indent.sign.y, size.sign.w, size.sign.h,
+	rectKonva = roundRect(size.sign.x, size.sign.y, size.sign.width, size.sign.height,
 		settings.radius, settings.borderWidth, model.theme.bgColor, model.theme.textColor)
 	shapeLayer.add(rectKonva)
 
