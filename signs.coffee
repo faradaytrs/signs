@@ -99,7 +99,7 @@ modelTemplate =
 	order: 0
 	texts: [
 		{
-			text: "Your text here"
+			str: "Your text here"
 			size: 5
 			align: "Center"
 		}
@@ -177,7 +177,7 @@ createText2 = (align, str, x, y, font, size, color) ->
 		align: align.toLowerCase()
 
 simpleCreateText = (layer, model, obj) ->
-	textObj = createText(obj.align, obj.text, 0, 0, 0,
+	textObj = createText(obj.align, obj.str, 0, 0, 0,
 		model.font, obj.size, model.theme.textColor)
 	console.log(textObj.getTextHeight())
 	layer.add textObj
@@ -190,10 +190,11 @@ getSpace = (width, squareWidth) ->
 getSizesTexts = (model) ->
 	sizes = []
 	for text in model.texts
-		textObj = createText2(text.align, text.text, 0, 0,
+		textObj = createText2(text.align, text.str, 0, 0,
 			model.font, text.size, model.theme.textColor)
 #		console.log("#{textObj.getTextWidth()} #{textObj.getTextHeight()}")
 		sizes.push {
+			size: text.size
 			width : textObj.getTextWidth()
 			height: textObj.getTextHeight()
 		}
@@ -296,6 +297,7 @@ onChange = (stage, model) ->
 			y: textBegin.y
 			width: k * textSize.width
 			height: k * textSize.height
+			font: sizes
 		padding: padding #to delete probably
 	}
 
@@ -315,7 +317,7 @@ reRender = (stage, model, size) ->
 	stage.add textLayer
 
 	for text, id in model.texts
-		textKonva = createText(text.align, text.text,
+		textKonva = createText(text.align, text.str,
 			size.text.x, size.text.y, size.text.width + 1,
 			model.font, size.k * text.size, model.theme.textColor)
 
