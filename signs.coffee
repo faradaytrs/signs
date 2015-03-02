@@ -38,7 +38,7 @@ settings =
 	]
 	themes: [
 		{
-			name: "white / black"
+			name: "black / white"
 			bgColor: "white"
 			textColor: "black"
 		}
