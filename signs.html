@@ -24,13 +24,7 @@
 				<h3>Cost: <span class="label" ng-class="(calcPrice() == 0) ? 'label-danger' : 'label-success'">{{calcPrice()}} kr</span></h3>
 			</div>
 			<div class="col-md-3">
-				<div class="form-group">
-					<div class="input-group">
-						<label class="sr-only" for="signName">Name of Sign</label>
-						<div class="input-group-addon">Name of Sign</div>
-						<input type="text" id="signName" maxlength="18" ng-model="model.name" class="form-control" placeholder="Name of Sign" value="{{model.name}}"/>
-					</div>
-				</div>
+
 			</div>
 			<div class="col-md-3">
 				<div class="form-group">
@@ -48,7 +42,10 @@
 		<div class="row">
 			<div class="col-md-2">
 				<h4>Signs:</h4>
-				<button ng-repeat="model in models track by $index" ng-click="updateCurrentModel($index)" ng-class="{'active': $index == current}" class="btn btn-block btn-default">{{model.name}}  x {{model.order}}</button>
+				<button ng-repeat="model in models track by $index" ng-click="updateCurrentModel($index)"
+				        ng-class="{'active': $index == current}" class="btn btn-block btn-default">
+					{{model.name}}#{{$index+1}} x {{model.order}}
+				</button>
 				<button class="btn btn-block btn-primary" ng-click="new()"><span class="glyphicon glyphicon-plus"></span> Add Sign</button>
 				<button class="btn btn-block btn-success" ng-click="triggerImport()"><span class="glyphicon glyphicon-upload"></span> Import Sign</button>
 				<input id="file" type="file" file-model='file' ng-hide="true"/>
