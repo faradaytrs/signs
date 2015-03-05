@@ -215,6 +215,14 @@ simpleCreateText = (layer, model, obj) ->
 	layer.add textObj
 	textObj
 
+circle = () ->
+	circle = new Konva.Circle
+		x: stage.getWidth() / 2,
+		y: stage.getHeight() / 2,
+		radius: 70,
+		fill: 'red',
+		stroke: 'black',
+		strokeWidth: 4
 
 getSpace = (width, squareWidth) ->
 	width/2-squareWidth/2
@@ -327,8 +335,9 @@ onChange = (stage, model) ->
 			console.warn("very small height")
 			return
 		else
-			signSize.height = toPixel( model.size.height)
-			textSize.width = signSize.width - padding.width()
+			signSize.height = toPixel(model.size.height)
+			textSize.height = signSize.height - padding.height()
+			padding.text = (textSize.height - getTextHeight(sizes, 0)) / model.texts.length
 
 	k = getBalancingCoefficient(signSize.width, signSize.height, settings.canvasWidth, settings.canvasHeight)
 
@@ -338,7 +347,8 @@ onChange = (stage, model) ->
 
 	textBegin = {}
 	textBegin.x = signBegin.x + k * padding.left
-	textBegin.y = signBegin.y + k * padding.top
+	textBegin.y = signBegin.y + k * (padding.top + padding.text/2)
+	padding.text *= k
 
 	#model.size.width = Math.round(signSize.width / settings.PIXEL_SIZE)
 	#model.size.height = Math.round(signSize.height / settings.PIXEL_SIZE)
