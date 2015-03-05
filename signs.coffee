@@ -158,7 +158,7 @@ createText = (align, str, x, y, width, font, size, color) ->
 		x: x
 		y: y
 		text: str
-		fontSize: size * settings.PIXEL_SIZE
+		fontSize: toPixel(size)
 		fontFamily: font
 		fill: color
 		width: width
@@ -170,7 +170,7 @@ createText2 = (align, str, x, y, font, size, color) ->
 		x: x
 		y: y
 		text: str
-		fontSize: size * settings.PIXEL_SIZE
+		fontSize: toPixel(size)
 		fontFamily: font
 		fill: color
 #		padding: 20
@@ -194,6 +194,7 @@ getSizesTexts = (model) ->
 			model.font, text.size, model.theme.textColor)
 #		console.log("#{textObj.getTextWidth()} #{textObj.getTextHeight()}")
 		sizes.push {
+			size: text.size
 			width : textObj.getTextWidth()
 			height: textObj.getTextHeight()
 		}
@@ -224,8 +225,8 @@ getPadding = (model) ->
 	{
 		top: 15
 		bottom: 15
-		left: is_left ? 45 : 15
-		right: 	is_right ?  45 : 15
+		left: if is_left then 45 else 15
+		right: if	is_right then 45 else 15
 		width: () -> this.left + this.right
 		height: () -> this.top + this.bottom
 		text: 0
@@ -250,6 +251,9 @@ getBalancingCoefficient = (width, height, canvasWidth, canvasHeight) ->
 	else
 		1
 
+toPixel = (mm) ->
+	mm * settings.PIXEL_SIZE
+
 clearStage = (stage) ->
 	stage.clear()
 	layers = stage.getLayers().toArray()
@@ -265,11 +269,27 @@ onChange = (stage, model) ->
 	textSize.width = getTextWidth(sizes)
 	textSize.height = getTextHeight(sizes, padding.text)
 
-	padding = balancePadding(padding, textSize.width)
+	balancePadding(padding, textSize.width)
 
 	signSize = {}
 	signSize.width = getSignWidth(textSize.width, padding.width()) # в функцию getWidthSign для каждого model.shape
 	signSize.height = getSignHeight(textSize.height, padding.height())
+
+	if (!model.size.autoWidth)
+		if (toPixel(model.size.width) < signSize.width)
+			console.warn("very small width")
+			return
+		else
+			signSize.width = toPixel(model.size.width)
+			textSize.width = signSize.width - padding.width()
+
+	if (!model.size.autoHeight)
+		if (toPixel(model.size.height) < signSize.height)
+			console.warn("very small height")
+			return
+		else
+			signSize.height = toPixel( model.size.height)
+			textSize.width = signSize.width - padding.width()
 
 	k = getBalancingCoefficient(signSize.width, signSize.height, settings.canvasWidth, settings.canvasHeight)
 
@@ -296,12 +316,16 @@ onChange = (stage, model) ->
 			y: textBegin.y
 			width: k * textSize.width
 			height: k * textSize.height
+			font: sizes
 		padding: padding #to delete probably
 	}
 
-	console.log("padding.x: #{size.padding.width()}; padding.y: #{size.padding.height()}")
-	console.log("sign x: #{size.sign.x};	y: #{size.sign.y}")
-	console.log("text x: #{size.text.x};	y: #{size.sign.y}")
+	console.log("padding x: #{size.padding.width()}; y: #{size.padding.height()}")
+	console.log("text")
+	console.log("x: #{size.text.x};	y: #{size.text.y}")
+	console.log("width: #{size.text.width}; height: #{size.text.height}")
+	console.log("sign")
+	console.log("x: #{size.sign.x};	y: #{size.sign.y}")
 	console.log("width: #{size.sign.width}; height: #{size.sign.height}")
 
 	reRender(stage, model, size)
