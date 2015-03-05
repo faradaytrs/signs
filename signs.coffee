@@ -73,7 +73,9 @@ settings =
 	margin: 15 # in pixels
 	radius: 5 # in pixels
 	borderWidth: 1.5 #in pixels
-	ruleIndent: 25 #pixels
+	rules:
+		indent: 25
+		width: 3
 
 copyObj = (obj) ->
 	JSON.parse(JSON.stringify(obj))
@@ -136,7 +138,7 @@ roundRect = (x, y, width, height, radius, borderWidth, fillColor, strokeColor) -
 			ctx.lineTo(x, y + radius)
 			ctx.quadraticCurveTo(x, y, x + radius, y)
 			ctx.closePath()
-			ctx.fillStrokeShape(this);
+			ctx.fillStrokeShape(@);
 		fill: fillColor || 'black'
 		stroke: strokeColor || 'black'
 		strokeWidth: borderWidth
@@ -156,7 +158,7 @@ simpleRect = (x, y, width, height) ->
 
 renderLeftRule = (size) ->
 	#left
-	x = size.sign.x - settings.ruleIndent
+	x = size.sign.x - settings.rules.indent
 	new Konva.Shape
 		drawFunc: (context) ->
 			context.beginPath()
@@ -166,10 +168,10 @@ renderLeftRule = (size) ->
 			context.fillStrokeShape(@)
 			context.fillText("#{size.sign.origin.height} mm", size.sign.x - 60, size.sign.y + size.sign.height / 2)
 		stroke: 'black',
-		strokeWidth: 3
+		strokeWidth: settings.rules.width
 renderTopRule = (size) ->
 	#top
-	y = size.sign.y - settings.ruleIndent
+	y = size.sign.y - settings.rules.indent
 	new Konva.Shape
 		drawFunc: (context) ->
 			#line
@@ -181,7 +183,7 @@ renderTopRule = (size) ->
 			context.fillText("#{size.sign.origin.width} mm", size.sign.x + size.sign.width / 2 - 10, y - 10)
 	#size
 		stroke: 'black',
-		strokeWidth: 3
+		strokeWidth: settings.rules.width
 
 createText = (align, str, x, y, width, font, size, color) ->
 	textObj = new Konva.Text
@@ -272,12 +274,11 @@ getBalancingCoefficient = (width, height, canvasWidth, canvasHeight) ->
 	fatalWidth = width/canvasWidth
 	fatalHeight = height/canvasHeight
 	oneWeUse = if fatalHeight > fatalWidth then fatalHeight else fatalWidth
-	if oneWeUse > 0.8
+	if oneWeUse > 0.75
 		new_k = oneWeUse
-		while new_k > 0.8
+		while new_k > 0.75
 			new_k = new_k *= 0.9
 		new_k/oneWeUse
-		# console.log "K: #{1}"
 	else
 		1
 
