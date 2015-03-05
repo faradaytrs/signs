@@ -55,7 +55,7 @@
 			</div>
 			<div class="col-md-6">
 				<div ng-init="init()" id="preview"></div>
-				<div ng-hide="false" class="order">
+				<div ng-hide="summary(models).price == 0" class="order">
 					<h3>Your order:</h3>
 					<table class="table">
 						<thead>

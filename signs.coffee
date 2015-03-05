@@ -38,13 +38,13 @@ settings =
 	]
 	themes: [
 		{
-			name: "black / white"
-			bgColor: "white"
+			name: "black / yellow"
+			bgColor: "yellow"
 			textColor: "black"
 		}
 		{
-			name: "black / yellow"
-			bgColor: "yellow"
+			name: "black / white"
+			bgColor: "white"
 			textColor: "black"
 		}
 		{
