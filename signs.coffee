@@ -73,6 +73,7 @@ settings =
 	margin: 15 # in pixels
 	radius: 5 # in pixels
 	borderWidth: 1.5 #in pixels
+	ruleIndent: 25 #pixels
 
 copyObj = (obj) ->
 	JSON.parse(JSON.stringify(obj))
@@ -152,6 +153,23 @@ simpleRect = (x, y, width, height) ->
 #		fill: 'white'
 		stroke: 'black'
 		strokeWidth: 1
+
+renderLeftRule = (size) ->
+	#left
+	x = size.sign.x - settings.ruleIndent
+	new Konva.Line
+		points: [x, size.sign.y, x, size.sign.y + size.sign.height]
+		stroke: 'black'
+		strokeWidth: 3
+		lineCap: 'bevel'
+renderTopRule = (size) ->
+	#top
+	y = size.sign.y - settings.ruleIndent
+	new Konva.Line
+		points: [size.sign.x, y, size.sign.x + size.sign.width, y]
+		stroke: 'black'
+		strokeWidth: 3
+		lineCap: 'bevel'
 
 createText = (align, str, x, y, width, font, size, color) ->
 	textObj = new Konva.Text
@@ -311,6 +329,9 @@ onChange = (stage, model) ->
 			y: signBegin.y
 			width: k * signSize.width
 			height: k * signSize.height
+			origin:
+				width: signSize.width
+				height: signSize.height
 		text:
 			x: textBegin.x
 			y: textBegin.y
@@ -353,6 +374,10 @@ reRender = (stage, model, size) ->
 
 	rectKonva = roundRect(size.sign.x, size.sign.y, size.sign.width, size.sign.height,
 		settings.radius, settings.borderWidth, model.theme.bgColor, model.theme.textColor)
+	leftRule = renderLeftRule(size)
+	topRule = renderTopRule(size)
+	shapeLayer.add(leftRule)
+	shapeLayer.add(topRule)
 	shapeLayer.add(rectKonva)
 
 	shapeLayer.draw()
