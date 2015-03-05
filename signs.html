@@ -23,17 +23,12 @@
 			<div class="col-md-2">
 				<h3>Cost: <span class="label" ng-class="(calcPrice() == 0) ? 'label-danger' : 'label-success'">{{calcPrice()}} kr</span></h3>
 			</div>
-			<div class="col-md-3">
-
-			</div>
-			<div class="col-md-3">
-				<div class="form-group">
-					<div class="input-group">
-						<label class="sr-only" for="order">Order</label>
-						<div class="input-group-addon">Order</div>
-						<input type="number" min="0" max="10000" id="order" maxlength="18" ng-model="model.order" class="form-control" placeholder="Amount" value="{{model.order}}"/>
-					</div>
-				</div>
+			<div class="col-md-6">
+				<ul class="nav nav-pills" ng-controller="materialsController">
+					<li role="presentation" ng-class="{'active': model.material == material}"
+					    ng-repeat="material in materials"><a ng-click="model.material = material"
+					                                         href="#">{{material}}</a></li>
+				</ul>
 			</div>
 			<div class="col-md-4">
 
@@ -84,6 +79,15 @@
 				</div>
 			</div>
 			<div class="col-md-4 selects">
+				<div class="form-group">
+					<div class="input-group">
+						<label class="sr-only" for="order">Order</label>
+
+						<div class="input-group-addon">Order</div>
+						<input type="number" min="0" max="10000" id="order" maxlength="18" ng-model="model.order"
+						       class="form-control" placeholder="Amount" value="{{model.order}}"/>
+					</div>
+				</div>
 				<div ng-controller="shapesController">
 					<h4>Shapes:</h4>
 					<div class="radio" ng-repeat="shape in shapes">
@@ -125,15 +129,6 @@
 						</div>
 					</div>
 
-				</div>
-				<div ng-controller="materialsController">
-					<h4>Materials:</h4>
-					<div class="radio" ng-repeat="material in materials">
-						<label>
-							<input ng-value="material" ng-model="model.material" name="holes" type="radio"/>
-							<span>{{material}}</span>
-						</label>
-					</div>
 				</div>
 				<div ng-controller="themesController">
 					<h4>Themes:</h4>

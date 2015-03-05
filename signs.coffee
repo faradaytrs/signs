@@ -28,8 +28,8 @@ settings =
 		"Arial"
 	]
 	materials: [
-		"Steel",
-		"Mystic material"
+		"Plastic",
+		"Metal"
 	]
 	alignment: [
 		"Left"
