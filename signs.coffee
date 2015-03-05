@@ -269,7 +269,7 @@ onChange = (stage, model) ->
 	textSize.width = getTextWidth(sizes)
 	textSize.height = getTextHeight(sizes, padding.text)
 
-	padding = balancePadding(padding, textSize.width)
+	balancePadding(padding, textSize.width)
 
 	signSize = {}
 	signSize.width = getSignWidth(textSize.width, padding.width()) # в функцию getWidthSign для каждого model.shape
