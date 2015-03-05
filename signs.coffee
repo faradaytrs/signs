@@ -226,11 +226,16 @@ getSizesTexts = (model) ->
 			model.font, text.size, model.theme.textColor)
 #		console.log("#{textObj.getTextWidth()} #{textObj.getTextHeight()}")
 		sizes.push {
-			size: text.size
 			width : textObj.getTextWidth()
 			height: textObj.getTextHeight()
 		}
 	sizes
+
+getMaxTextSize = (model) ->
+	max = 0
+	for text in model.texts
+		if text.size > max then max = text.size
+	max
 
 getTextWidth = (sizes) ->
 	maxLen = 0
@@ -255,19 +260,21 @@ getPadding = (model) ->
 	is_left = h["Middle left"] || h["Top left corner"] || h["Bottom left corner"]
 	is_right = h["Middle right"] || h["Top right corner"] || h["Bottom right corner"]
 	{
-		top: 15
-		bottom: 15
-		left: if is_left then 45 else 15
-		right: if	is_right then 45 else 15
+		top: 0
+		bottom: 0
+		left: if is_left then 45 else 0
+		right: if	is_right then 45 else 0
 		width: () -> this.left + this.right
 		height: () -> this.top + this.bottom
 		text: 0
 	}
 
-balancePadding = (padding, text_width)->
-	text_width /= 100
-	padding.left += text_width
-	padding.right += text_width
+balancePadding = (padding, textSize) ->
+	textSize = toPixel(textSize) / 2
+	padding.top += textSize
+	padding.bottom += textSize
+	padding.left += textSize
+	padding.right += textSize
 	padding
 
 getBalancingCoefficient = (width, height, canvasWidth, canvasHeight) ->
@@ -300,7 +307,8 @@ onChange = (stage, model) ->
 	textSize.width = getTextWidth(sizes)
 	textSize.height = getTextHeight(sizes, padding.text)
 
-	balancePadding(padding, textSize.width)
+	maxTextSize = getMaxTextSize(model)
+	balancePadding(padding, maxTextSize)
 
 	signSize = {}
 	signSize.width = getSignWidth(textSize.width, padding.width()) # в функцию getWidthSign для каждого model.shape
@@ -354,7 +362,7 @@ onChange = (stage, model) ->
 		padding: padding #to delete probably
 	}
 
-	console.log("padding x: #{size.padding.width()}; y: #{size.padding.height()}")
+	console.log("padding w #{size.padding.width()} h #{size.padding.height()}")
 	console.log("text")
 	console.log("x: #{size.text.x};	y: #{size.text.y}")
 	console.log("width: #{size.text.width}; height: #{size.text.height}")
