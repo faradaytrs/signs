@@ -215,14 +215,14 @@ simpleCreateText = (layer, model, obj) ->
 	layer.add textObj
 	textObj
 
-circle = () ->
-	circle = new Konva.Circle
-		x: stage.getWidth() / 2,
-		y: stage.getHeight() / 2,
-		radius: 70,
-		fill: 'red',
+circleKonva = (x, y, radius) ->
+	new Konva.Circle
+		x: x,
+		y: y,
+		radius: radius || 6,
+		fill: 'white',
 		stroke: 'black',
-		strokeWidth: 4
+		strokeWidth: 1
 
 getSpace = (width, squareWidth) ->
 	width/2-squareWidth/2
@@ -350,6 +350,8 @@ onChange = (stage, model) ->
 	textBegin.y = signBegin.y + k * (padding.top + padding.text/2)
 	padding.text *= k
 
+	opening = {}
+
 	#model.size.width = Math.round(signSize.width / settings.PIXEL_SIZE)
 	#model.size.height = Math.round(signSize.height / settings.PIXEL_SIZE)
 
@@ -369,7 +371,18 @@ onChange = (stage, model) ->
 			width: k * textSize.width
 			height: k * textSize.height
 			font: sizes
-		padding: padding #to delete probably
+		padding: padding #to delete
+		openings: [
+			radius: 4,
+			{
+				x:0
+				y:0
+			},
+			{
+				x:0
+				y:0
+			}
+		]
 	}
 
 	console.log("padding w #{size.padding.width()} h #{size.padding.height()}")
@@ -402,6 +415,10 @@ reRender = (stage, model, size) ->
 		textLayer.add(textKonva)
 	#		textLayer.add(rect)
 	# forEnd
+
+	for opening in size.openings
+		circle = circleKonva(opening.x, opening.y, size.openings.radius)
+		shapeLayer.add(circle)
 
 	rectKonva = roundRect(size.sign.x, size.sign.y, size.sign.width, size.sign.height,
 		settings.radius, settings.borderWidth, model.theme.bgColor, model.theme.textColor)
