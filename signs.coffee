@@ -164,6 +164,7 @@ renderLeftRule = (size) ->
 			context.lineTo(x, size.sign.y + size.sign.height)
 			context.closePath()
 			context.fillStrokeShape(@)
+			context.fillText("#{size.sign.origin.height} mm", size.sign.x - 60, size.sign.y + size.sign.height / 2)
 		stroke: 'black',
 		strokeWidth: 3
 renderTopRule = (size) ->
@@ -177,6 +178,7 @@ renderTopRule = (size) ->
 			context.lineTo(size.sign.x + size.sign.width, y)
 			context.closePath()
 			context.fillStrokeShape(@)
+			context.fillText("#{size.sign.origin.width} mm", size.sign.x + size.sign.width / 2 - 10, y - 10)
 	#size
 		stroke: 'black',
 		strokeWidth: 3
@@ -340,8 +342,8 @@ onChange = (stage, model) ->
 			width: k * signSize.width
 			height: k * signSize.height
 			origin:
-				width: signSize.width
-				height: signSize.height
+				width: Math.round(signSize.width / settings.PIXEL_SIZE)
+				height: Math.round(signSize.height / settings.PIXEL_SIZE)
 		text:
 			x: textBegin.x
 			y: textBegin.y
