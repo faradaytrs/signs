@@ -272,6 +272,22 @@ onChange = (stage, model) ->
 	signSize.width = getSignWidth(textSize.width, padding.width()) # в функцию getWidthSign для каждого model.shape
 	signSize.height = getSignHeight(textSize.height, padding.height())
 
+	if (!model.size.autoWidth)
+		if (model.size.width < signSize.width / settings.PIXEL_SIZE)
+			console.log("very small width")
+			return
+		else
+			signSize.width = model.size.width
+			textSize.width = signSize.width - padding.width()
+
+	if (!model.size.autoHeight)
+		if (model.size.height < signSize.height / settings.PIXEL_SIZE)
+			console.log("very small height")
+			return
+		else
+			signSize.height = model.size.height
+			textSize.width = signSize.width - padding.width()
+
 	k = getBalancingCoefficient(signSize.width, signSize.height, settings.canvasWidth, settings.canvasHeight)
 
 	signBegin = {}
