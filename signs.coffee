@@ -157,19 +157,29 @@ simpleRect = (x, y, width, height) ->
 renderLeftRule = (size) ->
 	#left
 	x = size.sign.x - settings.ruleIndent
-	new Konva.Line
-		points: [x, size.sign.y, x, size.sign.y + size.sign.height]
-		stroke: 'black'
+	new Konva.Shape
+		drawFunc: (context) ->
+			context.beginPath()
+			context.moveTo(x, size.sign.y)
+			context.lineTo(x, size.sign.y + size.sign.height)
+			context.closePath()
+			context.fillStrokeShape(@)
+		stroke: 'black',
 		strokeWidth: 3
-		lineCap: 'bevel'
 renderTopRule = (size) ->
 	#top
 	y = size.sign.y - settings.ruleIndent
-	new Konva.Line
-		points: [size.sign.x, y, size.sign.x + size.sign.width, y]
-		stroke: 'black'
+	new Konva.Shape
+		drawFunc: (context) ->
+			#line
+			context.beginPath()
+			context.moveTo(size.sign.x, y)
+			context.lineTo(size.sign.x + size.sign.width, y)
+			context.closePath()
+			context.fillStrokeShape(@)
+	#size
+		stroke: 'black',
 		strokeWidth: 3
-		lineCap: 'bevel'
 
 createText = (align, str, x, y, width, font, size, color) ->
 	textObj = new Konva.Text
