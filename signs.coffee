@@ -99,7 +99,7 @@ modelTemplate =
 	order: 0
 	texts: [
 		{
-			str: "Your text here"
+			text: "Your text here"
 			size: 5
 			align: "Center"
 		}
@@ -177,7 +177,7 @@ createText2 = (align, str, x, y, font, size, color) ->
 		align: align.toLowerCase()
 
 simpleCreateText = (layer, model, obj) ->
-	textObj = createText(obj.align, obj.str, 0, 0, 0,
+	textObj = createText(obj.align, obj.text, 0, 0, 0,
 		model.font, obj.size, model.theme.textColor)
 	console.log(textObj.getTextHeight())
 	layer.add textObj
@@ -190,7 +190,7 @@ getSpace = (width, squareWidth) ->
 getSizesTexts = (model) ->
 	sizes = []
 	for text in model.texts
-		textObj = createText2(text.align, text.str, 0, 0,
+		textObj = createText2(text.align, text.text, 0, 0,
 			model.font, text.size, model.theme.textColor)
 #		console.log("#{textObj.getTextWidth()} #{textObj.getTextHeight()}")
 		sizes.push {
@@ -225,8 +225,8 @@ getPadding = (model) ->
 	{
 		top: 15
 		bottom: 15
-		left: is_left ? 45 : 15
-		right: 	is_right ?  45 : 15
+		left: if is_left then 45 else 15
+		right: if	is_right then 45 else 15
 		width: () -> this.left + this.right
 		height: () -> this.top + this.bottom
 		text: 0
@@ -301,9 +301,12 @@ onChange = (stage, model) ->
 		padding: padding #to delete probably
 	}
 
-	console.log("padding.x: #{size.padding.width()}; padding.y: #{size.padding.height()}")
-	console.log("sign x: #{size.sign.x};	y: #{size.sign.y}")
-	console.log("text x: #{size.text.x};	y: #{size.sign.y}")
+	console.log("padding x: #{size.padding.width()}; y: #{size.padding.height()}")
+	console.log("text")
+	console.log("x: #{size.text.x};	y: #{size.text.y}")
+	console.log("width: #{size.text.width}; height: #{size.text.height}")
+	console.log("sign")
+	console.log("x: #{size.sign.x};	y: #{size.sign.y}")
 	console.log("width: #{size.sign.width}; height: #{size.sign.height}")
 
 	reRender(stage, model, size)
@@ -317,7 +320,7 @@ reRender = (stage, model, size) ->
 	stage.add textLayer
 
 	for text, id in model.texts
-		textKonva = createText(text.align, text.str,
+		textKonva = createText(text.align, text.text,
 			size.text.x, size.text.y, size.text.width + 1,
 			model.font, size.k * text.size, model.theme.textColor)
 
