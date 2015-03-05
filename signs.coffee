@@ -297,6 +297,25 @@ getBalancingCoefficient = (width, height, canvasWidth, canvasHeight) ->
 	else
 		1
 
+getOpenings = (model, signBegin, signSize) ->
+	openings = {}
+	openings.radius = 4
+	h = model.holes
+	y = signBegin.y + signSize.height/2
+	openings.coord = [
+		{
+			x: signBegin.x + 2*openings.radius
+			y: y
+		},
+		{
+			x: signBegin.x + signSize.width - 2*openings.radius
+			y: y
+		}
+	]
+	console.log(openings)
+	openings
+
+
 toPixel = (mm) ->
 	mm * settings.PIXEL_SIZE
 
@@ -372,17 +391,7 @@ onChange = (stage, model) ->
 			height: k * textSize.height
 			font: sizes
 		padding: padding #to delete
-		openings: [
-			radius: 4,
-			{
-				x:0
-				y:0
-			},
-			{
-				x:0
-				y:0
-			}
-		]
+		openings: getOpenings(model, signBegin, signSize)
 	}
 
 	console.log("padding w #{size.padding.width()} h #{size.padding.height()}")
@@ -416,17 +425,18 @@ reRender = (stage, model, size) ->
 	#		textLayer.add(rect)
 	# forEnd
 
-	for opening in size.openings
-		circle = circleKonva(opening.x, opening.y, size.openings.radius)
-		shapeLayer.add(circle)
-
 	rectKonva = roundRect(size.sign.x, size.sign.y, size.sign.width, size.sign.height,
 		settings.radius, settings.borderWidth, model.theme.bgColor, model.theme.textColor)
+	shapeLayer.add(rectKonva)
+
+	for coord in size.openings.coord
+		circle = circleKonva(coord.x, coord.y, size.openings.radius)
+		shapeLayer.add(circle)
+
 	leftRule = renderLeftRule(size)
 	topRule = renderTopRule(size)
 	shapeLayer.add(leftRule)
 	shapeLayer.add(topRule)
-	shapeLayer.add(rectKonva)
 
 	shapeLayer.draw()
 	textLayer.draw()
