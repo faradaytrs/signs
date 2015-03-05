@@ -158,7 +158,7 @@ createText = (align, str, x, y, width, font, size, color) ->
 		x: x
 		y: y
 		text: str
-		fontSize: size * settings.PIXEL_SIZE
+		fontSize: toPixel(size)
 		fontFamily: font
 		fill: color
 		width: width
@@ -170,7 +170,7 @@ createText2 = (align, str, x, y, font, size, color) ->
 		x: x
 		y: y
 		text: str
-		fontSize: size * settings.PIXEL_SIZE
+		fontSize: toPixel(size)
 		fontFamily: font
 		fill: color
 #		padding: 20
@@ -251,6 +251,9 @@ getBalancingCoefficient = (width, height, canvasWidth, canvasHeight) ->
 	else
 		1
 
+toPixel = (mm) ->
+	mm * settings.PIXEL_SIZE
+
 clearStage = (stage) ->
 	stage.clear()
 	layers = stage.getLayers().toArray()
@@ -273,19 +276,19 @@ onChange = (stage, model) ->
 	signSize.height = getSignHeight(textSize.height, padding.height())
 
 	if (!model.size.autoWidth)
-		if (model.size.width < signSize.width / settings.PIXEL_SIZE)
-			console.log("very small width")
+		if (toPixel(model.size.width) < signSize.width)
+			console.warn("very small width")
 			return
 		else
-			signSize.width = model.size.width
+			signSize.width = toPixel(model.size.width)
 			textSize.width = signSize.width - padding.width()
 
 	if (!model.size.autoHeight)
-		if (model.size.height < signSize.height / settings.PIXEL_SIZE)
-			console.log("very small height")
+		if (toPixel(model.size.height) < signSize.height)
+			console.warn("very small height")
 			return
 		else
-			signSize.height = model.size.height
+			signSize.height = toPixel( model.size.height)
 			textSize.width = signSize.width - padding.width()
 
 	k = getBalancingCoefficient(signSize.width, signSize.height, settings.canvasWidth, settings.canvasHeight)
