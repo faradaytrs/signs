@@ -89,7 +89,7 @@ array2Object = (array) ->
 
 #here we can setup default settings
 modelTemplate =
-	name: "New Sign"
+	name: "Sign"
 	shape: settings.shapes[0]
 	holes: array2Object(settings.holes)
 	fonts: settings.fonts[0]
@@ -408,12 +408,12 @@ reRender = (stage, model, size) ->
 			size.text.x, size.text.y, size.text.width + 1,
 			model.font, size.k * text.size, model.theme.textColor)
 
-		rect = simpleRect(
-			size.text.x, size.text.y, size.text.width + 1, textKonva.getHeight())
+		#		rect = simpleRect(
+		#			size.text.x, size.text.y, size.text.width + 1, textKonva.getHeight())
 		size.text.y += textKonva.getHeight() + size.padding.text
 
 		textLayer.add(textKonva)
-		textLayer.add(rect)
+	#		textLayer.add(rect)
 	# forEnd
 
 	for opening in size.openings
