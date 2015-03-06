@@ -8,6 +8,8 @@ signs = angular.module('Signs', ['file-model'])
 #first one is default
 settings =
 	PIXEL_SIZE: 8
+	MAGIC_COEFF: 0.75
+	STEP_COEFF: 0.9
 	canvasHeight: 500
 	canvasWidth: 555
 	shapes: [
@@ -15,6 +17,8 @@ settings =
 		"round"
 		"rounded rectangle"
 	]
+	holes_radius: 5
+	holes_padding: 5
 	holes: [
 		"Top left corner"
 		"Top right corner"
@@ -278,7 +282,7 @@ getPadding = (model) ->
 	}
 
 balancePadding = (padding, textSize) ->
-	textSize = toPixel(textSize) / 2
+	textSize = textSize / 2
 	padding.top += textSize
 	padding.bottom += textSize
 	padding.left += textSize
@@ -289,10 +293,10 @@ getBalancingCoefficient = (width, height, canvasWidth, canvasHeight) ->
 	fatalWidth = width/canvasWidth
 	fatalHeight = height/canvasHeight
 	oneWeUse = if fatalHeight > fatalWidth then fatalHeight else fatalWidth
-	if oneWeUse > 0.75
+	if oneWeUse > settings.MAGIC_COEFF
 		new_k = oneWeUse
-		while new_k > 0.75
-			new_k = new_k *= 0.9
+		while new_k > settings.MAGIC_COEFF
+			new_k = new_k *= settings.STEP_COEFF
 		new_k/oneWeUse
 	else
 		1
@@ -333,7 +337,7 @@ onChange = (stage, model) ->
 	textSize.height = getTextHeight(sizes, padding.text)
 
 	maxTextSize = getMaxTextSize(model)
-	balancePadding(padding, maxTextSize)
+	balancePadding(padding, toPixel(maxTextSize))
 
 	signSize = {}
 	signSize.width = getSignWidth(textSize.width, padding.width()) # в функцию getWidthSign для каждого model.shape
