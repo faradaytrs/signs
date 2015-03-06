@@ -297,24 +297,22 @@ getBalancingCoefficient = (width, height, canvasWidth, canvasHeight) ->
 	else
 		1
 
-getOpenings = (model, signBegin, signSize) ->
-	openings = {}
-	openings.radius = 4
+getHoles = (model, signBegin, signSize, k) ->
+	holes = {}
+	holes.radius = 4
 	h = model.holes
 	y = signBegin.y + signSize.height/2
-	openings.coord = [
+	holes.coord = [
 		{
-			x: signBegin.x + 2*openings.radius
+			x: signBegin.x + 2*holes.radius
 			y: y
 		},
 		{
-			x: signBegin.x + signSize.width - 2*openings.radius
+			x: signBegin.x + signSize.width - 2*holes.radius
 			y: y
 		}
 	]
-	console.log(openings)
-	openings
-
+	holes
 
 toPixel = (mm) ->
 	mm * settings.PIXEL_SIZE
@@ -360,16 +358,19 @@ onChange = (stage, model) ->
 
 	k = getBalancingCoefficient(signSize.width, signSize.height, settings.canvasWidth, settings.canvasHeight)
 
+	signSize.width *= k
+	signSize.height *= k
+	textSize.width *= k
+	textSize.height *= k
+
 	signBegin = {}
-	signBegin.x = getSpace(settings.canvasWidth, k * signSize.width)
-	signBegin.y = getSpace(settings.canvasHeight, k * signSize.height)
+	signBegin.x = getSpace(settings.canvasWidth, signSize.width)
+	signBegin.y = getSpace(settings.canvasHeight, signSize.height)
 
 	textBegin = {}
 	textBegin.x = signBegin.x + k * padding.left
 	textBegin.y = signBegin.y + k * (padding.top + padding.text/2)
 	padding.text *= k
-
-	opening = {}
 
 	#model.size.width = Math.round(signSize.width / settings.PIXEL_SIZE)
 	#model.size.height = Math.round(signSize.height / settings.PIXEL_SIZE)
@@ -379,19 +380,19 @@ onChange = (stage, model) ->
 		sign:
 			x: signBegin.x
 			y: signBegin.y
-			width: k * signSize.width
-			height: k * signSize.height
+			width: signSize.width
+			height: signSize.height
 			origin:
-				width: Math.round(signSize.width / settings.PIXEL_SIZE)
-				height: Math.round(signSize.height / settings.PIXEL_SIZE)
+				width: Math.round(signSize.width / settings.PIXEL_SIZE / k)
+				height: Math.round(signSize.height / settings.PIXEL_SIZE / k)
 		text:
 			x: textBegin.x
 			y: textBegin.y
-			width: k * textSize.width
-			height: k * textSize.height
+			width: textSize.width
+			height: textSize.height
 			font: sizes
 		padding: padding #to delete
-		openings: getOpenings(model, signBegin, signSize)
+		openings: getHoles(model, signBegin, signSize, k)
 	}
 
 	console.log("padding w #{size.padding.width()} h #{size.padding.height()}")
