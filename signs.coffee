@@ -18,7 +18,7 @@ settings =
 		"rounded rectangle"
 	]
 	holes_radius: 9
-	holes_padding: 20
+	min_hole_padd: 5
 	holes: [
 		"Top left corner"
 		"Top right corner"
@@ -254,11 +254,11 @@ getTextWidth = (sizes) ->
 		if size.width > maxLen then maxLen = size.width
 	maxLen
 
-getTextHeight = (sizes, padding) ->
+getTextHeight = (sizes) ->
 	sum = 0
 	for size in sizes
 		sum += size.height
-	sum + padding * (sizes.length-1)
+	sum
 
 getSignWidth = (size, padding) ->
 	size + padding
@@ -266,27 +266,21 @@ getSignWidth = (size, padding) ->
 getSignHeight = (size, padding) ->
 	size + padding
 
-getPadding = (model) ->
+getPadding = (model, textSize) ->
 	h = model.holes
+	textSize = textSize / 2
 	is_left = h["Middle left"] || h["Top left corner"] || h["Bottom left corner"]
 	is_right = h["Middle right"] || h["Top right corner"] || h["Bottom right corner"]
 	{
-		top: 0
-		bottom: 0
-		left: if is_left then 0 else 0
-		right: if	is_right then 0 else 0
+		top: textSize
+		bottom: textSize
+		left: if is_left then 2*textSize else textSize
+		right: if	is_right then 2*textSize else textSize
 		width: () -> this.left + this.right
 		height: () -> this.top + this.bottom
 		text: 0
+		hole: textSize
 	}
-
-balancePadding = (padding, textSize) ->
-	textSize = textSize / 2
-	padding.top += textSize
-	padding.bottom += textSize
-	padding.left += textSize
-	padding.right += textSize
-	padding
 
 getBalancingCoefficient = (width, height, canvasWidth, canvasHeight) ->
 	fatalWidth = width/canvasWidth
@@ -300,10 +294,10 @@ getBalancingCoefficient = (width, height, canvasWidth, canvasHeight) ->
 	else
 		1
 
-getHoles = (model, signBegin, signSize, k) ->
+getHoles = (model, signBegin, signSize, padding, k) ->
 	holes = {}
 	holes.radius = k * settings.holes_radius
-	padding = k * settings.holes_padding
+	padding = if (holes.radius * 2 < settings.min_hole_padd) then settings.min_hole_padd else holes.radius * 2
 
 	top =    signBegin.y + padding
 	bottom = signBegin.y + signSize.height - padding
@@ -350,15 +344,15 @@ clearStage = (stage) ->
 	return
 
 onChange = (stage, model) ->
-	padding = getPadding(model)
-
 	sizes = getSizesTexts(model)
 	textSize = {}
 	textSize.width = getTextWidth(sizes)
-	textSize.height = getTextHeight(sizes, padding.text)
+	textSize.height = getTextHeight(sizes)
 
 	maxTextSize = getMaxTextSize(model)
-	balancePadding(padding, toPixel(maxTextSize))
+
+	padding = getPadding(model, toPixel(maxTextSize))
+#	balancePadding(padding, toPixel(maxTextSize))
 
 	signSize = {}
 	signSize.width = getSignWidth(textSize.width, padding.width()) # в функцию getWidthSign для каждого model.shape
@@ -417,7 +411,7 @@ onChange = (stage, model) ->
 			height: textSize.height
 			font: sizes
 		padding: padding #to delete
-		holes: getHoles(model, signBegin, signSize, k)
+		holes: getHoles(model, signBegin, signSize, padding.hole, k)
 	}
 
 	console.log("padding w #{size.padding.width()} h #{size.padding.height()}")
