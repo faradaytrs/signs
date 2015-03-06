@@ -17,8 +17,8 @@ settings =
 		"round"
 		"rounded rectangle"
 	]
-	holes_radius: 5
-	holes_padding: 5
+	holes_radius: 9
+	holes_padding: 20
 	holes: [
 		"Top left corner"
 		"Top right corner"
@@ -88,7 +88,6 @@ array2Object = (array) ->
 	object = {}
 	for i in array
 		object[i] = false
-	object[0] = true
 	object
 
 #here we can setup default settings
@@ -274,8 +273,8 @@ getPadding = (model) ->
 	{
 		top: 0
 		bottom: 0
-		left: if is_left then 45 else 0
-		right: if	is_right then 45 else 0
+		left: if is_left then 0 else 0
+		right: if	is_right then 0 else 0
 		width: () -> this.left + this.right
 		height: () -> this.top + this.bottom
 		text: 0
@@ -303,19 +302,41 @@ getBalancingCoefficient = (width, height, canvasWidth, canvasHeight) ->
 
 getHoles = (model, signBegin, signSize, k) ->
 	holes = {}
-	holes.radius = 4
-	h = model.holes
-	y = signBegin.y + signSize.height/2
-	holes.coord = [
-		{
-			x: signBegin.x + 2*holes.radius
-			y: y
+	holes.radius = k * settings.holes_radius
+	padding = k * settings.holes_padding
+
+	top =    signBegin.y + padding
+	bottom = signBegin.y + signSize.height - padding
+	middle = signBegin.y + signSize.height / 2
+	left =   signBegin.x + padding
+	right =  signBegin.x + signSize.width - padding
+
+	holes.coord = {
+		"Top left corner": {
+			x: left
+			y: top
 		},
-		{
-			x: signBegin.x + signSize.width - 2*holes.radius
-			y: y
+		"Top right corner": {
+			x: right
+			y: top
+		},
+		"Middle left": {
+			x: left
+			y: middle
+		},
+		"Middle right": {
+			x: right
+			y: middle
+		},
+		"Bottom left corner": {
+			x: left
+			y: bottom
+		},
+		"Bottom right corner": {
+			x: right
+			y: bottom
 		}
-	]
+	}
 	holes
 
 toPixel = (mm) ->
@@ -396,7 +417,7 @@ onChange = (stage, model) ->
 			height: textSize.height
 			font: sizes
 		padding: padding #to delete
-		openings: getHoles(model, signBegin, signSize, k)
+		holes: getHoles(model, signBegin, signSize, k)
 	}
 
 	console.log("padding w #{size.padding.width()} h #{size.padding.height()}")
@@ -422,21 +443,23 @@ reRender = (stage, model, size) ->
 			size.text.x, size.text.y, size.text.width + 1,
 			model.font, size.k * text.size, model.theme.textColor)
 
-		#		rect = simpleRect(
-		#			size.text.x, size.text.y, size.text.width + 1, textKonva.getHeight())
+#		rect = simpleRect(
+#			size.text.x, size.text.y, size.text.width + 1, textKonva.getHeight())
 		size.text.y += textKonva.getHeight() + size.padding.text
 
 		textLayer.add(textKonva)
-	#		textLayer.add(rect)
-	# forEnd
+#		textLayer.add(rect)
+	#	forEnd
 
 	rectKonva = roundRect(size.sign.x, size.sign.y, size.sign.width, size.sign.height,
 		settings.radius, settings.borderWidth, model.theme.bgColor, model.theme.textColor)
 	shapeLayer.add(rectKonva)
 
-	for coord in size.openings.coord
-		circle = circleKonva(coord.x, coord.y, size.openings.radius)
-		shapeLayer.add(circle)
+#	for coord in size.holes.coord
+	for hole, toShow of model.holes
+		if (toShow)
+			circle = circleKonva(size.holes.coord[hole].x, size.holes.coord[hole].y, size.holes.radius)
+			shapeLayer.add(circle)
 
 	leftRule = renderLeftRule(size)
 	topRule = renderTopRule(size)
@@ -445,6 +468,8 @@ reRender = (stage, model, size) ->
 
 	shapeLayer.draw()
 	textLayer.draw()
+
+
 
 #controllers
 signs.controller 'shapesController', ($scope) ->
