@@ -474,6 +474,19 @@ signs.controller 'fontsController', ($scope) ->
 	$scope.fonts = settings.fonts
 signs.controller 'materialsController', ($scope) ->
 	$scope.materials = settings.materials
+	$scope.changeMaterial = (material) ->
+		unless $scope.model.material is material
+			swal
+				title: "Are you sure?"
+				text: "You lose all current settings if you switch material!"
+				type: "warning", showCancelButton: true, confirmButtonColor: "green"
+				confirmButtonText: "Okay!"
+				closeOnConfirm: yes
+			, ->
+				$scope.$apply ->
+					$scope.model.material = material
+					console.log $scope.model.material
+
 signs.controller 'colorController', ($scope) ->
 	$scope.color = settings.color
 signs.controller 'sizeController', ($scope) ->

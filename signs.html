@@ -4,6 +4,8 @@
 	<meta charset="UTF-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=Edge" />
 	<title>Online signs</title>
+	<script src="bower_components/sweetalert/lib/sweet-alert.min.js"></script>
+	<link rel="stylesheet" href="bower_components/sweetalert/lib/sweet-alert.css"/>
 	<script src="bower_components/konva/konva.min.js"></script>
 	<script src="bower_components/jquery/dist/jquery.min.js"></script>
 	<link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.min.css"/>
@@ -25,8 +27,9 @@
 			</div>
 			<div class="col-md-6">
 				<ul class="nav nav-pills" ng-controller="materialsController">
+					<li class="disabled" role="presentation"><a href="#">Material:</a></li>
 					<li role="presentation" ng-class="{'active': model.material == material}"
-					    ng-repeat="material in materials"><a ng-click="model.material = material"
+					    ng-repeat="material in materials"><a ng-click="changeMaterial(material)"
 					                                         href="#">{{material}}</a></li>
 				</ul>
 			</div>
