@@ -149,12 +149,26 @@ roundRect = (x, y, width, height, radius, borderWidth, fillColor, strokeColor) -
 		shadowOffsetY : 2
 		shadowBlur : 15
 
+rectKonva = (x, y, width, height, borderWidth, fillColor, strokeColor) ->
+	new Konva.Rect
+		x: x
+		y: y
+		width: width
+		height: height
+		strokeWidth: 1
+		fill: fillColor || 'black'
+		stroke: strokeColor || 'black'
+		strokeWidth: borderWidth
+		shadowOffsetX : 3
+		shadowOffsetY : 2
+		shadowBlur : 15
+
 simpleRect = (x, y, width, height) ->
 	new Konva.Rect
-		x: x,
-		y: y,
-		width: width,
-		height: height,
+		x: x
+		y: y
+		width: width
+		height: height
 #		fill: 'white'
 		stroke: 'black'
 		strokeWidth: 1
@@ -352,7 +366,6 @@ onChange = (stage, model) ->
 	maxTextSize = getMaxTextSize(model)
 
 	padding = getPadding(model, toPixel(maxTextSize))
-#	balancePadding(padding, toPixel(maxTextSize))
 
 	signSize = {}
 	signSize.width = getSignWidth(textSize.width, padding.width()) # в функцию getWidthSign для каждого model.shape
@@ -445,11 +458,14 @@ reRender = (stage, model, size) ->
 #		textLayer.add(rect)
 	#	forEnd
 
-	rectKonva = roundRect(size.sign.x, size.sign.y, size.sign.width, size.sign.height,
-		settings.radius, settings.borderWidth, model.theme.bgColor, model.theme.textColor)
-	shapeLayer.add(rectKonva)
+	if (model.shape is 'rectangle')
+		rect = rectKonva(size.sign.x, size.sign.y, size.sign.width, size.sign.height,
+			settings.borderWidth, model.theme.bgColor, model.theme.textColor)
+	else
+		rect = roundRect(size.sign.x, size.sign.y, size.sign.width, size.sign.height,
+			settings.radius, settings.borderWidth, model.theme.bgColor, model.theme.textColor)
+	shapeLayer.add(rect)
 
-#	for coord in size.holes.coord
 	for hole, toShow of model.holes
 		if (toShow)
 			circle = circleKonva(size.holes.coord[hole].x, size.holes.coord[hole].y, size.holes.radius)
