@@ -67,6 +67,10 @@ settings =
 			textColor: "red"
 		}
 	]
+	theme_metal: {
+		bgColor: "grey"
+		textColor: "black"
+	}
 	fonts: [
 		"Arial"
 		"Times New Roman"
@@ -440,6 +444,14 @@ onChange = (stage, model) ->
 reRender = (stage, model, size) ->
 	clearStage(stage)
 
+	color = {}
+	if (model.material is 'Plastic')
+		color.bgColor = model.theme.bgColor
+		color.textColor = model.theme.textColor
+	else
+		color.bgColor = settings.theme_metal.bgColor
+		color.textColor = settings.theme_metal.textColor
+
 	shapeLayer = new Konva.Layer()
 	textLayer = new Konva.Layer()
 	stage.add shapeLayer
@@ -448,22 +460,22 @@ reRender = (stage, model, size) ->
 	for text, id in model.texts
 		textKonva = createText(text.align, text.text,
 			size.text.x, size.text.y, size.text.width + 1,
-			model.font, size.k * text.size, model.theme.textColor)
+			model.font, size.k * text.size, color.textColor)
 
 #		rect = simpleRect(
 #			size.text.x, size.text.y, size.text.width + 1, textKonva.getHeight())
 		size.text.y += textKonva.getHeight() + size.padding.text
 
-		textLayer.add(textKonva)
 #		textLayer.add(rect)
+		textLayer.add(textKonva)
 	#	forEnd
 
 	if (model.shape is 'rectangle')
 		rect = rectKonva(size.sign.x, size.sign.y, size.sign.width, size.sign.height,
-			settings.borderWidth, model.theme.bgColor, model.theme.textColor)
+			settings.borderWidth, color.bgColor, color.textColor)
 	else
 		rect = roundRect(size.sign.x, size.sign.y, size.sign.width, size.sign.height,
-			settings.radius, settings.borderWidth, model.theme.bgColor, model.theme.textColor)
+			settings.radius, settings.borderWidth, color.bgColor, color.textColor)
 	shapeLayer.add(rect)
 
 	for hole, toShow of model.holes
@@ -500,6 +512,7 @@ signs.controller 'materialsController', ($scope) ->
 				closeOnConfirm: yes
 			, ->
 				$scope.$apply ->
+					$scope.model = copyObj(modelTemplate)
 					$scope.model.material = material
 					console.log $scope.model.material
 
