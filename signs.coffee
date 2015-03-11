@@ -47,6 +47,11 @@ settings =
 			textColor: "black"
 		}
 		{
+			name: "white / black"
+			bgColor: "#000"
+			textColor: "#FFF"
+		}
+		{
 			name: "black / white"
 			bgColor: "white"
 			textColor: "black"
@@ -106,7 +111,7 @@ modelTemplate =
 		bgColor: "yellow"
 		textColor: "black"
 	}
-	order: 0
+	order: 1
 	texts: [
 		{
 			text: "Your text here"
@@ -541,6 +546,16 @@ signs.controller 'textController', ($scope) ->
 		$scope.increaseSize(index, -size)
 
 signs.controller 'modelsController', ($scope) ->
+	$scope.removeSign = ($index) ->
+		$scope.models.splice($index, 1)
+		unless $scope.models.length == 0
+			$scope.updateCurrentModel($scope.models.length - 1)
+		else
+			console.log "HERE"
+			$scope.newSign()
+		return
+	$scope.copySign = ($index) ->
+		$scope.models.push(copyObj($scope.models[$index]))
 	$scope.init = ->
 		$scope.stage = new Konva.Stage
 			container: 'preview'
@@ -570,7 +585,9 @@ signs.controller 'modelsController', ($scope) ->
 	$scope.models = getModels()
 	$scope.current = 0; #by default
 
-	$scope.new = -> $scope.models.push copyObj(modelTemplate)
+	$scope.newSign = ->
+		$scope.models.push copyObj(modelTemplate)
+		$scope.updateCurrentModel($scope.models.length - 1)
 	$scope.model = $scope.models[$scope.current]
 	$scope.updateCurrentModel = (index) ->
 		$scope.current = index

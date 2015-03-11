@@ -31,4 +31,16 @@ body .size {
   position: relative;
   top: -7px; }
 
+body .sign {
+    margin-bottom: 5px;
+}
+
+body .new {
+    margin-bottom: 5px;
+}
+
+body #sign {
+    width: 135px;
+}
+
 /*# sourceMappingURL=signs.css.map */
