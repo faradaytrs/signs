@@ -14,8 +14,9 @@ settings =
 	canvasWidth: 555
 	shapes: [
 		"rectangle"
-		"round"
 		"rounded rectangle"
+		"round"
+		"rectangle with hole"
 	]
 	holes_radius: 9
 	min_hole_padd: 5
@@ -26,10 +27,6 @@ settings =
 		"Middle right"
 		"Bottom left corner"
 		"Bottom right corner"
-	]
-	fonts: [
-		"Times New Roman",
-		"Arial"
 	]
 	materials: [
 		"Plastic",
