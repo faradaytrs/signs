@@ -147,12 +147,12 @@
 					</div>
 
 				</div>
-				<div ng-controller="themesController" ng-show="this.showThemes(model.material)">
+				<div ng-controller="themesController" ng-show="showThemes(model.material)">
 					<h4>Themes:</h4>
 					<select ng-init="model.theme = themes[0]" ng-options="theme as theme.name for theme in themes" ng-model="model.theme" class="themes" name="" id="">
 					</select>
 				</div>
-				<div ng-controller="fontsController" ng-show="this.showFonts(model.material)">
+				<div ng-controller="fontsController" ng-show="showFonts(model.material)">
 					<h4>Fonts:</h4>
 					<div class="radio" ng-repeat="font in fonts">
 						<label>
