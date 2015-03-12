@@ -499,7 +499,6 @@ reRender = (stage, model, size) ->
 signs.controller 'shapesController', ($scope) ->
 	$scope.shapes = settings.shapes
 	$scope.showShapes = (material) ->
-		console.log material == "Plastic"
 		material == "Plastic"
 signs.controller 'holesController', ($scope) ->
 	$scope.holes = settings.holes
