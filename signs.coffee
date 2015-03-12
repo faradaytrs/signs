@@ -514,9 +514,10 @@ signs.controller 'materialsController', ($scope) ->
 				closeOnConfirm: yes
 			, ->
 				$scope.$apply ->
-					$scope.model = copyObj(modelTemplate)
+					model = copyObj(modelTemplate)
+					$scope.models[$scope.current] = model
+					$scope.updateCurrentModel($scope.current)
 					$scope.model.material = material
-					console.log $scope.model.material
 
 signs.controller 'colorController', ($scope) ->
 	$scope.color = settings.color
