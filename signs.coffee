@@ -124,14 +124,17 @@ modelTemplate =
 	}
 	font: "Arial"
 
-models = []
-
 getModels = ->
-	models.push copyObj(modelTemplate)
-	models
+	if localStorage.models?
+		JSON.parse(localStorage['models'])
+	else
+		models = []
+		models.push copyObj(modelTemplate)
+		models
 
 saveModels = (models) ->
-	models
+	localStorage.models = JSON.stringify(models)
+	console.log models
 
 roundRect = (x, y, width, height, radius, borderWidth, fillColor, strokeColor) ->
 	new Konva.Shape
@@ -493,8 +496,6 @@ reRender = (stage, model, size) ->
 	shapeLayer.draw()
 	textLayer.draw()
 
-
-
 #controllers
 signs.controller 'shapesController', ($scope) ->
 	$scope.shapes = settings.shapes
@@ -559,7 +560,6 @@ signs.controller 'modelsController', ($scope) ->
 		unless $scope.models.length == 0
 			$scope.updateCurrentModel($scope.models.length - 1)
 		else
-			console.log "HERE"
 			$scope.newSign()
 		return
 	$scope.copySign = ($index) ->
@@ -601,10 +601,13 @@ signs.controller 'modelsController', ($scope) ->
 		$scope.current = index
 		$scope.model = $scope.models[$scope.current]
 		#$scope.reRender($scope.model, settings.canvasHeight, settings.canvasWidth)
-
+	$scope.$watch 'models', ->
+		saveModels($scope.models)
+	, true
 	$scope.$watch 'model', ->
 		# todo rework rerender system to improve performance
 		$scope.onChange($scope.stage, $scope.model)
+
 	, true
 	$scope.calcPrice = (model = $scope.model) ->
 		model.order * 20

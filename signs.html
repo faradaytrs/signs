@@ -126,23 +126,32 @@
 				<div ng-controller="sizeController" ng-show="showSize(model.material)">
 					<h4>Size:</h4>
 					<div class="width">
-						<span>Auto: </span><input ng-value="false" ng-model="model.size.autoWidth" name="width" type="checkbox"/>
-						<div class="input-group">
 
+						<div class="input-group">
 							<span class="input-group-addon">
 					            <span>Width: </span>
 					        </span>
 							<input ng-readonly="model.size.autoWidth" ng-model="model.size.width" ng-value="model.size.width" class="form-control" type="number"/>
+
+							<div class="input-group-addon">
+								<span>Auto: </span><input ng-value="false" ng-model="model.size.autoWidth" name="width"
+								                          type="checkbox"/>
+							</div>
 						</div>
 					</div>
 					<div class="height">
-						<span>Auto: </span><input ng-value="false" ng-model="model.size.autoHeight" name="height" type="checkbox"/>
 						<div class="input-group">
-
 							<span class="input-group-addon">
 					            <span>Height: </span>
 					        </span>
-							<input ng-readonly="model.size.autoHeight" ng-model="model.size.height" ng-value="model.size.height" class="form-control" type="number"/>
+							<input ng-readonly="model.size.autoHeight" ng-change="changeHeight(height)"
+							       ng-model="model.size.height" ng-value="model.size.height" class="form-control"
+							       type="number"/>
+
+							<div class="input-group-addon">
+								<span>Auto: </span><input ng-value="false" ng-model="model.size.autoHeight"
+								                          name="height" type="checkbox"/>
+							</div>
 						</div>
 					</div>
 
