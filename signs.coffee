@@ -1,9 +1,5 @@
 #Created by Andrey Izotov faradaytrs@gmail.com
 
-#initialization
-$ ->
-	#$('select').selectpicker()
-
 signs = angular.module('Signs', ['file-model'])
 #first one is default
 settings =
