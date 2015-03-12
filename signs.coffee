@@ -506,18 +506,23 @@ signs.controller 'materialsController', ($scope) ->
 	$scope.materials = settings.materials
 	$scope.changeMaterial = (material) ->
 		unless $scope.model.material is material
-			swal
-				title: "Are you sure?"
-				text: "You lose all current settings if you switch material!"
-				type: "warning", showCancelButton: true, confirmButtonColor: "green"
-				confirmButtonText: "Okay!"
-				closeOnConfirm: yes
-			, ->
-				$scope.$apply ->
-					model = copyObj(modelTemplate)
-					$scope.models[$scope.current] = model
-					$scope.updateCurrentModel($scope.current)
-					$scope.model.material = material
+			unless JSON.stringify($scope.model) == JSON.stringify(modelTemplate)
+				swal
+					title: "Are you sure?"
+					text: "You lose all current settings if you switch material!"
+					type: "warning"
+					showCancelButton: true
+					confirmButtonColor: "green"
+					confirmButtonText: "Okay!"
+					closeOnConfirm: yes
+				, ->
+					$scope.$apply ->
+						model = copyObj(modelTemplate)
+						$scope.models[$scope.current] = model
+						$scope.updateCurrentModel($scope.current)
+						$scope.model.material = material
+			else
+				$scope.model.material = material
 
 signs.controller 'colorController', ($scope) ->
 	$scope.color = settings.color
