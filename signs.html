@@ -34,7 +34,15 @@
 				</ul>
 			</div>
 			<div class="col-md-4">
+				<div class="form-group">
+					<div class="input-group">
+						<label class="sr-only" for="order">Order</label>
 
+						<div class="input-group-addon">Order</div>
+						<input type="number" min="0" max="10000" id="order" maxlength="18" ng-model="model.order"
+						       class="form-control" placeholder="Amount" value="{{model.order}}"/>
+					</div>
+				</div>
 			</div>
 		</div>
 		<div class="row">
@@ -97,16 +105,7 @@
 				</div>
 			</div>
 			<div class="col-md-4 selects">
-				<div class="form-group">
-					<div class="input-group">
-						<label class="sr-only" for="order">Order</label>
-
-						<div class="input-group-addon">Order</div>
-						<input type="number" min="0" max="10000" id="order" maxlength="18" ng-model="model.order"
-						       class="form-control" placeholder="Amount" value="{{model.order}}"/>
-					</div>
-				</div>
-				<div ng-controller="shapesController">
+				<div ng-controller="shapesController" ng-show="showShapes(model.material)">
 					<h4>Shapes:</h4>
 					<div class="radio" ng-repeat="shape in shapes">
 						<label>
@@ -115,7 +114,7 @@
 						</label>
 					</div>
 				</div>
-				<div ng-controller="holesController">
+				<div ng-controller="holesController" ng-show="showHoles(model.material)">
 					<h4>Holes:</h4>
 					<div class="checkbox" ng-repeat="hole in holes">
 						<label>
@@ -124,7 +123,7 @@
 						</label>
 					</div>
 				</div>
-				<div ng-controller="sizeController">
+				<div ng-controller="sizeController" ng-show="showSize(model.material)">
 					<h4>Size:</h4>
 					<div class="width">
 						<span>Auto: </span><input ng-value="false" ng-model="model.size.autoWidth" name="width" type="checkbox"/>
@@ -148,12 +147,12 @@
 					</div>
 
 				</div>
-				<div ng-controller="themesController">
+				<div ng-controller="themesController" ng-show="this.showThemes(model.material)">
 					<h4>Themes:</h4>
 					<select ng-init="model.theme = themes[0]" ng-options="theme as theme.name for theme in themes" ng-model="model.theme" class="themes" name="" id="">
 					</select>
 				</div>
-				<div ng-controller="fontController">
+				<div ng-controller="fontsController" ng-show="this.showFonts(model.material)">
 					<h4>Fonts:</h4>
 					<div class="radio" ng-repeat="font in fonts">
 						<label>

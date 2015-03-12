@@ -498,10 +498,17 @@ reRender = (stage, model, size) ->
 #controllers
 signs.controller 'shapesController', ($scope) ->
 	$scope.shapes = settings.shapes
+	$scope.showShapes = (material) ->
+		console.log material == "Plastic"
+		material == "Plastic"
 signs.controller 'holesController', ($scope) ->
 	$scope.holes = settings.holes
+	$scope.showHoles = (material) ->
+		material == "Plastic"
 signs.controller 'fontsController', ($scope) ->
 	$scope.fonts = settings.fonts
+	$scope.showFonts = (material) ->
+		material == "Plastic" or material == "Metal"
 signs.controller 'materialsController', ($scope) ->
 	$scope.materials = settings.materials
 	$scope.changeMaterial = (material) ->
@@ -524,15 +531,14 @@ signs.controller 'materialsController', ($scope) ->
 			else
 				$scope.model.material = material
 
-signs.controller 'colorController', ($scope) ->
-	$scope.color = settings.color
 signs.controller 'sizeController', ($scope) ->
-	#something here
-signs.controller 'fontController', ($scope) ->
-	$scope.fonts = settings.fonts
+	$scope.showSize = (material) ->
+		material == "Plastic" or material == "Metal"
 	#something here
 signs.controller 'themesController', ($scope) ->
 	$scope.themes = settings.themes
+	$scope.showThemes = (material) ->
+		material == "Plastic"
 signs.controller 'textController', ($scope) ->
 	$scope.alignment = settings.alignment
 	$scope.isDisabled = -> $scope.model.texts.length >= settings.maxLinesOfText
