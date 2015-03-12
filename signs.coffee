@@ -2,7 +2,7 @@
 
 #initialization
 $ ->
-	$('select').selectpicker()
+	#$('select').selectpicker()
 
 signs = angular.module('Signs', ['file-model'])
 #first one is default
@@ -103,11 +103,7 @@ modelTemplate =
 	holes: array2Object(settings.holes)
 	fonts: settings.fonts[0]
 	material: settings.materials[0]
-	theme: {
-		name: "black / yellow"
-		bgColor: "yellow"
-		textColor: "black"
-	}
+	theme: settings.themes[0]
 	order: 1
 	texts: [
 		{
