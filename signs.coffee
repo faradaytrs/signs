@@ -12,7 +12,6 @@ settings =
 		"rectangle"
 		"rounded rectangle"
 		"round"
-		"rectangle with hole"
 	]
 	holes_radius: 9
 	min_hole_padd: 5
@@ -74,6 +73,7 @@ settings =
 		"Times New Roman"
 		"Arial Narrow"
 		"Calibri"
+		"PT Sans Narrow"
 	]
 	maxLinesOfText: 4
 	margin: 15 # in pixels
