@@ -170,11 +170,22 @@
 				</div>
 				<div ng-controller="fontsController" ng-show="showFonts(model.material)">
 					<h4>Fonts:</h4>
-					<div class="radio" ng-repeat="font in fonts">
+
+					<div class="radio" ng-repeat="">
 						<label>
 							<input ng-value="font" ng-model="model.font" name="fonts" type="radio"/>
 							<span>{{font}}</span>
 						</label>
+					</div>
+					<div class="btn-group">
+						<button type="button" class="form-control btn btn-default dropdown-toggle"
+						        data-toggle="dropdown">
+							{{model.font}} <span class="caret"></span>
+						</button>
+						<ul class="dropdown-menu" role="menu">
+							<li ng-repeat="font in fonts"><a href="#/"
+							                                 ng-click="model.font = font">{{font}}</a></li>
+						</ul>
 					</div>
 				</div>
 
