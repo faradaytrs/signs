@@ -82,7 +82,7 @@ settings =
 	rules:
 		indent: 25
 		width: 3
-	debug: true
+	debug: false
 
 copyObj = (obj) ->
 	JSON.parse(JSON.stringify(obj))
@@ -495,10 +495,11 @@ reRender = (stage, model, size) ->
 			if (settings.debug)
 				debug = simpleRect(size.sign.x, size.sign.y, size.sign.width, size.sign.height)
 		else
-			shape = simpleRect(size.sign.x, size.sign.y, size.sign.width, size.sign.height)
+			shape = roundRect(size.sign.x, size.sign.y, size.sign.width, size.sign.height,
+			  settings.radius, settings.borderWidth, color.bgColor, color.textColor)
 
 	shapeLayer.add(shape)
-	if (settings.debug)
+	if (settings.debug && model.shape is 'round')
 		shapeLayer.add(debug)
 
 	for hole, isShow of model.holes
