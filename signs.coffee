@@ -82,6 +82,7 @@ settings =
 	rules:
 		indent: 25
 		width: 3
+	debug: true
 
 copyObj = (obj) ->
 	JSON.parse(JSON.stringify(obj))
@@ -174,6 +175,30 @@ simpleRect = (x, y, width, height) ->
 		stroke: 'black'
 		strokeWidth: 1
 
+simpleCircle = (x, y, radius) ->
+	new Konva.Circle
+		x: x,
+		y: y,
+		radius: radius || 6,
+		fill: 'white',
+		stroke: 'black',
+		strokeWidth: 1
+
+circleKonva = (x, y, width, height, borderWidth, fillColor, strokeColor) ->
+	console.log(x, y, width, height, borderWidth, fillColor, strokeColor)
+	console.log(Math.sqrt(Math.abs(height * height + width * width)) / 2)
+	new Konva.Circle
+		x: x + width / 2,
+		y: y + height / 2,
+		radius: Math.sqrt(Math.abs(height * height + width * width)) / 2,
+		fill: fillColor || 'white'
+		stroke: strokeColor || 'black'
+		strokeWidth: borderWidth
+		shadowOffsetX: 3
+		shadowOffsetY: 2
+		shadowBlur: 15
+
+
 renderLeftRule = (size) ->
 	#left
 	x = size.sign.x - settings.rules.indent
@@ -199,7 +224,7 @@ renderTopRule = (size) ->
 			context.closePath()
 			context.fillStrokeShape(@)
 			context.fillText("#{size.sign.origin.width} mm", size.sign.x + size.sign.width / 2 - 10, y - 10)
-	#size
+		#size
 		stroke: 'black',
 		strokeWidth: settings.rules.width
 
@@ -232,15 +257,6 @@ simpleCreateText = (layer, model, obj) ->
 	console.log(textObj.getTextHeight())
 	layer.add textObj
 	textObj
-
-circleKonva = (x, y, radius) ->
-	new Konva.Circle
-		x: x,
-		y: y,
-		radius: radius || 6,
-		fill: 'white',
-		stroke: 'black',
-		strokeWidth: 1
 
 getSpace = (width, squareWidth) ->
 	width/2-squareWidth/2
@@ -402,7 +418,7 @@ onChange = (stage, model) ->
 
 	textBegin = {}
 	textBegin.x = signBegin.x + k * padding.left
-	textBegin.y = signBegin.y + k * (padding.top + padding.text/2)
+	textBegin.y = signBegin.y + k * (padding.top + padding.text / 2)
 	padding.text *= k
 
 	#model.size.width = Math.round(signSize.width / settings.PIXEL_SIZE)
@@ -428,6 +444,7 @@ onChange = (stage, model) ->
 		holes: getHoles(model, signBegin, signSize, padding.hole, k)
 	}
 
+	console.clear()
 	console.log("padding w #{size.padding.width()} h #{size.padding.height()}")
 	console.log("text")
 	console.log("x: #{size.text.x};	y: #{size.text.y}")
@@ -459,25 +476,34 @@ reRender = (stage, model, size) ->
 			size.text.x, size.text.y, size.text.width + 1,
 			model.font, size.k * text.size, color.textColor)
 
-#		rect = simpleRect(
-#			size.text.x, size.text.y, size.text.width + 1, textKonva.getHeight())
+		if (settings.debug)
+			rect = simpleRect(size.text.x, size.text.y, size.text.width + 1, textKonva.getHeight())
 		size.text.y += textKonva.getHeight() + size.padding.text
 
-#		textLayer.add(rect)
+		if (settings.debug)
+			textLayer.add(rect)
 		textLayer.add(textKonva)
 	#	forEnd
 
-	if (model.shape is 'rectangle')
-		rect = rectKonva(size.sign.x, size.sign.y, size.sign.width, size.sign.height,
-			settings.borderWidth, color.bgColor, color.textColor)
-	else
-		rect = roundRect(size.sign.x, size.sign.y, size.sign.width, size.sign.height,
-			settings.radius, settings.borderWidth, color.bgColor, color.textColor)
-	shapeLayer.add(rect)
+	switch model.shape
+		when 'rectangle'
+			shape = rectKonva(size.sign.x, size.sign.y, size.sign.width, size.sign.height,
+				settings.borderWidth, color.bgColor, color.textColor)
+		when 'round'
+			shape = circleKonva(size.sign.x, size.sign.y, size.sign.width, size.sign.height,
+				settings.borderWidth, color.bgColor, color.textColor)
+			if (settings.debug)
+				debug = simpleRect(size.sign.x, size.sign.y, size.sign.width, size.sign.height)
+		else
+			shape = simpleRect(size.sign.x, size.sign.y, size.sign.width, size.sign.height)
 
-	for hole, toShow of model.holes
-		if (toShow)
-			circle = circleKonva(size.holes.coord[hole].x, size.holes.coord[hole].y, size.holes.radius)
+	shapeLayer.add(shape)
+	if (settings.debug)
+		shapeLayer.add(debug)
+
+	for hole, isShow of model.holes
+		if (isShow)
+			circle = simpleCircle(size.holes.coord[hole].x, size.holes.coord[hole].y, size.holes.radius)
 			shapeLayer.add(circle)
 
 	leftRule = renderLeftRule(size)
