@@ -30,17 +30,26 @@ body .size {
   display: inline-block;
   position: relative;
   top: -7px; }
-
 body .sign {
     margin-bottom: 5px;
 }
-
 body .new {
     margin-bottom: 5px;
 }
 
-body #sign {
-    width: 135px;
+body .aside {
+    max-height: 502px;
+    overflow: scroll;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+body .models {
+    width: 100%;
+}
+
+body .model {
+    width: 4% !important;
 }
 
 /*# sourceMappingURL=signs.css.map */
