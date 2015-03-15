@@ -140,12 +140,14 @@
 					        </span>
 							<input ng-readonly="model.size.autoWidth" ng-model="model.size.width"
 							       ng-value="model.size.width" class="form-control" type="number"/>
-
-							<div class="input-group-addon">
-								<span>Auto: </span><input ng-value="false" ng-model="model.size.autoWidth" name="width"
-								                          type="checkbox"/>
-							</div>
+							<span class="input-group-btn">
+								<button class="btn btn-default" ng-click="model.size.autoWidth = !model.size.autoWidth"
+								        ng-class="{'btn-success': model.size.autoWidth, 'btn-danger': !model.size.autoWidth}"
+								        type="button">Auto {{(model.size.autoWidth) ? 'ON' : 'OFF'}}
+								</button>
+							</span>
 						</div>
+
 					</div>
 					<div class="height" ng-show="showWidthHeight()">
 						<div class="input-group">
@@ -156,10 +158,13 @@
 							       ng-model="model.size.height" ng-value="model.size.height" class="form-control"
 							       type="number"/>
 
-							<div class="input-group-addon">
-								<span>Auto: </span><input ng-value="false" ng-model="model.size.autoHeight"
-								                          name="height" type="checkbox"/>
-							</div>
+							<span class="input-group-btn">
+								<button class="btn btn-default"
+								        ng-click="model.size.autoHeight = !model.size.autoHeight"
+								        ng-class="{'btn-success': model.size.autoHeight, 'btn-danger': !model.size.autoHeight}"
+								        type="button">Auto {{(model.size.autoHeight) ? 'ON' : 'OFF'}}
+								</button>
+							</span>
 						</div>
 					</div>
 					<div class="radius" ng-show="showRadius()">
