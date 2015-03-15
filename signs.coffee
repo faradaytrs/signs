@@ -574,11 +574,11 @@ signs.controller 'materialsController', ($scope) ->
 				$scope.model.material = material
 
 signs.controller 'sizeController', ($scope) ->
-	$scope.showSize = (material) ->
+	$scope.showSize = ->
 		$scope.model.material == "Plastic" or $scope.model.material == "Metal"
-	$scope.showRadius = (shape) ->
+	$scope.showRadius = ->
 		$scope.model.shape == "round"
-	$scope.showWidthHeight = (shape) ->
+	$scope.showWidthHeight = ->
 		$scope.model.shape == "rectangle" or $scope.model.shape == "rounded rectangle"
 	#something here
 signs.controller 'themesController', ($scope) ->

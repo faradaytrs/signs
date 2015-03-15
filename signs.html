@@ -123,7 +123,7 @@
 				<div ng-controller="sizeController" ng-show="showSize(model.material)">
 					<h4>Size:</h4>
 
-					<div class="width" ng-show="showWidthHeight(shape)">
+					<div class="width" ng-show="showWidthHeight()">
 						<div class="input-group">
 							<span class="input-group-addon">
 					            <span>Width: </span>
@@ -136,7 +136,7 @@
 							</div>
 						</div>
 					</div>
-					<div class="height" ng-show="showWidthHeight(shape)">
+					<div class="height" ng-show="showWidthHeight()">
 						<div class="input-group">
 							<span class="input-group-addon">
 					            <span>Height: </span>
@@ -151,7 +151,7 @@
 							</div>
 						</div>
 					</div>
-					<div class="radius" ng-show="showRadius(shape)">
+					<div class="radius" ng-show="showRadius()">
 						<div class="input-group">
 							<span class="input-group-addon">
 					            <span>Radius: </span>
