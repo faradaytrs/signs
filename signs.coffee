@@ -385,7 +385,7 @@ clearStage = (stage) ->
 		layer.destroy()
 	return
 
-onChange = (stage, model, sizeError) ->
+onChange = (stage, model) ->
 	console.clear()
 	sizes = getSizesTexts(model)
 
@@ -647,7 +647,7 @@ signs.controller 'modelsController', ($scope) ->
 	, true
 	$scope.$watch 'model', ->
 		# todo rework rerender system to improve performance
-		$scope.onChange($scope.stage, $scope.model, $scope.sizeError)
+		$scope.onChange($scope.stage, $scope.model)
 
 	, true
 	$scope.calcPrice = (model = $scope.model) ->
