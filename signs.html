@@ -104,12 +104,12 @@
 			<div class="col-md-4 selects">
 				<div ng-controller="shapesController" ng-show="showShapes(model.material)">
 					<h4>Shapes:</h4>
-					<div class="radio" ng-repeat="shape in shapes">
-						<label>
-							<input ng-value="shape" ng-model="model.shape" name="shapes" type="radio"/>
-							<span>{{shape}}</span>
-						</label>
+
+					<div class="list-group">
+						<a ng-class="{'active': model.shape == shape}" ng-repeat="shape in shapes"
+						   ng-click="model.shape = shape" href="#/" class="list-group-item">{{shape}}</a>
 					</div>
+
 				</div>
 				<div ng-controller="holesController" ng-show="showHoles(model.material)">
 					<h4>Holes:</h4>
