@@ -71,6 +71,8 @@
 			</div>
 			<div class="col-md-6">
 				<div ng-init="init()" id="preview"></div>
+			</div>
+			<div class="col-md-4 selects">
 				<div ng-controller="textController">
 					<h4>Text:</h4>
 
@@ -100,17 +102,6 @@
 
 				</div>
 
-			</div>
-			<div class="col-md-4 selects">
-				<div ng-controller="shapesController" ng-show="showShapes(model.material)">
-					<h4>Shapes:</h4>
-
-					<div class="list-group">
-						<a ng-class="{'active': model.shape == shape}" ng-repeat="shape in shapes"
-						   ng-click="model.shape = shape" href="#/" class="list-group-item">{{shape}}</a>
-					</div>
-
-				</div>
 				<div ng-controller="holesController" ng-show="showHoles(model.material)">
 					<h4>Holes:</h4>
 					<div class="checkbox" ng-repeat="hole in holes">
@@ -120,6 +111,25 @@
 						</label>
 					</div>
 				</div>
+
+				</div>
+
+
+			</div>
+
+		<div class="row">
+			<div class="col-md-4">
+				<div ng-controller="shapesController" ng-show="showShapes(model.material)">
+					<h4>Shapes:</h4>
+
+					<div class="list-group">
+						<a ng-class="{'active': model.shape == shape}" ng-repeat="shape in shapes"
+						   ng-click="model.shape = shape" href="#/" class="list-group-item">{{shape}}</a>
+					</div>
+
+				</div>
+			</div>
+			<div class="col-md-4">
 				<div ng-controller="sizeController" ng-show="showSize(model.material)">
 					<h4>Size:</h4>
 
@@ -128,7 +138,8 @@
 							<span class="input-group-addon">
 					            <span>Width: </span>
 					        </span>
-							<input ng-readonly="model.size.autoWidth" ng-model="model.size.width" ng-value="model.size.width" class="form-control" type="number"/>
+							<input ng-readonly="model.size.autoWidth" ng-model="model.size.width"
+							       ng-value="model.size.width" class="form-control" type="number"/>
 
 							<div class="input-group-addon">
 								<span>Auto: </span><input ng-value="false" ng-model="model.size.autoWidth" name="width"
@@ -168,6 +179,8 @@
 					</div>
 
 				</div>
+			</div>
+			<div class="col-md-4">
 				<div ng-controller="themesController" ng-show="showThemes(model.material)">
 					<h4>Themes:</h4>
 
@@ -196,7 +209,11 @@
 						</ul>
 					</div>
 				</div>
-
+			</div>
+		</div>
+		<div class="row" ng-hide="true">
+			<div class="col-md-2"></div>
+			<div class="col-md-6">
 				<div ng-hide="summary(models).price == 0" class="order">
 					<h3>Your order:</h3>
 					<table class="table">
@@ -225,7 +242,6 @@
 					</table>
 					<button class="btn btn-success btn-lg">Order everything</button>
 				</div>
-
 			</div>
 		</div>
 	</div>
