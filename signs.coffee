@@ -400,22 +400,31 @@ onChange = (stage, model) ->
 	signSize.width = getSignWidth(textSize.width, padding.width()) # в функцию getWidthSign для каждого model.shape
 	signSize.height = getSignHeight(textSize.height, padding.height())
 
-	if (!model.size.autoWidth)
-		if (toPixel(model.size.width) < signSize.width)
-			console.warn("very small width")
-			return
-		else
-			signSize.width = toPixel(model.size.width)
-			textSize.width = signSize.width - padding.width()
-
-	if (!model.size.autoHeight)
-		if (toPixel(model.size.height) < signSize.height)
-			console.warn("very small height")
-			return
-		else
-			signSize.height = toPixel(model.size.height)
+	if model.shape is 'round'
+		if (!model.size.autoWidth || !model.size.autoHeight)
+			signSize.height = signSize.width =
+			  if (model.size.width > model.size.height) then toPixel(model.size.width) else toPixel(model.size.height)
 			textSize.height = signSize.height - padding.height()
+			textSize.width = signSize.width - padding.width()
 			padding.text = (textSize.height - getTextHeight(sizes, 0)) / model.texts.length
+		console.log()
+	else
+		if (!model.size.autoWidth)
+			if (toPixel(model.size.width) < signSize.width)
+				console.warn("very small width")
+				return
+			else
+				signSize.width = toPixel(model.size.width)
+				textSize.width = signSize.width - padding.width()
+
+		if (!model.size.autoHeight)
+			if (toPixel(model.size.height) < signSize.height)
+				console.warn("very small height")
+				return
+			else
+				signSize.height = toPixel(model.size.height)
+				textSize.height = signSize.height - padding.height()
+				padding.text = (textSize.height - getTextHeight(sizes, 0)) / model.texts.length
 
 	k = getBalancingCoefficient(signSize.width, signSize.height, settings.canvasWidth, settings.canvasHeight)
 
