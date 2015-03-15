@@ -16,6 +16,7 @@ settings =
 	holes_radius: 9
 	min_hole_padd: 5
 	holes: [
+		"Top"
 		"Top left corner"
 		"Top right corner"
 		"Middle left"
@@ -82,8 +83,11 @@ settings =
 	rules:
 		indent: 25
 		width: 3
-	debug: false
+	debug: true
 
+hypotenuse = (a, b) ->
+	Math.sqrt(a * a + b * b)
+	
 copyObj = (obj) ->
 	JSON.parse(JSON.stringify(obj))
 
@@ -184,20 +188,17 @@ simpleCircle = (x, y, radius) ->
 		stroke: 'black',
 		strokeWidth: 1
 
-circleKonva = (x, y, width, height, borderWidth, fillColor, strokeColor) ->
-	console.log(x, y, width, height, borderWidth, fillColor, strokeColor)
-	console.log(Math.sqrt(Math.abs(height * height + width * width)) / 2)
+circleKonva = (x, y, radius, borderWidth, fillColor, strokeColor) ->
 	new Konva.Circle
-		x: x + width / 2,
-		y: y + height / 2,
-		radius: Math.sqrt(Math.abs(height * height + width * width)) / 2,
+		x: x + radius,
+		y: y + radius,
+		radius: radius,
 		fill: fillColor || 'white'
 		stroke: strokeColor || 'black'
 		strokeWidth: borderWidth
 		shadowOffsetX: 3
 		shadowOffsetY: 2
 		shadowBlur: 15
-
 
 renderLeftRule = (size) ->
 	#left
@@ -299,18 +300,24 @@ getSignHeight = (size, padding) ->
 
 getPadding = (model, textSize) ->
 	h = model.holes
-	textSize = textSize / 2
+	padding = toPixel(textSize.maxTextSize) / 2
 	is_left = h["Middle left"] || h["Top left corner"] || h["Bottom left corner"]
 	is_right = h["Middle right"] || h["Top right corner"] || h["Bottom right corner"]
+
+	if (model.shape is 'round')
+		radius = hypotenuse(textSize.height, textSize.width) / 2
+		paddingX = radius - textSize.width / 2
+		paddingY = radius - textSize.height / 2
+
 	{
-		top: textSize
-		bottom: textSize
-		left: if is_left then 2*textSize else textSize
-		right: if	is_right then 2*textSize else textSize
+		top: if (radius?) then padding + paddingY else padding
+		bottom: if (radius?) then padding + paddingY else padding
+		left:  if (radius?) then padding + paddingX else padding
+		right: if (radius?) then padding + paddingX else padding
 		width: () -> this.left + this.right
 		height: () -> this.top + this.bottom
 		text: 0
-		hole: textSize
+		hole: padding
 	}
 
 getBalancingCoefficient = (width, height, canvasWidth, canvasHeight) ->
@@ -337,6 +344,10 @@ getHoles = (model, signBegin, signSize, padding, k) ->
 	right =  signBegin.x + signSize.width - padding
 
 	holes.coord = {
+		"Top": {
+			x: left
+			y: top
+		}
 		"Top left corner": {
 			x: left
 			y: top
@@ -375,14 +386,15 @@ clearStage = (stage) ->
 	return
 
 onChange = (stage, model) ->
+	console.clear()
 	sizes = getSizesTexts(model)
+
 	textSize = {}
+	textSize.maxTextSize = getMaxTextSize(model)
 	textSize.width = getTextWidth(sizes)
 	textSize.height = getTextHeight(sizes)
 
-	maxTextSize = getMaxTextSize(model)
-
-	padding = getPadding(model, toPixel(maxTextSize))
+	padding = getPadding(model, textSize)
 
 	signSize = {}
 	signSize.width = getSignWidth(textSize.width, padding.width()) # в функцию getWidthSign для каждого model.shape
@@ -444,7 +456,6 @@ onChange = (stage, model) ->
 		holes: getHoles(model, signBegin, signSize, padding.hole, k)
 	}
 
-	console.clear()
 	console.log("padding w #{size.padding.width()} h #{size.padding.height()}")
 	console.log("text")
 	console.log("x: #{size.text.x};	y: #{size.text.y}")
@@ -490,8 +501,9 @@ reRender = (stage, model, size) ->
 			shape = rectKonva(size.sign.x, size.sign.y, size.sign.width, size.sign.height,
 				settings.borderWidth, color.bgColor, color.textColor)
 		when 'round'
-			shape = circleKonva(size.sign.x, size.sign.y, size.sign.width, size.sign.height,
+			shape = circleKonva(size.sign.x, size.sign.y, size.sign.width/2,
 				settings.borderWidth, color.bgColor, color.textColor)
+			console.log(size)
 			if (settings.debug)
 				debug = simpleRect(size.sign.x, size.sign.y, size.sign.width, size.sign.height)
 		else
@@ -637,4 +649,4 @@ signs.controller 'modelsController', ($scope) ->
 		for model in models
 			summary.price += $scope.calcPrice(model)
 			summary.order += model.order
-		summary
+		summary;
