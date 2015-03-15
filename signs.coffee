@@ -116,6 +116,8 @@ modelTemplate =
 	size: {
 		width: 30 #in mms
 		height: 10 #ingored if auto is true
+		radius: 10 #for circle
+		autoRadius: true #for circle
 		autoHeight: true
 		autoWidth: true
 	}
@@ -572,9 +574,12 @@ signs.controller 'materialsController', ($scope) ->
 				$scope.model.material = material
 
 signs.controller 'sizeController', ($scope) ->
-	$scope.sizeError = ""
 	$scope.showSize = (material) ->
-		material == "Plastic" or material == "Metal"
+		$scope.model.material == "Plastic" or $scope.model.material == "Metal"
+	$scope.showRadius = (shape) ->
+		$scope.model.shape == "round"
+	$scope.showWidthHeight = (shape) ->
+		$scope.model.shape == "rectangle" or $scope.model.shape == "rounded rectangle"
 	#something here
 signs.controller 'themesController', ($scope) ->
 	$scope.themes = settings.themes

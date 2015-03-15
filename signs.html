@@ -122,8 +122,8 @@
 				</div>
 				<div ng-controller="sizeController" ng-show="showSize(model.material)">
 					<h4>Size:</h4>
-					<div class="width">
 
+					<div class="width" ng-show="showWidthHeight(shape)">
 						<div class="input-group">
 							<span class="input-group-addon">
 					            <span>Width: </span>
@@ -136,18 +136,33 @@
 							</div>
 						</div>
 					</div>
-					<div class="height">
+					<div class="height" ng-show="showWidthHeight(shape)">
 						<div class="input-group">
 							<span class="input-group-addon">
 					            <span>Height: </span>
 					        </span>
-							<input ng-readonly="model.size.autoHeight" ng-change="changeHeight(height)"
+							<input ng-readonly="model.size.autoHeight"
 							       ng-model="model.size.height" ng-value="model.size.height" class="form-control"
 							       type="number"/>
 
 							<div class="input-group-addon">
 								<span>Auto: </span><input ng-value="false" ng-model="model.size.autoHeight"
 								                          name="height" type="checkbox"/>
+							</div>
+						</div>
+					</div>
+					<div class="radius" ng-show="showRadius(shape)">
+						<div class="input-group">
+							<span class="input-group-addon">
+					            <span>Radius: </span>
+					        </span>
+							<input ng-readonly="model.size.autoRadius"
+							       ng-model="model.size.radius" ng-value="model.size.radius" class="form-control"
+							       type="number"/>
+
+							<div class="input-group-addon">
+								<span>Auto: </span><input ng-value="false" ng-model="model.size.autoRadius"
+								                          name="radius" type="checkbox"/>
 							</div>
 						</div>
 					</div>
