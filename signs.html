@@ -176,10 +176,13 @@
 							       ng-model="model.size.radius" ng-value="model.size.radius" class="form-control"
 							       type="number"/>
 
-							<div class="input-group-addon">
-								<span>Auto: </span><input ng-value="false" ng-model="model.size.autoRadius"
-								                          name="radius" type="checkbox"/>
-							</div>
+							<span class="input-group-btn">
+								<button class="btn btn-default"
+								        ng-click="model.size.autoRadius = !model.size.autoRadius"
+								        ng-class="{'btn-success': model.size.autoRadius, 'btn-danger': !model.size.autoRadius}"
+								        type="button">Auto {{(model.size.autoRadius) ? 'ON' : 'OFF'}}
+								</button>
+							</span>
 						</div>
 					</div>
 
