@@ -91,17 +91,19 @@ hypotenuse = (a, b) ->
 copyObj = (obj) ->
 	JSON.parse(JSON.stringify(obj))
 
-array2Object = (array) ->
-	object = {}
-	for i in array
-		object[i] = false
-	object
-
 #here we can setup default settings
 modelTemplate =
 	name: "Sign"
 	shape: settings.shapes[0]
-	holes: array2Object(settings.holes)
+	holes: {
+		"Top": false
+		"Top left corner": false
+		"Top right corner": false
+		"Middle left": false
+		"Middle right": false
+		"Bottom left corner": false
+		"Bottom right corner": false
+	}
 	fonts: settings.fonts[0]
 	material: settings.materials[0]
 	theme: settings.themes[0]
