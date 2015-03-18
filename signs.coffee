@@ -326,23 +326,24 @@ getPadding = (model, textSize) ->
 getRoundPadding = (model, textSize, signSize) ->
 	padding = toPixel(textSize.maxTextSize) / 2
 	h = model.holes
+	is_top = h["Top"]
 	is_left = h["Middle left"] || h["Top left corner"] || h["Bottom left corner"]
 	is_right = h["Middle right"] || h["Top right corner"] || h["Bottom right corner"]
+	padding = if is_top || is_left || is_right then 2*padding else padding
 
-	radius = hypotenuse(textSize.height, textSize.width) / 2
-	if model.size.autoRadius
+	if model.size.autoRadius && !signSize?
+		radius = hypotenuse(textSize.height, textSize.width) / 2
 		paddingX = radius - textSize.width / 2
 		paddingY = radius - textSize.height / 2
 	else
-		padding = (signSize.height - textSize.height) / 2
-		paddingX = 0
-		paddingY = 0
+		paddingX = (signSize.width - textSize.width) / 2
+		paddingY = (signSize.height - textSize.height) / 2
 
 	{
-		top: if (paddingY?) then padding + paddingY else padding
-		bottom: if (paddingY?) then padding + paddingY else padding
-		left:  if (paddingX?) then padding + paddingX else padding
-		right: if (paddingX?) then padding + paddingX else padding
+		top: padding + paddingY
+		bottom: padding + paddingY
+		left:  padding + paddingX
+		right: padding + paddingX
 		width: () -> this.left + this.right
 		height: () -> this.top + this.bottom
 		text: 0
@@ -419,23 +420,23 @@ onChange = (stage, model) ->
 	sizes = getSizesTexts(model)
 
 	textSize = {}
-	textSize.maxTextSize = getMaxTextSize(model)
 	textSize.width = getTextWidth(sizes)
 	textSize.height = getTextHeight(sizes)
+	textSize.maxTextSize = getMaxTextSize(model)
+
+	signSize = {}
 
 	if model.shape is 'round'
-		signSize = {}
-		signSize.width = signSize.height = toPixel(model.size.radius) # <- diameter
-		textSize.width = textSize.height = hypotenuse(signSize.width / 2 - toPixel(textSize.maxTextSize))
-		console.log(textSize)
-		padding = getRoundPadding(model, textSize, signSize)
-
-		if (!model.size.autoRadius)
-			padding.text = (textSize.height - getTextHeight(sizes)) / model.texts.length
+		if (model.size.autoRadius)
+			padding = getRoundPadding(model, textSize)
+			signSize.width = getSignWidth(textSize.width, padding.width()) # в функцию getWidthSign для каждого model.shape
+			signSize.height = getSignHeight(textSize.height, padding.height())
+		else
+			signSize.width = signSize.height = toPixel(model.size.radius) # <- diameter
+			padding = getRoundPadding(model, textSize, signSize)
 	else
 		padding = getPadding(model, textSize)
 
-		signSize = {}
 		signSize.width = getSignWidth(textSize.width, padding.width()) # в функцию getWidthSign для каждого model.shape
 		signSize.height = getSignHeight(textSize.height, padding.height())
 
@@ -523,8 +524,8 @@ reRender = (stage, model, size) ->
 
 	for text, id in model.texts
 		textKonva = createText(text.align, text.text,
-			size.text.x, size.text.y, size.text.width + 1,
-			model.font, size.k * text.size, color.textColor)
+		  size.text.x, size.text.y, size.text.width + 1,
+		  model.font, size.k * text.size, color.textColor)
 
 		if (settings.debug)
 			rect = simpleRect(size.text.x, size.text.y, size.text.width + 1, textKonva.getHeight())
@@ -538,14 +539,14 @@ reRender = (stage, model, size) ->
 	switch model.shape
 		when 'rectangle'
 			shape = rectKonva(size.sign.x, size.sign.y, size.sign.width, size.sign.height,
-				settings.borderWidth, color.bgColor, color.textColor)
+			  settings.borderWidth, color.bgColor, color.textColor)
 		when 'round'
-			shape = circleKonva(size.sign.x, size.sign.y, size.sign.width/2,
-				settings.borderWidth, color.bgColor, color.textColor)
+			shape = circleKonva(size.sign.x, size.sign.y, size.sign.width / 2,
+			  settings.borderWidth, color.bgColor, color.textColor)
 			if (settings.debug)
 				debug = simpleRect(size.sign.x, size.sign.y, size.sign.width, size.sign.height)
-				debug2 = simpleRect(size.sign.x + size.k*size.padding.left, size.sign.y + size.k*size.padding.top,
-				  size.sign.width - size.k * size.padding.width(), size.sign.height - size.k*size.padding.height())
+				debug2 = simpleRect(size.sign.x + size.k * size.padding.left, size.sign.y + size.k * size.padding.top,
+				  size.sign.width - size.k * size.padding.width(), size.sign.height - size.k * size.padding.height())
 		else
 			shape = roundRect(size.sign.x, size.sign.y, size.sign.width, size.sign.height,
 			  settings.radius, settings.borderWidth, color.bgColor, color.textColor)
