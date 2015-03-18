@@ -336,8 +336,8 @@ getRoundPadding = (model, textSize, signSize) ->
 		paddingX = radius - textSize.width / 2
 		paddingY = radius - textSize.height / 2
 	else
-		paddingX = (signSize.width - textSize.width) / 2
-		paddingY = (signSize.height - textSize.height) / 2
+		paddingX = (signSize.width - textSize.width) / 2 - padding
+		paddingY = (signSize.height - textSize.height) / 2 - padding
 
 	{
 		top: padding + paddingY
