@@ -86,8 +86,11 @@ settings =
 	debug: true
 
 hypotenuse = (a, b) ->
-	Math.sqrt(a * a + b * b)
-	
+	if b?
+		Math.sqrt(a * a + b * b)
+	else
+		Math.sqrt(2 * a * a)
+
 copyObj = (obj) ->
 	JSON.parse(JSON.stringify(obj))
 
@@ -278,6 +281,7 @@ getSizesTexts = (model) ->
 		}
 	sizes
 
+# max size of font in mm
 getMaxTextSize = (model) ->
 	max = 0
 	for text in model.texts
@@ -303,21 +307,42 @@ getSignHeight = (size, padding) ->
 	size + padding
 
 getPadding = (model, textSize) ->
-	h = model.holes
 	padding = toPixel(textSize.maxTextSize) / 2
+	h = model.holes
+	is_left = h["Middle left"] || h["Top left corner"] || h["Bottom left corner"]
+	is_right = h["Middle right"] || h["Top right corner"] || h["Bottom right corner"]
+	{
+		top: padding
+		bottom: padding
+		left:  if (is_left) then 2*padding else padding
+		right: if (is_right) then 2*padding else padding
+		width: () -> this.left + this.right
+		height: () -> this.top + this.bottom
+		hole: padding
+		text: 0
+	}
+
+### Для круга ###
+getRoundPadding = (model, textSize, signSize) ->
+	padding = toPixel(textSize.maxTextSize) / 2
+	h = model.holes
 	is_left = h["Middle left"] || h["Top left corner"] || h["Bottom left corner"]
 	is_right = h["Middle right"] || h["Top right corner"] || h["Bottom right corner"]
 
-	if (model.shape is 'round')
-		radius = hypotenuse(textSize.height, textSize.width) / 2
+	radius = hypotenuse(textSize.height, textSize.width) / 2
+	if model.size.autoRadius
 		paddingX = radius - textSize.width / 2
 		paddingY = radius - textSize.height / 2
+	else
+		padding = (signSize.height - textSize.height) / 2
+		paddingX = 0
+		paddingY = 0
 
 	{
-		top: if (radius?) then padding + paddingY else padding
-		bottom: if (radius?) then padding + paddingY else padding
-		left:  if (radius?) then padding + paddingX else padding
-		right: if (radius?) then padding + paddingX else padding
+		top: if (paddingY?) then padding + paddingY else padding
+		bottom: if (paddingY?) then padding + paddingY else padding
+		left:  if (paddingX?) then padding + paddingX else padding
+		right: if (paddingX?) then padding + paddingX else padding
 		width: () -> this.left + this.right
 		height: () -> this.top + this.bottom
 		text: 0
@@ -398,21 +423,22 @@ onChange = (stage, model) ->
 	textSize.width = getTextWidth(sizes)
 	textSize.height = getTextHeight(sizes)
 
-	padding = getPadding(model, textSize)
-
-	signSize = {}
-	signSize.width = getSignWidth(textSize.width, padding.width()) # в функцию getWidthSign для каждого model.shape
-	signSize.height = getSignHeight(textSize.height, padding.height())
-
 	if model.shape is 'round'
-		if (!model.size.autoWidth || !model.size.autoHeight)
-			signSize.height = signSize.width =
-			  if (model.size.width > model.size.height) then toPixel(model.size.width) else toPixel(model.size.height)
-			textSize.height = signSize.height - padding.height()
-			textSize.width = signSize.width - padding.width()
-			padding.text = (textSize.height - getTextHeight(sizes, 0)) / model.texts.length
-		console.log()
+		signSize = {}
+		signSize.width = signSize.height = toPixel(model.size.radius) # <- diameter
+		textSize.width = textSize.height = hypotenuse(signSize.width / 2 - toPixel(textSize.maxTextSize))
+		console.log(textSize)
+		padding = getRoundPadding(model, textSize, signSize)
+
+		if (!model.size.autoRadius)
+			padding.text = (textSize.height - getTextHeight(sizes)) / model.texts.length
 	else
+		padding = getPadding(model, textSize)
+
+		signSize = {}
+		signSize.width = getSignWidth(textSize.width, padding.width()) # в функцию getWidthSign для каждого model.shape
+		signSize.height = getSignHeight(textSize.height, padding.height())
+
 		if (!model.size.autoWidth)
 			if (toPixel(model.size.width) < signSize.width)
 				console.warn("very small width")
@@ -428,7 +454,7 @@ onChange = (stage, model) ->
 			else
 				signSize.height = toPixel(model.size.height)
 				textSize.height = signSize.height - padding.height()
-				padding.text = (textSize.height - getTextHeight(sizes, 0)) / model.texts.length
+				padding.text = (textSize.height - getTextHeight(sizes)) / model.texts.length
 
 	k = getBalancingCoefficient(signSize.width, signSize.height, settings.canvasWidth, settings.canvasHeight)
 
@@ -516,9 +542,10 @@ reRender = (stage, model, size) ->
 		when 'round'
 			shape = circleKonva(size.sign.x, size.sign.y, size.sign.width/2,
 				settings.borderWidth, color.bgColor, color.textColor)
-			console.log(size)
 			if (settings.debug)
 				debug = simpleRect(size.sign.x, size.sign.y, size.sign.width, size.sign.height)
+				debug2 = simpleRect(size.sign.x + size.k*size.padding.left, size.sign.y + size.k*size.padding.top,
+				  size.sign.width - size.k * size.padding.width(), size.sign.height - size.k*size.padding.height())
 		else
 			shape = roundRect(size.sign.x, size.sign.y, size.sign.width, size.sign.height,
 			  settings.radius, settings.borderWidth, color.bgColor, color.textColor)
@@ -526,6 +553,7 @@ reRender = (stage, model, size) ->
 	shapeLayer.add(shape)
 	if (settings.debug && model.shape is 'round')
 		shapeLayer.add(debug)
+		shapeLayer.add(debug2)
 
 	for hole, isShow of model.holes
 		if (isShow)
