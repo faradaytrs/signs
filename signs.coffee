@@ -409,6 +409,9 @@ getHoles = (model, signBegin, signSize, padding, k) ->
 toPixel = (mm) ->
 	mm * settings.PIXEL_SIZE
 
+getMax = (a, b) ->
+	if (a > b) then a else b
+
 clearStage = (stage) ->
 	stage.clear()
 	layers = stage.getLayers().toArray()
@@ -432,14 +435,18 @@ onChange = (stage, model) ->
 			padding = getRoundPadding(model, textSize)
 			signSize.width = getSignWidth(textSize.width, padding.indent) # в функцию getWidthSign для каждого model.shape
 			signSize.height = getSignHeight(textSize.height, padding.indent)
+			signSize.height = signSize.width = getMax(signSize.width, signSize.height)
 		else
 			signSize.width = signSize.height = toPixel(model.size.radius) # <- diameter
 			padding = getRoundPadding(model, textSize)
+
+			if (settings.debug)
+				console.log(toPixel(model.size.radius))
+				console.log(textSize.width + padding.indent)
+
 			if (toPixel(model.size.radius) < textSize.width + toPixel(textSize.maxTextSize))
 				console.warn("very small radius")
 				return
-			console.log(toPixel(model.size.radius))
-			console.log(textSize.width + padding.radius)
 	else
 		padding = getPadding(model, textSize)
 
