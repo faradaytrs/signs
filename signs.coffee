@@ -83,7 +83,7 @@ settings =
 	rules:
 		indent: 25
 		width: 3
-	debug: true
+	debug: false
 
 hypotenuse = (a, b) ->
 	if b?
@@ -323,7 +323,7 @@ getPadding = (model, textSize) ->
 	}
 
 getRoundPadding = (model, textSize) ->
-	padding = toPixel(textSize.maxTextSize) / 2
+	padding = toPixel(textSize.maxTextSize) / 0.5
 	h = model.holes
 	is_top = h["Top"]
 	is_left = h["Middle left"] || h["Top left corner"] || h["Bottom left corner"]
@@ -419,7 +419,7 @@ clearStage = (stage) ->
 		layer.destroy()
 	return
 
-onChange = (stage, model) ->
+onChange = (stage, model, errorCallback) ->
 	console.clear()
 	sizes = getSizesTexts(model)
 
@@ -445,7 +445,7 @@ onChange = (stage, model) ->
 				console.log(textSize.width + padding.indent)
 
 			if (toPixel(model.size.radius) < textSize.width + toPixel(textSize.maxTextSize))
-				console.warn("very small radius")
+				errorCallback("very small radius");
 				return
 	else
 		padding = getPadding(model, textSize)
@@ -455,7 +455,7 @@ onChange = (stage, model) ->
 
 		if (!model.size.autoWidth)
 			if (toPixel(model.size.width) < signSize.width)
-				console.warn("very small width")
+				errorCallback("very small width");
 				return
 			else
 				signSize.width = toPixel(model.size.width)
@@ -463,7 +463,7 @@ onChange = (stage, model) ->
 
 		if (!model.size.autoHeight)
 			if (toPixel(model.size.height) < signSize.height)
-				console.warn("very small height")
+				errorCallback("very small height");
 				return
 			else
 				signSize.height = toPixel(model.size.height)
@@ -695,9 +695,11 @@ signs.controller 'modelsController', ($scope) ->
 	$scope.$watch 'models', ->
 		saveModels($scope.models)
 	, true
+	$scope.errorCallback = (error) ->
+		console.warn error
 	$scope.$watch 'model', ->
 		# todo rework rerender system to improve performance
-		$scope.onChange($scope.stage, $scope.model)
+		$scope.onChange($scope.stage, $scope.model, $scope.errorCallback)
 
 	, true
 	$scope.calcPrice = (model = $scope.model) ->
