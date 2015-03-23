@@ -136,10 +136,10 @@
 			</div>
 			<div class="col-md-4">
 				<div ng-controller="sizeController" ng-show="showSize(model.material)">
-					<h4>Size:</h4>
+					<h4>Size: {{sizeError}}</h4>
 
 					<div class="width" ng-show="showWidthHeight()">
-						<div class="input-group">
+						<div class="input-group" ng-class="{'has-error': showWidthError()}">
 							<span class="input-group-addon">
 					            <span>Width: </span>
 					        </span>
@@ -147,7 +147,7 @@
 							       ng-value="model.size.width" class="form-control" type="number"/>
 							<span class="input-group-btn">
 								<button class="btn btn-default" ng-click="model.size.autoWidth = !model.size.autoWidth"
-								        ng-class="{'btn-success': model.size.autoWidth, 'btn-danger': !model.size.autoWidth}"
+								        ng-class="{'btn-success': model.size.autoWidth, 'btn-warning': !model.size.autoWidth}"
 								        type="button">Auto {{(model.size.autoWidth) ? 'ON' : 'OFF'}}
 								</button>
 							</span>
@@ -155,7 +155,7 @@
 
 					</div>
 					<div class="height" ng-show="showWidthHeight()">
-						<div class="input-group">
+						<div class="input-group" ng-class="{'has-error': showHeightError()}">
 							<span class="input-group-addon">
 					            <span>Height: </span>
 					        </span>
@@ -166,7 +166,7 @@
 							<span class="input-group-btn">
 								<button class="btn btn-default"
 								        ng-click="model.size.autoHeight = !model.size.autoHeight"
-								        ng-class="{'btn-success': model.size.autoHeight, 'btn-danger': !model.size.autoHeight}"
+								        ng-class="{'btn-success': model.size.autoHeight, 'btn-warning': !model.size.autoHeight}"
 								        type="button">Auto {{(model.size.autoHeight) ? 'ON' : 'OFF'}}
 								</button>
 							</span>
@@ -174,7 +174,7 @@
 					</div>
 					<div class="radius" ng-show="showRadius()">
 						<div class="input-group">
-							<span class="input-group-addon">
+							<span class="input-group-addon" ng-class="{'has-error': showRadiusError()}">
 					            <span>Radius: </span>
 					        </span>
 							<input ng-readonly="model.size.autoRadius"
@@ -184,7 +184,7 @@
 							<span class="input-group-btn">
 								<button class="btn btn-default"
 								        ng-click="model.size.autoRadius = !model.size.autoRadius"
-								        ng-class="{'btn-success': model.size.autoRadius, 'btn-danger': !model.size.autoRadius}"
+								        ng-class="{'btn-success': model.size.autoRadius, 'btn-warning': !model.size.autoRadius}"
 								        type="button">Auto {{(model.size.autoRadius) ? 'ON' : 'OFF'}}
 								</button>
 							</span>

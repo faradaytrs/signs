@@ -445,7 +445,7 @@ onChange = (stage, model, errorCallback) ->
 				console.log(textSize.width + padding.indent)
 
 			if (toPixel(model.size.radius) < textSize.width + toPixel(textSize.maxTextSize))
-				errorCallback("very small radius");
+				errorCallback("too small radius");
 				return
 	else
 		padding = getPadding(model, textSize)
@@ -455,7 +455,7 @@ onChange = (stage, model, errorCallback) ->
 
 		if (!model.size.autoWidth)
 			if (toPixel(model.size.width) < signSize.width)
-				errorCallback("very small width");
+				errorCallback("too small width");
 				return
 			else
 				signSize.width = toPixel(model.size.width)
@@ -463,7 +463,7 @@ onChange = (stage, model, errorCallback) ->
 
 		if (!model.size.autoHeight)
 			if (toPixel(model.size.height) < signSize.height)
-				errorCallback("very small height");
+				errorCallback("too small height");
 				return
 			else
 				signSize.height = toPixel(model.size.height)
@@ -521,6 +521,7 @@ onChange = (stage, model, errorCallback) ->
 	console.log("x: #{size.sign.x};	y: #{size.sign.y}")
 	console.log("width: #{size.sign.width}; height: #{size.sign.height}")
 
+	errorCallback(null)
 	reRender(stage, model, size)
 
 reRender = (stage, model, size) ->
@@ -625,6 +626,13 @@ signs.controller 'sizeController', ($scope) ->
 		$scope.model.shape == "round"
 	$scope.showWidthHeight = ->
 		$scope.model.shape == "rectangle" or $scope.model.shape == "rounded rectangle"
+	$scope.showRadiusError = () ->
+		$scope.sizeError == "too small radius"
+	$scope.showWidthError = () ->
+		$scope.sizeError == "too small width"
+	$scope.showHeightError = () ->
+		$scope.sizeError == "too small height"
+
 	#something here
 signs.controller 'themesController', ($scope) ->
 	$scope.themes = settings.themes
@@ -646,6 +654,17 @@ signs.controller 'textController', ($scope) ->
 		$scope.increaseSize(index, -size)
 
 signs.controller 'modelsController', ($scope) ->
+	$scope.errorCallback = (error) ->
+		if error?
+			console.warn error
+		$scope.sizeError = error;
+		switch error
+			when "too small height"
+				1
+			when "too small width"
+				2
+			when "too small radius"
+				3
 	$scope.removeSign = ($index) ->
 		$scope.models.splice($index, 1)
 		unless $scope.models.length == 0
@@ -695,8 +714,6 @@ signs.controller 'modelsController', ($scope) ->
 	$scope.$watch 'models', ->
 		saveModels($scope.models)
 	, true
-	$scope.errorCallback = (error) ->
-		console.warn error
 	$scope.$watch 'model', ->
 		# todo rework rerender system to improve performance
 		$scope.onChange($scope.stage, $scope.model, $scope.errorCallback)
