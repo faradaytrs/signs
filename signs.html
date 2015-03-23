@@ -1,4 +1,5 @@
 <!doctype html>
+<!--suppress HtmlUnknownAnchorTarget -->
 <html lang="en" ng-app="Signs">
 <head>
 	<meta charset="UTF-8">
@@ -27,7 +28,8 @@
 				<ul class="nav nav-pills" ng-controller="materialsController">
 					<li class="disabled" role="presentation"><a href="#">Material:</a></li>
 					<li role="presentation" ng-class="{'active': model.material == material}"
-					    ng-repeat="material in materials"><a ng-click="changeMaterial(material)"
+					    ng-repeat="material in materials"><!--suppress HtmlUnknownAnchorTarget -->
+						<a ng-click="changeMaterial(material)"
 					                                         href="#/">{{material}}</a></li>
 				</ul>
 			</div>

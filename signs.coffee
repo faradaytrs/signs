@@ -143,7 +143,7 @@ saveModels = (models) ->
 roundRect = (x, y, width, height, radius, borderWidth, fillColor, strokeColor) ->
 	new Konva.Shape
 		drawFunc: (ctx) ->
-			ctx.beginPath();
+			ctx.beginPath()
 			ctx.moveTo(x + radius, y)
 			ctx.lineTo(x + width - radius, y)
 			ctx.quadraticCurveTo(x + width, y, x + width, y + radius)
@@ -154,7 +154,7 @@ roundRect = (x, y, width, height, radius, borderWidth, fillColor, strokeColor) -
 			ctx.lineTo(x, y + radius)
 			ctx.quadraticCurveTo(x, y, x + radius, y)
 			ctx.closePath()
-			ctx.fillStrokeShape(@);
+			ctx.fillStrokeShape(@)
 		fill: fillColor || 'black'
 		stroke: strokeColor || 'black'
 		strokeWidth: borderWidth
@@ -445,7 +445,7 @@ onChange = (stage, model, errorCallback) ->
 				console.log(textSize.width + padding.indent)
 
 			if (toPixel(model.size.radius) < textSize.width + toPixel(textSize.maxTextSize))
-				errorCallback("too small radius");
+				errorCallback("too small radius")
 				return
 	else
 		padding = getPadding(model, textSize)
@@ -455,7 +455,7 @@ onChange = (stage, model, errorCallback) ->
 
 		if (!model.size.autoWidth)
 			if (toPixel(model.size.width) < signSize.width)
-				errorCallback("too small width");
+				errorCallback("too small width")
 				return
 			else
 				signSize.width = toPixel(model.size.width)
@@ -463,7 +463,7 @@ onChange = (stage, model, errorCallback) ->
 
 		if (!model.size.autoHeight)
 			if (toPixel(model.size.height) < signSize.height)
-				errorCallback("too small height");
+				errorCallback("too small height")
 				return
 			else
 				signSize.height = toPixel(model.size.height)
@@ -657,7 +657,7 @@ signs.controller 'modelsController', ($scope) ->
 	$scope.errorCallback = (error) ->
 		if error?
 			console.warn error
-		$scope.sizeError = error;
+		$scope.sizeError = error
 		switch error
 			when "too small height"
 				1
@@ -685,7 +685,7 @@ signs.controller 'modelsController', ($scope) ->
 		reader = new FileReader()
 		reader.onload = (event) ->
 			contents = event.target.result
-			sheets = XLS.read(contents, {type:"binary"});
+			sheets = XLS.read(contents, {type: "binary"})
 			sheet = sheets.Sheets[sheets.SheetNames[0]]
 			console.log sheet
 			#sheet to model object
@@ -701,7 +701,7 @@ signs.controller 'modelsController', ($scope) ->
 
 	$scope.onChange = onChange
 	$scope.models = getModels()
-	$scope.current = 0; #by default
+	$scope.current = 0 #by default
 
 	$scope.newSign = ->
 		$scope.models.push copyObj(modelTemplate)
@@ -728,4 +728,4 @@ signs.controller 'modelsController', ($scope) ->
 		for model in models
 			summary.price += $scope.calcPrice(model)
 			summary.order += model.order
-		summary;
+		summary
