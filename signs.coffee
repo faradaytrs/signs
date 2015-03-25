@@ -85,11 +85,8 @@ settings =
 		width: 3
 	debug: false
 
-hypotenuse = (a, b) ->
-	if b?
-		Math.sqrt(a * a + b * b)
-	else
-		Math.sqrt(2 * a * a)
+hypotenuse = (a, b = a) ->
+	Math.sqrt(a * a + b * b)
 
 copyObj = (obj) ->
 	JSON.parse(JSON.stringify(obj))
@@ -267,7 +264,7 @@ simpleCreateText = (layer, model, obj) ->
 	textObj
 
 getSpace = (width, squareWidth) ->
-	width/2-squareWidth/2
+	width / 2 - squareWidth / 2
 
 getSizesTexts = (model) ->
 	sizes = []
@@ -306,6 +303,12 @@ getSignWidth = (size, padding) ->
 getSignHeight = (size, padding) ->
 	size + padding
 
+toPixel = (mm) ->
+	mm * settings.PIXEL_SIZE
+
+getMax = (a, b) ->
+	if (a > b) then a else b
+
 getPadding = (model, textSize) ->
 	padding = toPixel(textSize.maxTextSize) / 2
 	h = model.holes
@@ -325,10 +328,9 @@ getPadding = (model, textSize) ->
 getRoundPadding = (model, textSize) ->
 	padding = toPixel(textSize.maxTextSize) / 0.5
 	h = model.holes
-	is_top = h["Top"]
 	is_left = h["Middle left"] || h["Top left corner"] || h["Bottom left corner"]
 	is_right = h["Middle right"] || h["Top right corner"] || h["Bottom right corner"]
-	padding_ = if is_top || is_left || is_right then 2*padding else padding
+	padding_ = if is_left || is_right then 2 * padding else padding
 
 	###if model.size.autoRadius && !signSize?
 		radius = hypotenuse(textSize.height, textSize.width) / 2
@@ -340,11 +342,6 @@ getRoundPadding = (model, textSize) ->
 
 	{
 		indent: padding_
-		###bottom: padding_ + paddingY
-		left:  padding_ + paddingX
-		right: padding_ + paddingX
-		width: () -> this.left + this.right
-		height: () -> this.top + this.bottom###
 		text: 0
 		hole: padding
 	}
@@ -406,12 +403,6 @@ getHoles = (model, signBegin, signSize, padding, k) ->
 	}
 	holes
 
-toPixel = (mm) ->
-	mm * settings.PIXEL_SIZE
-
-getMax = (a, b) ->
-	if (a > b) then a else b
-
 clearStage = (stage) ->
 	stage.clear()
 	layers = stage.getLayers().toArray()
@@ -439,11 +430,9 @@ onChange = (stage, model, errorCallback) ->
 		else
 			signSize.width = signSize.height = toPixel(model.size.radius) # <- diameter
 			padding = getRoundPadding(model, textSize)
-
 			if (settings.debug)
 				console.log(toPixel(model.size.radius))
 				console.log(textSize.width + padding.indent)
-
 			if (toPixel(model.size.radius) < textSize.width + toPixel(textSize.maxTextSize))
 				errorCallback("too small radius")
 				return
@@ -485,7 +474,6 @@ onChange = (stage, model, errorCallback) ->
 	if model.shape is 'round'
 		textBegin.x = getSpace(settings.canvasWidth, textSize.width)
 		textBegin.y = getSpace(settings.canvasHeight, textSize.height)
-		console.log(textSize)
 	else
 		textBegin.x = signBegin.x + k * padding.left
 		textBegin.y = signBegin.y + k * (padding.top + padding.text / 2)
