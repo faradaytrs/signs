@@ -433,7 +433,7 @@ onChange = (stage, model, errorCallback) ->
 			if (settings.debug)
 				console.log(toPixel(model.size.radius))
 				console.log(textSize.width + padding.indent)
-			if (toPixel(model.size.radius) < textSize.width + toPixel(textSize.maxTextSize))
+			if (toPixel(model.size.radius) < textSize.width + padding.indent)
 				errorCallback("too small radius")
 				return
 	else
