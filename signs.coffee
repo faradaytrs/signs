@@ -244,7 +244,6 @@ createText = (align, str, x, y, width, font, size, color) ->
 		width: width
 #		padding: 20
 		align: align.toLowerCase()
-		splitLines: false
 
 createText2 = (align, str, x, y, font, size, color) ->
 	textObj = new Konva.Text
