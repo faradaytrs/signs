@@ -300,6 +300,17 @@ getMaxTextSize = (model) ->
 		if text.size > max then max = text.size
 	max
 
+getTextSize = (sizes) ->
+	maxLen = 0
+	sum = 0
+	for size in sizes
+		if size.width > maxLen then maxLen = size.width
+		sum += size.height
+	{
+		width: maxLen
+		height: sum
+	}
+
 getTextWidth = (sizes) ->
 	maxLen = 0
 	for size in sizes
@@ -430,9 +441,7 @@ onChange = (stage, model, errorCallback) ->
 	console.clear()
 	sizes = getSizesTexts(model)
 
-	textSize = {}
-	textSize.width = getTextWidth(sizes)
-	textSize.height = getTextHeight(sizes)
+	textSize = getTextSize(sizes)
 	textSize.maxTextSize = getMaxTextSize(model)
 
 	signSize = {}
@@ -478,8 +487,7 @@ onChange = (stage, model, errorCallback) ->
 	k = getBalancingCoefficient(signSize.width, signSize.height, settings.canvasWidth, settings.canvasHeight)
 
 	sizes = getSizesTexts(model, k)
-	textSize.width = getTextWidth(sizes)
-	textSize.height = getTextHeight(sizes)
+	textSize = getTextSize(sizes)
 
 	signSize.width = getSignWidth(textSize.width, padding.width()) # в функцию getWidthSign для каждого model.shape
 	signSize.height = getSignHeight(textSize.height, padding.height())
