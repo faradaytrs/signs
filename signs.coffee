@@ -24,6 +24,10 @@ settings =
 		"Bottom left corner"
 		"Bottom right corner"
 	]
+	hole_rect: {
+		width: 10
+		height: 5
+	}
 	materials: [
 		"Plastic",
 		"Metal"
@@ -104,6 +108,7 @@ modelTemplate =
 		"Bottom left corner": false
 		"Bottom right corner": false
 	}
+	holes_rect: false
 	fonts: settings.fonts[0]
 	material: settings.materials[0]
 	theme: settings.themes[0]
@@ -180,6 +185,16 @@ simpleRect = (x, y, width, height) ->
 		width: width
 		height: height
 #		fill: 'white'
+		stroke: 'black'
+		strokeWidth: 1
+
+whiteRect = (x, y, width, height) ->
+	new Konva.Rect
+		x: x
+		y: y
+		width: width
+		height: height
+		fill: 'white'
 		stroke: 'black'
 		strokeWidth: 1
 
@@ -561,8 +576,12 @@ reRender = (stage, model, size) ->
 
 	for hole, isShow of model.holes
 		if (isShow)
-			circle = simpleCircle(size.holes.coord[hole].x, size.holes.coord[hole].y, size.holes.radius)
-			shapeLayer.add(circle)
+			if (model.holes_rect)
+				hole = whiteRect(size.holes.coord[hole].x, size.holes.coord[hole].y,
+				  settings.hole_rect.width, settings.hole_rect.height)
+			else
+				hole = simpleCircle(size.holes.coord[hole].x, size.holes.coord[hole].y, size.holes.radius)
+			shapeLayer.add(hole)
 
 	leftRule = renderLeftRule(size)
 	topRule = renderTopRule(size)
