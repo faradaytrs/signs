@@ -299,13 +299,13 @@ getMaxTextSize = (model) ->
 		if text.size > max then max = text.size
 	max
 
-getTextSize = (sizes, k = 1) ->
+getTextSize = (sizes) ->
 	maxLen = 0
 	sum = 0
 	for size in sizes
-		width = size.width * k
+		width = size.width
 		if width > maxLen then maxLen = width
-		sum += size.height * k
+		sum += size.height
 	{
 		width: maxLen
 		height: sum
@@ -490,14 +490,22 @@ onChange = (stage, model, errorCallback) ->
 
 	k = getBalancingCoefficient(signSize.width, signSize.height, settings.canvasWidth, settings.canvasHeight)
 
+	# вроде норм
 	sizes = getSizesTexts(model, k)
-	textSize = getTextSize(sizes, k)
+	# вроде норм
+	textSize = getTextSize(sizes)
+	# не понятно зачем нужно это поле, но считает оно неправильно, берет данные из модели а надо из новых размеров
+	textSize.maxTextSize = getMaxTextSize(model)
+
+	# опирается на предыдущую функцию поэтому тоже работает неправильно
+	padding = getPadding(model, textSize)
+	# ну и это соответственно неправильно
 	signSize = getSignSize(textSize, padding)
 
-	###signSize.width *= k
-	signSize.height *= k
-	textSize.width *= k
-	textSize.height *= k###
+	#	signSize.width *= k
+	#	signSize.height *= k
+	#	textSize.width *= k
+	#	textSize.height *= k
 
 	signBegin = {}
 	signBegin.x = getSpace(settings.canvasWidth, signSize.width)
