@@ -286,7 +286,6 @@ getSizesTexts = (model, k = 1) ->
 	for text in model.texts
 		textObj = createText2(text.align, text.text, 0, 0,
 			model.font, text.size * k, model.theme.textColor)
-#		console.log("#{textObj.getTextWidth()} #{textObj.getTextHeight()}")
 		sizes.push {
 			width : textObj.getTextWidth()
 			height: textObj.getTextHeight()
@@ -300,12 +299,13 @@ getMaxTextSize = (model) ->
 		if text.size > max then max = text.size
 	max
 
-getTextSize = (sizes) ->
+getTextSize = (sizes, k = 1) ->
 	maxLen = 0
 	sum = 0
 	for size in sizes
-		if size.width > maxLen then maxLen = size.width
-		sum += size.height
+		width = size.width * k
+		if width > maxLen then maxLen = width
+		sum += size.height * k
 	{
 		width: maxLen
 		height: sum
@@ -487,15 +487,15 @@ onChange = (stage, model, errorCallback) ->
 	k = getBalancingCoefficient(signSize.width, signSize.height, settings.canvasWidth, settings.canvasHeight)
 
 	sizes = getSizesTexts(model, k)
-	textSize = getTextSize(sizes)
+	textSize = getTextSize(sizes, k)
 
-	signSize.width = getSignWidth(textSize.width, padding.width()) # в функцию getWidthSign для каждого model.shape
-	signSize.height = getSignHeight(textSize.height, padding.height())
+	signSize.width = getSignWidth(textSize.width, k * padding.width()) # в функцию getWidthSign для каждого model.shape
+	signSize.height = getSignHeight(textSize.height, k * padding.height())
 
-	signSize.width *= k
+	###signSize.width *= k
 	signSize.height *= k
 	textSize.width *= k
-	textSize.height *= k
+	textSize.height *= k###
 
 	signBegin = {}
 	signBegin.x = getSpace(settings.canvasWidth, signSize.width)
