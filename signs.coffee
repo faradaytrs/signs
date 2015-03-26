@@ -348,6 +348,7 @@ getRoundPadding = (model, textSize) ->
 	}
 
 getBalancingCoefficient = (width, height, canvasWidth, canvasHeight) ->
+	#return 1
 	fatalWidth = width/canvasWidth
 	fatalHeight = height/canvasHeight
 	oneWeUse = if fatalHeight > fatalWidth then fatalHeight else fatalWidth
@@ -530,12 +531,11 @@ reRender = (stage, model, size) ->
 	stage.add textLayer
 
 	for text, id in model.texts
-		textKonva = createText(text.align, text.text,
-		  size.text.x, size.text.y, size.text.width + 1,
-		  model.font, size.k * text.size, color.textColor)
+		textKonva = createText(text.align, text.text, size.text.x, size.text.y, size.text.width,
+			model.font, size.k * text.size - text.size * size.k * 0.05, color.textColor)
 
 		if (settings.debug)
-			rect = simpleRect(size.text.x, size.text.y, size.text.width + 1, textKonva.getHeight())
+			rect = simpleRect(size.text.x, size.text.y, size.text.width, textKonva.getHeight())
 		size.text.y += textKonva.getHeight() + size.padding.text
 
 		if (settings.debug)
