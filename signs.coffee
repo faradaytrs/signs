@@ -3,9 +3,9 @@
 signs = angular.module('Signs', ['file-model'])
 #first one is default
 settings =
-	PIXEL_SIZE: 8
-	MAGIC_COEFF: 0.75
-	STEP_COEFF: 0.9
+	pixel_size: 8
+	magic_coeff: 0.75
+	step_coeff: 0.9
 	canvasHeight: 500
 	canvasWidth: 555
 	shapes: [
@@ -305,7 +305,7 @@ getSignHeight = (size, padding) ->
 	size + padding
 
 toPixel = (mm) ->
-	mm * settings.PIXEL_SIZE
+	mm * settings.pixel_size
 
 getMax = (a, b) ->
 	if (a > b) then a else b
@@ -352,10 +352,10 @@ getBalancingCoefficient = (width, height, canvasWidth, canvasHeight) ->
 	fatalWidth = width/canvasWidth
 	fatalHeight = height/canvasHeight
 	oneWeUse = if fatalHeight > fatalWidth then fatalHeight else fatalWidth
-	if oneWeUse > settings.MAGIC_COEFF
+	if oneWeUse > settings.magic_coeff
 		new_k = oneWeUse
-		while new_k > settings.MAGIC_COEFF
-			new_k = new_k *= settings.STEP_COEFF
+		while new_k > settings.magic_coeff
+			new_k = new_k *= settings.step_coeff
 		new_k/oneWeUse
 	else
 		1
@@ -492,8 +492,8 @@ onChange = (stage, model, errorCallback) ->
 			width: signSize.width
 			height: signSize.height
 			origin:
-				width: Math.round(signSize.width / settings.PIXEL_SIZE / k)
-				height: Math.round(signSize.height / settings.PIXEL_SIZE / k)
+				width: Math.round(signSize.width / settings.pixel_size / k)
+				height: Math.round(signSize.height / settings.pixel_size / k)
 		text:
 			x: textBegin.x
 			y: textBegin.y
