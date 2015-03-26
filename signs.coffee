@@ -281,11 +281,11 @@ simpleCreateText = (layer, model, obj) ->
 getSpace = (width, squareWidth) ->
 	width / 2 - squareWidth / 2
 
-getSizesTexts = (model) ->
+getSizesTexts = (model, k = 1) ->
 	sizes = []
 	for text in model.texts
 		textObj = createText2(text.align, text.text, 0, 0,
-			model.font, text.size, model.theme.textColor)
+			model.font, text.size * k, model.theme.textColor)
 #		console.log("#{textObj.getTextWidth()} #{textObj.getTextHeight()}")
 		sizes.push {
 			width : textObj.getTextWidth()
@@ -476,6 +476,13 @@ onChange = (stage, model, errorCallback) ->
 				padding.text = (textSize.height - getTextHeight(sizes)) / model.texts.length
 
 	k = getBalancingCoefficient(signSize.width, signSize.height, settings.canvasWidth, settings.canvasHeight)
+
+	sizes = getSizesTexts(model, k)
+	textSize.width = getTextWidth(sizes)
+	textSize.height = getTextHeight(sizes)
+
+	signSize.width = getSignWidth(textSize.width, padding.width()) # в функцию getWidthSign для каждого model.shape
+	signSize.height = getSignHeight(textSize.height, padding.height())
 
 	signSize.width *= k
 	signSize.height *= k
