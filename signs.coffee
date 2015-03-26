@@ -323,6 +323,12 @@ getTextHeight = (sizes) ->
 		sum += size.height
 	sum
 
+getSignSize = (textSize, padding) ->
+	{
+		width: textSize.width + padding.width()
+		height: textSize.height + padding.height()
+	}
+
 getSignWidth = (size, padding) ->
 	size + padding
 
@@ -463,9 +469,7 @@ onChange = (stage, model, errorCallback) ->
 				return
 	else
 		padding = getPadding(model, textSize)
-
-		signSize.width = getSignWidth(textSize.width, padding.width()) # в функцию getWidthSign для каждого model.shape
-		signSize.height = getSignHeight(textSize.height, padding.height())
+		signSize = getSignSize(textSize, padding)
 
 		if (!model.size.autoWidth)
 			if (toPixel(model.size.width) < signSize.width)
@@ -488,9 +492,7 @@ onChange = (stage, model, errorCallback) ->
 
 	sizes = getSizesTexts(model, k)
 	textSize = getTextSize(sizes, k)
-
-	signSize.width = getSignWidth(textSize.width, k * padding.width()) # в функцию getWidthSign для каждого model.shape
-	signSize.height = getSignHeight(textSize.height, k * padding.height())
+	signSize = getSignSize(textSize, padding)
 
 	###signSize.width *= k
 	signSize.height *= k
