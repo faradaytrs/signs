@@ -546,7 +546,7 @@ reRender = (stage, model, size) ->
 
 	for text, id in model.texts
 		textKonva = createText(text.align, text.text, size.text.x, size.text.y, size.text.width,
-			model.font, (size.k * text.size).toFixed(1), color.textColor)
+			model.font, size.k * text.size, color.textColor)
 
 		if (settings.debug)
 			rect = simpleRect(size.text.x, size.text.y, size.text.width, textKonva.getHeight())
