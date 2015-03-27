@@ -379,7 +379,6 @@ getRoundPadding = (model, textSize) ->
 	}
 
 getBalancingCoefficient = (width, height, canvasWidth, canvasHeight) ->
-	#return 1
 	fatalWidth = width/canvasWidth
 	fatalHeight = height/canvasHeight
 	oneWeUse = if fatalHeight > fatalWidth then fatalHeight else fatalWidth
@@ -450,8 +449,6 @@ onChange = (stage, model, errorCallback) ->
 	textSize = getTextSize(sizes)
 	textSize.maxTextSize = getMaxTextSize(model)
 
-	signSize = {}
-
 	if model.shape is 'round'
 		if (model.size.autoRadius)
 			padding = getRoundPadding(model, textSize)
@@ -494,12 +491,11 @@ onChange = (stage, model, errorCallback) ->
 	sizes = getSizesTexts(model, k)
 	# вроде норм
 	textSize = getTextSize(sizes)
-	# не понятно зачем нужно это поле, но считает оно неправильно, берет данные из модели а надо из новых размеров
-	textSize.maxTextSize = getMaxTextSize(model)
 
-	# опирается на предыдущую функцию поэтому тоже работает неправильно
+	# не понятно зачем нужно это поле, но считает оно неправильно, берет данные из модели а надо из новых размеров
+	textSize.maxTextSize = getMaxTextSize(model) * k
+
 	padding = getPadding(model, textSize)
-	# ну и это соответственно неправильно
 	signSize = getSignSize(textSize, padding)
 
 	#	signSize.width *= k
@@ -516,9 +512,9 @@ onChange = (stage, model, errorCallback) ->
 		textBegin.x = getSpace(settings.canvasWidth, textSize.width)
 		textBegin.y = getSpace(settings.canvasHeight, textSize.height)
 	else
-		textBegin.x = signBegin.x + k * padding.left
-		textBegin.y = signBegin.y + k * (padding.top + padding.text / 2)
-		padding.text *= k
+		textBegin.x = signBegin.x + padding.left
+		textBegin.y = signBegin.y + (padding.top + padding.text / 2)
+	#padding.text *= k
 
 	#model.size.width = Math.round(signSize.width / settings.PIXEL_SIZE)
 	#model.size.height = Math.round(signSize.height / settings.PIXEL_SIZE)
@@ -543,6 +539,7 @@ onChange = (stage, model, errorCallback) ->
 		holes: getHoles(model, signBegin, signSize, padding.hole, k)
 	}
 
+	console.log "k: #{size.k}"
 	console.log("text")
 	console.log("x: #{size.text.x};	y: #{size.text.y}")
 	console.log("width: #{size.text.width}; height: #{size.text.height}")
