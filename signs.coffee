@@ -281,11 +281,11 @@ simpleCreateText = (layer, model, obj) ->
 getSpace = (width, squareWidth) ->
 	width / 2 - squareWidth / 2
 
-getSizesTexts = (model, k = 1) ->
+getSizesTexts = (model) ->
 	sizes = []
 	for text in model.texts
 		textObj = createText2(text.align, text.text, 0, 0,
-			model.font, text.size * k, model.theme.textColor)
+			model.font, text.size, model.theme.textColor)
 		sizes.push {
 			width : textObj.getTextWidth()
 			height: textObj.getTextHeight()
@@ -341,8 +341,8 @@ toPixel = (mm) ->
 getMax = (a, b) ->
 	if (a > b) then a else b
 
-getPadding = (model, textSize) ->
-	padding = toPixel(textSize.maxTextSize) / 2
+getPadding = (model, textSize, k = 1) ->
+	padding = k * toPixel(textSize.maxTextSize) / 2
 	h = model.holes
 	is_left = h["Middle left"] || h["Top left corner"] || h["Bottom left corner"]
 	is_right = h["Middle right"] || h["Top right corner"] || h["Bottom right corner"]
@@ -490,9 +490,14 @@ onChange = (stage, model, errorCallback) ->
 
 	k = getBalancingCoefficient(signSize.width, signSize.height, settings.canvasWidth, settings.canvasHeight)
 
-	sizes = getSizesTexts(model, k)
 	textSize = getTextSize(sizes, k)
+	textSize.maxTextSize = getMaxTextSize(model) * k
+
+	padding = getPadding(model, textSize)
+	console.log(padding)
+
 	signSize = getSignSize(textSize, padding)
+	console.log(signSize)
 
 	###signSize.width *= k
 	signSize.height *= k
@@ -508,8 +513,8 @@ onChange = (stage, model, errorCallback) ->
 		textBegin.x = getSpace(settings.canvasWidth, textSize.width)
 		textBegin.y = getSpace(settings.canvasHeight, textSize.height)
 	else
-		textBegin.x = signBegin.x + k * padding.left
-		textBegin.y = signBegin.y + k * (padding.top + padding.text / 2)
+		textBegin.x = signBegin.x + padding.left
+		textBegin.y = signBegin.y + (padding.top + padding.text / 2)
 		padding.text *= k
 
 	#model.size.width = Math.round(signSize.width / settings.PIXEL_SIZE)
