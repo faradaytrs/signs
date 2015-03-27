@@ -445,11 +445,11 @@ clearStage = (stage) ->
 onChange = (stage, model, errorCallback) ->
 	console.clear()
 	sizes = getSizesTexts(model)
-
 	textSize = getTextSize(sizes)
 	textSize.maxTextSize = getMaxTextSize(model)
 
 	if model.shape is 'round'
+		signSize = {}
 		if (model.size.autoRadius)
 			padding = getRoundPadding(model, textSize)
 			signSize.width = getSignWidth(textSize.width, padding.indent) # в функцию getWidthSign для каждого model.shape
@@ -487,21 +487,22 @@ onChange = (stage, model, errorCallback) ->
 
 	k = getBalancingCoefficient(signSize.width, signSize.height, settings.canvasWidth, settings.canvasHeight)
 
-	# вроде норм
-	sizes = getSizesTexts(model, k)
-	# вроде норм
-	textSize = getTextSize(sizes)
-
-	# не понятно зачем нужно это поле, но считает оно неправильно, берет данные из модели а надо из новых размеров
-	textSize.maxTextSize = getMaxTextSize(model) * k
-
-	padding = getPadding(model, textSize)
-	signSize = getSignSize(textSize, padding)
-
-	#	signSize.width *= k
-	#	signSize.height *= k
-	#	textSize.width *= k
-	#	textSize.height *= k
+	if (model.size.autoWidth && model.size.autoHeight)
+		sizes = getSizesTexts(model, k)
+		textSize = getTextSize(sizes)
+		textSize.maxTextSize = getMaxTextSize(model) * k
+		padding = getPadding(model, textSize)
+		signSize = getSignSize(textSize, padding)
+	else
+		signSize.width *= k
+		signSize.height *= k
+		textSize.width *= k
+		textSize.height *= k
+		padding.top *= k
+		padding.bottom *= k
+		padding.left *= k
+		padding.right *= k
+		padding.text *= k
 
 	signBegin = {}
 	signBegin.x = getSpace(settings.canvasWidth, signSize.width)
