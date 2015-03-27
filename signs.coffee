@@ -281,11 +281,11 @@ simpleCreateText = (layer, model, obj) ->
 getSpace = (width, squareWidth) ->
 	width / 2 - squareWidth / 2
 
-getSizesTexts = (model) ->
+getSizesTexts = (model, k = 1) ->
 	sizes = []
 	for text in model.texts
 		textObj = createText2(text.align, text.text, 0, 0,
-			model.font, text.size, model.theme.textColor)
+			model.font, text.size * k, model.theme.textColor)
 		sizes.push {
 			width : textObj.getTextWidth()
 			height: textObj.getTextHeight()
@@ -299,13 +299,13 @@ getMaxTextSize = (model) ->
 		if text.size > max then max = text.size
 	max
 
-getTextSize = (sizes, k = 1) ->
+getTextSize = (sizes) ->
 	maxLen = 0
 	sum = 0
 	for size in sizes
-		width = size.width * k
+		width = size.width
 		if width > maxLen then maxLen = width
-		sum += size.height * k
+		sum += size.height
 	{
 		width: maxLen
 		height: sum
@@ -341,8 +341,8 @@ toPixel = (mm) ->
 getMax = (a, b) ->
 	if (a > b) then a else b
 
-getPadding = (model, textSize, k = 1) ->
-	padding = k * toPixel(textSize.maxTextSize) / 2
+getPadding = (model, textSize) ->
+	padding = toPixel(textSize.maxTextSize) / 2
 	h = model.holes
 	is_left = h["Middle left"] || h["Top left corner"] || h["Bottom left corner"]
 	is_right = h["Middle right"] || h["Top right corner"] || h["Bottom right corner"]
@@ -379,7 +379,6 @@ getRoundPadding = (model, textSize) ->
 	}
 
 getBalancingCoefficient = (width, height, canvasWidth, canvasHeight) ->
-	#return 1
 	fatalWidth = width/canvasWidth
 	fatalHeight = height/canvasHeight
 	oneWeUse = if fatalHeight > fatalWidth then fatalHeight else fatalWidth
@@ -450,8 +449,6 @@ onChange = (stage, model, errorCallback) ->
 	textSize = getTextSize(sizes)
 	textSize.maxTextSize = getMaxTextSize(model)
 
-	signSize = {}
-
 	if model.shape is 'round'
 		if (model.size.autoRadius)
 			padding = getRoundPadding(model, textSize)
@@ -490,19 +487,21 @@ onChange = (stage, model, errorCallback) ->
 
 	k = getBalancingCoefficient(signSize.width, signSize.height, settings.canvasWidth, settings.canvasHeight)
 
-	textSize = getTextSize(sizes, k)
+	# вроде норм
+	sizes = getSizesTexts(model, k)
+	# вроде норм
+	textSize = getTextSize(sizes)
+
+	# не понятно зачем нужно это поле, но считает оно неправильно, берет данные из модели а надо из новых размеров
 	textSize.maxTextSize = getMaxTextSize(model) * k
 
 	padding = getPadding(model, textSize)
-	console.log(padding)
-
 	signSize = getSignSize(textSize, padding)
-	console.log(signSize)
 
-	###signSize.width *= k
-	signSize.height *= k
-	textSize.width *= k
-	textSize.height *= k###
+	#	signSize.width *= k
+	#	signSize.height *= k
+	#	textSize.width *= k
+	#	textSize.height *= k
 
 	signBegin = {}
 	signBegin.x = getSpace(settings.canvasWidth, signSize.width)
@@ -515,7 +514,7 @@ onChange = (stage, model, errorCallback) ->
 	else
 		textBegin.x = signBegin.x + padding.left
 		textBegin.y = signBegin.y + (padding.top + padding.text / 2)
-		padding.text *= k
+	#padding.text *= k
 
 	#model.size.width = Math.round(signSize.width / settings.PIXEL_SIZE)
 	#model.size.height = Math.round(signSize.height / settings.PIXEL_SIZE)
@@ -540,6 +539,7 @@ onChange = (stage, model, errorCallback) ->
 		holes: getHoles(model, signBegin, signSize, padding.hole, k)
 	}
 
+	console.log "k: #{size.k}"
 	console.log("text")
 	console.log("x: #{size.text.x};	y: #{size.text.y}")
 	console.log("width: #{size.text.width}; height: #{size.text.height}")
