@@ -459,8 +459,7 @@ onChange = (stage, model, errorCallback) ->
 			signSize.width = signSize.height = toPixel(model.size.radius) # <- diameter
 			padding = getRoundPadding(model, textSize)
 			if (settings.debug)
-				console.log(toPixel(model.size.radius))
-				console.log(textSize.width + padding.indent)
+				console.log(padding.indent)
 			if (toPixel(model.size.radius) < textSize.width + padding.indent)
 				errorCallback("too small radius")
 				return
@@ -487,22 +486,32 @@ onChange = (stage, model, errorCallback) ->
 
 	k = getBalancingCoefficient(signSize.width, signSize.height, settings.canvasWidth, settings.canvasHeight)
 
-	if (model.size.autoWidth && model.size.autoHeight)
+	if model.shape is 'round'
 		sizes = getSizesTexts(model, k)
 		textSize = getTextSize(sizes)
 		textSize.maxTextSize = getMaxTextSize(model) * k
-		padding = getPadding(model, textSize)
-		signSize = getSignSize(textSize, padding)
-	else
+		padding = getRoundPadding(model, textSize)
+
 		signSize.width *= k
 		signSize.height *= k
-		textSize.width *= k
-		textSize.height *= k
-		padding.top *= k
-		padding.bottom *= k
-		padding.left *= k
-		padding.right *= k
-		padding.text *= k
+		padding.indent *= k
+	else
+		if (model.size.autoWidth && model.size.autoHeight)
+			sizes = getSizesTexts(model, k)
+			textSize = getTextSize(sizes)
+			textSize.maxTextSize = getMaxTextSize(model) * k
+			padding = getPadding(model, textSize)
+			signSize = getSignSize(textSize, padding)
+		else
+			signSize.width *= k
+			signSize.height *= k
+			textSize.width *= k
+			textSize.height *= k
+			padding.top *= k
+			padding.bottom *= k
+			padding.left *= k
+			padding.right *= k
+			padding.text *= k
 
 	signBegin = {}
 	signBegin.x = getSpace(settings.canvasWidth, signSize.width)
