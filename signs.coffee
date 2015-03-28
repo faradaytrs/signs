@@ -78,7 +78,6 @@ settings =
 		"Times New Roman"
 		"Arial Narrow"
 		"Calibri"
-		"PT Sans Narrow"
 	]
 	maxLinesOfText: 4
 	margin: 15 # in pixels
