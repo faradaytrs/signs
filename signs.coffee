@@ -228,7 +228,7 @@ renderLeftRule = (size) ->
 			context.lineTo(x, size.sign.y + size.sign.height)
 			context.closePath()
 			context.fillStrokeShape(@)
-			context.fillText("#{size.sign.origin.height} mm", size.sign.x - 60, size.sign.y + size.sign.height / 2)
+			context.fillText("#{size.sign.origin.height} mm", size.sign.x - 65, size.sign.y + size.sign.height / 2)
 		stroke: 'black',
 		strokeWidth: settings.rules.width
 renderTopRule = (size) ->
