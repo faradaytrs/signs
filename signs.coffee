@@ -699,7 +699,7 @@ signs.controller 'textController', ($scope) ->
 		$scope.model.texts[index].style = style
 
 	$scope.increaseSize = (index, size = 1) ->
-		$scope.model.texts[index].size += parseInt(size)
+		$scope.model.texts[index].size = parseInt($scope.model.texts[index].size) + size
 	$scope.decreaseSize = (index, size = 1) ->
 		$scope.increaseSize(index, -size)
 
