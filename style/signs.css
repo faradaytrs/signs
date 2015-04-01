@@ -31,22 +31,23 @@ body .size {
   position: relative;
   top: -7px; }
 body .sign {
-    margin-bottom: 5px;
-}
+  margin-bottom: 5px; }
 body .new {
-    margin-bottom: 5px;
-}
+  margin-bottom: 5px; }
 body .aside {
-    max-height: 502px;
-    overflow: scroll;
-    overflow-x: hidden;
-    overflow-y: auto;
-}
+  max-height: 502px;
+  overflow: scroll;
+  overflow-x: hidden;
+  overflow-y: auto; }
 body .models {
-    width: 100%;
-}
+  width: 100%; }
 body .model {
-    width: 4% !important;
-}
+  width: 4% !important; }
+body .input-field {
+  height: 25px !important;
+  width: 20px;
+  padding: 0px;
+  text-align: center;
+  display: inline-block; }
 
 /*# sourceMappingURL=signs.css.map */
