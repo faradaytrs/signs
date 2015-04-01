@@ -105,6 +105,13 @@
 							<span>{{model.texts[$index].size}}</span>
 							<button ng-click="increaseSize($index)" class="btn btn-success btn-xs">+</button>
 						</div>
+						<div class="btn-group align" role="group">
+							<button ng-repeat="style in textStyles" type="button"
+							        ng-click="setStyle(style, $parent.$index)"
+							        ng-class="{'active': model.texts[$parent.$index].style == style}"
+							        class="btn btn-default btn-xs">{{style}}
+							</button>
+						</div>
 					</div>
 
 					<button ng-click="addText()" ng-hide="isDisabled()" class="btn btn-success">+</button>

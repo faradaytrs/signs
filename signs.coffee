@@ -24,12 +24,17 @@ settings =
 		"Bottom left corner"
 		"Bottom right corner"
 	]
+	textStyles: [
+		"Normal"
+		"Italic"
+		"Bold"
+	]
 	hole_rect: {
 		width: 10
 		height: 5
 	}
 	materials: [
-		"Plastic",
+		"Plastic"
 		"Metal"
 	]
 	alignment: [
@@ -117,6 +122,7 @@ modelTemplate =
 			text: "Your text here"
 			size: 5
 			align: "Center"
+			style: "Normal"
 		}
 	]
 	size: {
@@ -247,25 +253,27 @@ renderTopRule = (size) ->
 		stroke: 'black',
 		strokeWidth: settings.rules.width
 
-createText = (align, str, x, y, width, font, size, color) ->
+createText = (align, str, x, y, width, font, size, color, style = "Normal") ->
 	textObj = new Konva.Text
 		x: x
 		y: y
 		text: str
 		fontSize: toPixel(size)
 		fontFamily: font
+		fontStyle: style.toLowerCase()
 		fill: color
 		width: width
 #		padding: 20
 		align: align.toLowerCase()
 
-createText2 = (align, str, x, y, font, size, color) ->
+createText2 = (align, str, x, y, font, size, color, style = "Normal") ->
 	textObj = new Konva.Text
 		x: x
 		y: y
 		text: str
 		fontSize: toPixel(size)
 		fontFamily: font
+		fontStyle: style.toLowerCase()
 		fill: color
 #		padding: 20
 		align: align.toLowerCase()
@@ -284,7 +292,7 @@ getSizesTexts = (model, k = 1) ->
 	sizes = []
 	for text in model.texts
 		textObj = createText2(text.align, text.text, 0, 0,
-			model.font, text.size * k, model.theme.textColor)
+			model.font, text.size * k, model.theme.textColor, text.style)
 		sizes.push {
 			width : textObj.getTextWidth()
 			height: textObj.getTextHeight()
@@ -577,7 +585,7 @@ reRender = (stage, model, size) ->
 
 	for text, id in model.texts
 		textKonva = createText(text.align, text.text, size.text.x, size.text.y, size.text.width,
-			model.font, size.k * text.size, color.textColor)
+			model.font, size.k * text.size, color.textColor, text.style)
 
 		if (settings.debug)
 			rect = simpleRect(size.text.x, size.text.y, size.text.width, textKonva.getHeight())
@@ -678,6 +686,7 @@ signs.controller 'themesController', ($scope) ->
 		material == "Plastic"
 signs.controller 'textController', ($scope) ->
 	$scope.alignment = settings.alignment
+	$scope.textStyles = settings.textStyles
 	$scope.isDisabled = -> $scope.model.texts.length >= settings.maxLinesOfText
 	$scope.addText = () ->
 		unless $scope.isDisabled()
@@ -686,6 +695,8 @@ signs.controller 'textController', ($scope) ->
 		$scope.model.texts.splice($index, 1)
 	$scope.setAlign = (align, index) ->
 		$scope.model.texts[index].align = align
+	$scope.setStyle = (style, index) ->
+		$scope.model.texts[index].style = style
 	$scope.increaseSize = (index, size = 1) ->
 		$scope.model.texts[index].size += size
 	$scope.decreaseSize = (index, size = 1) ->
