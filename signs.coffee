@@ -450,12 +450,9 @@ clearStage = (stage) ->
 	return
 
 onChange = (stage, model, errorCallback) ->
-	console.clear()
 
-	if ((!model.size.autoRadius && (model.size.radius < 10 ||  model.size.radius > 450)) ||
-		(!model.size.autoHeight && (model.size.height < 10 || model.size.height > 690)) ||
-		(!model.size.autoWidth && (model.size.width < 10 || model.size.width > 450)))
-		return
+	console.clear()
+	if (!model.size.autoRadius && (model.size.radius < 10 || model.size.radius > 450)) || (!model.size.autoHeight && (model.size.height < 10 || model.size.height > 690)) || (!model.size.autoWidth && (model.size.width < 10 || model.size.width > 450)) then return
 
 	sizes = getSizesTexts(model)
 	textSize = getTextSize(sizes)
@@ -497,9 +494,7 @@ onChange = (stage, model, errorCallback) ->
 				textSize.height = signSize.height - padding.height()
 				padding.text = (textSize.height - getTextHeight(sizes)) / model.texts.length
 
-	if (signSize.height < 10 || signSize.height > 690 ||
-		signSize.width < 10 || signSize.width > 450)
-		return
+	if (signSize.height < 10 || signSize.height > 690 || signSize.width < 10 || signSize.width > 450) then return
 
 	k = getBalancingCoefficient(signSize.width, signSize.height, settings.canvasWidth, settings.canvasHeight)
 
@@ -519,6 +514,7 @@ onChange = (stage, model, errorCallback) ->
 			textSize.maxTextSize = getMaxTextSize(model) * k
 			padding = getPadding(model, textSize)
 			signSize = getSignSize(textSize, padding)
+
 		else
 			signSize.width *= k
 			signSize.height *= k
