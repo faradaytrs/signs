@@ -42,12 +42,26 @@ body .aside {
 body .models {
   width: 100%; }
 body .model {
-  width: 4% !important; }
+    width: 2.4% !important;
+}
 body .input-field {
   height: 25px !important;
     width: 40px;
   padding: 0px;
   text-align: center;
   display: inline-block; }
+
+body .info-panel {
+    margin-top: 20px;
+}
+
+body .number {
+    text-align: center !important;
+    padding: 0;
+}
+
+body .number-addon {
+    width: 2% !important;
+}
 
 /*# sourceMappingURL=signs.css.map */
