@@ -771,10 +771,14 @@ signs.controller 'modelsController', ($scope) ->
 			contents = event.target.result
 			if newVal.name.match(/^.*(xls)$/)
 				sheets = XLS.read(contents, {type: "binary"})
+				sheet = sheets.Sheets[sheets.SheetNames[0]]
+				json_sheet = XLS.utils.sheet_to_json(sheet, {range: 3, header: 1})
 			else if newVal.name.match(/^.*(xlsx)$/)
 				sheets = XLSX.read(contents, {type: "binary"})
-			sheet = sheets.Sheets[sheets.SheetNames[0]]
-			json_sheet = XLS.utils.sheet_to_json(sheet, {range: 3, header: 1})
+				sheet = sheets.Sheets[sheets.SheetNames[0]]
+				json_sheet = XLSX.utils.sheet_to_json(sheet, {range: 3, header: 1})
+			else
+				return
 			console.log json_sheet
 			for row, index in json_sheet
 				if index == 0 then break
