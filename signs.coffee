@@ -765,66 +765,67 @@ signs.controller 'modelsController', ($scope) ->
 
 	$scope.file = {}
 	$scope.$watch 'file', (newVal) ->
-		if newVal.name.match(/^.*(xls)$/)
-
-			reader = new FileReader()
-			reader.readAsBinaryString(newVal)
-			reader.onload = (event) ->
-				contents = event.target.result
+		reader = new FileReader()
+		reader.readAsBinaryString(newVal)
+		reader.onload = (event) ->
+			contents = event.target.result
+			if newVal.name.match(/^.*(xls)$/)
 				sheets = XLS.read(contents, {type: "binary"})
-				sheet = sheets.Sheets[sheets.SheetNames[0]]
-				json_sheet = XLS.utils.sheet_to_json(sheet, {range: 3, header: 1})
-				console.log json_sheet
-				for row, index in json_sheet
-					if index == 0 then break
+			else if newVal.name.match(/^.*(xlsx)$/)
+				sheets = XLSX.read(contents, {type: "binary"})
+			sheet = sheets.Sheets[sheets.SheetNames[0]]
+			json_sheet = XLS.utils.sheet_to_json(sheet, {range: 3, header: 1})
+			console.log json_sheet
+			for row, index in json_sheet
+				if index == 0 then break
+				if row[1]? # Rad 1
+					console.log row
+					model = copyObj(modelTemplate)
+					if row[0]? # Antal
+						model.order = row[0]
 					if row[1]? # Rad 1
-						console.log row
-						model = copyObj(modelTemplate)
-						if row[0]? # Antal
-							model.order = row[0]
-						if row[1]? # Rad 1
-							model.texts[0].text = row[1]
-							model.texts[9].size = row[9]
-						if row[2]? # Rad 2
-							model.texts[1].text = row[2]
-							model.texts[10].size = row[10]
-						if row[3]? # Rad 3
-							model.texts[2].text = row[3]
-							model.texts[11].size = row[11]
-						if row[4]? # Rad 4
-							model.texts[3].text = row[4]
-							model.texts[12].size = row[12]
-						if row[5]? # Rad 5
-							model.texts[4].text = row[5]
-							model.texts[13].size = row[13]
-						if row[6]? # Rad 6
-							model.texts[5].text = row[6]
-							model.texts[14].size = row[14]
-						if row[7]? # Rad 7
-							model.texts[6].text = row[7]
-							model.texts[15].size = row[15]
-						if row[8]? # Rad 8
-							model.texts[7].text = row[8]
-							model.texts[16].size = row[16]
-						if row[18]? #width
-							model.size.width = row[18]
-							model.size.autoWidth = false
-						if row[19]? #height
-							model.size.height = row[19]
-							model.size.autoHeight = false
-						# todo make theme import
-						if row[20]? #tape
-							model.tape = true
-						if row[21]?
-							if row[21] == "2-hål"
-								model.holes["Middle left"] = true
-								model.holes["Middle right"] = true
-							if row[21] == "4-hål"
-								model.holes["Top left corner"] = true
-								model.holes["Top right corner"] = true
-								model.holes["Bottom right corner"] = true
-								model.holes["Bottom left corner"] = true
-						console.log model
+						model.texts[0].text = row[1]
+						model.texts[9].size = row[9]
+					if row[2]? # Rad 2
+						model.texts[1].text = row[2]
+						model.texts[10].size = row[10]
+					if row[3]? # Rad 3
+						model.texts[2].text = row[3]
+						model.texts[11].size = row[11]
+					if row[4]? # Rad 4
+						model.texts[3].text = row[4]
+						model.texts[12].size = row[12]
+					if row[5]? # Rad 5
+						model.texts[4].text = row[5]
+						model.texts[13].size = row[13]
+					if row[6]? # Rad 6
+						model.texts[5].text = row[6]
+						model.texts[14].size = row[14]
+					if row[7]? # Rad 7
+						model.texts[6].text = row[7]
+						model.texts[15].size = row[15]
+					if row[8]? # Rad 8
+						model.texts[7].text = row[8]
+						model.texts[16].size = row[16]
+					if row[18]? #width
+						model.size.width = row[18]
+						model.size.autoWidth = false
+					if row[19]? #height
+						model.size.height = row[19]
+						model.size.autoHeight = false
+					# todo make theme import
+					if row[20]? #tape
+						model.tape = true
+					if row[21]?
+						if row[21] == "2-hål"
+							model.holes["Middle left"] = true
+							model.holes["Middle right"] = true
+						if row[21] == "4-hål"
+							model.holes["Top left corner"] = true
+							model.holes["Top right corner"] = true
+							model.holes["Bottom right corner"] = true
+							model.holes["Bottom left corner"] = true
+					console.log model
 
 
 			#sheet to model object
