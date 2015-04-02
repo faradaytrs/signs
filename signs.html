@@ -27,7 +27,11 @@
 				<h3>Cost: <span class="label" ng-class="(calcPrice() == 0) ? 'label-danger' : 'label-success'">{{calcPrice()}} kr</span></h3>
 			</div>
 			<div class="col-md-6">
-
+				<div class="input-group">
+					<span class="input-group-addon" id="basic-addon1">Name of Sign</span>
+					<input ng-value="model.name" ng-model="model.name" type="text" class="form-control"
+					       placeholder="Name of Sign" aria-describedby="basic-addon1">
+				</div>
 			</div>
 			<div class="col-md-4">
 				<ul class="nav nav-pills" ng-controller="materialsController">

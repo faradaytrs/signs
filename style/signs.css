@@ -42,7 +42,7 @@ body .aside {
 body .models {
   width: 100%; }
 body .model {
-    width: 2.4% !important;
+    width: 3% !important;
 }
 body .input-field {
   height: 25px !important;
@@ -50,18 +50,15 @@ body .input-field {
   padding: 0px;
   text-align: center;
   display: inline-block; }
-
 body .info-panel {
     margin-top: 20px;
 }
-
 body .number {
     text-align: center !important;
     padding: 0;
 }
-
 body .number-addon {
-    width: 2% !important;
+    width: 1.4% !important;
 }
 
 /*# sourceMappingURL=signs.css.map */
