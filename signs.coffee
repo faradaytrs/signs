@@ -84,7 +84,7 @@ settings =
 		"Arial Narrow"
 		"Calibri"
 	]
-	maxLinesOfText: 4
+	maxLinesOfText: 8
 	margin: 15 # in pixels
 	radius: 5 # in pixels
 	borderWidth: 1.5 #in pixels
