@@ -8,6 +8,9 @@ settings =
 	step_coeff: 0.9
 	canvasHeight: 500
 	canvasWidth: 555
+	maxWidth: 690
+	maxHeight: 450
+	minSize: 10
 	shapes: [
 		"rectangle"
 		"rounded rectangle"
@@ -445,6 +448,17 @@ getHoles = (model, signBegin, signSize, padding, k) ->
 	}
 	holes
 
+checkSize = (width, height, radius = false) ->
+	str = null;
+	if (height < settings.minSize) then str = "sign height is too small"
+	if (width < settings.minSize) then str = "sign width is too small"
+	if (height > settings.maxHeight) then str = "sign height is too big"
+	if (width > settings.maxWidth) then str = "sign radius is too big"
+	if radius
+		if (radius < settings.minSize)  then str = "sign radius is too small"
+		if (radius > settings.maxHeight) then str = "sign radius is too big"
+	return str || false;
+
 clearStage = (stage) ->
 	stage.clear()
 	layers = stage.getLayers().toArray()
@@ -455,11 +469,10 @@ clearStage = (stage) ->
 onChange = (stage, model, errorCallback) ->
 	console.clear()
 
-	if ((!model.size.autoRadius && (model.size.radius < 10 || model.size.radius > 450)) ||
-	  (!model.size.autoHeight && (model.size.height < 10 || model.size.height > 690)) ||
-	  (!model.size.autoWidth && (model.size.width < 10 || model.size.width > 450)))
-		errorCallback("error size")
-		return
+	if (!model.size.autoHeight || !model.size.autoWidth|| !model.size.autoRadius)
+		if ((str = checkSize(model.size.width, model.size.height, model.size.radius)))
+			errorCallback(str)
+			return
 
 	sizes = getSizesTexts(model)
 	textSize = getTextSize(sizes)
@@ -501,9 +514,8 @@ onChange = (stage, model, errorCallback) ->
 				textSize.height = signSize.height - padding.height()
 				padding.text = (textSize.height - getTextHeight(sizes)) / model.texts.length
 
-	if (toMillimeters(signSize.height) < 10 || toMillimeters(signSize.height) > 690 ||
-	  toMillimeters(signSize.width) < 10 || toMillimeters(signSize.width) > 450)
-		errorCallback("error size")
+	if (str = checkSize(toMillimeters(signSize.width), toMillimeters(signSize.height)))
+		errorCallback(str)
 		return
 
 	k = getBalancingCoefficient(signSize.width, signSize.height, settings.canvasWidth, settings.canvasHeight)
