@@ -44,6 +44,11 @@ settings =
 	]
 	themes: [
 		{
+			name: "black / white"
+			bgColor: "white"
+			textColor: "black"
+		}
+		{
 			name: "white / black"
 			bgColor: "#000"
 			textColor: "#FFF"
@@ -51,11 +56,6 @@ settings =
 		{
 			name: "black / yellow"
 			bgColor: "yellow"
-			textColor: "black"
-		}
-		{
-			name: "black / white"
-			bgColor: "white"
 			textColor: "black"
 		}
 		{
