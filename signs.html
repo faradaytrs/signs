@@ -176,7 +176,8 @@
 							<span class="input-group-addon">
 					            <span>Width: </span>
 					        </span>
-							<input ng-readonly="model.size.autoWidth" ng-model="model.size.width"
+							<input min="{{minSize}}" max="{{maxWidth}} ng-readonly=" model.size.autoWidth"
+							ng-model="model.size.width"
 							       ng-value="model.size.width" class="form-control" type="number"/>
 							<span class="input-group-btn">
 								<button class="btn btn-default" ng-click="model.size.autoWidth = !model.size.autoWidth"
@@ -192,7 +193,7 @@
 							<span class="input-group-addon">
 					            <span>Height: </span>
 					        </span>
-							<input ng-readonly="model.size.autoHeight"
+							<input min="{{minSize}}" max="{{maxHeight}}" ng-readonly="model.size.autoHeight"
 							       ng-model="model.size.height" ng-value="model.size.height" class="form-control"
 							       type="number"/>
 
@@ -210,7 +211,7 @@
 							<span class="input-group-addon">
 					            <span>Radius: </span>
 					        </span>
-							<input ng-readonly="model.size.autoRadius"
+							<input min="{{minSize}}" max="{{maxRadius}}" ng-readonly="model.size.autoRadius"
 							       ng-model="model.size.radius" ng-value="model.size.radius" class="form-control"
 							       type="number"/>
 

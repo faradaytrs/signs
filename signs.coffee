@@ -10,6 +10,7 @@ settings =
 	canvasWidth: 555
 	maxWidth: 690
 	maxHeight: 450
+	maxRadius: 450
 	minSize: 10
 	shapes: [
 		"rectangle"
@@ -732,6 +733,10 @@ signs.controller 'textController', ($scope) ->
 		$scope.increaseSize(index, -size)
 
 signs.controller 'modelsController', ($scope) ->
+	$scope.minSize = settings.minSize
+	$scope.maxHeight = settings.maxHeight
+	$scope.maxWidth = settings.maxWidth
+	$scope.maxRadius = settings.maxRadius
 	$scope.errorCallback = (error) ->
 		if error?
 			console.warn error
