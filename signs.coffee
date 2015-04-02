@@ -44,14 +44,14 @@ settings =
 	]
 	themes: [
 		{
-			name: "black / yellow"
-			bgColor: "yellow"
-			textColor: "black"
-		}
-		{
 			name: "white / black"
 			bgColor: "#000"
 			textColor: "#FFF"
+		}
+		{
+			name: "black / yellow"
+			bgColor: "yellow"
+			textColor: "black"
 		}
 		{
 			name: "black / white"
