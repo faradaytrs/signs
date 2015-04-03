@@ -702,7 +702,7 @@ signs.controller 'holesController', ($scope, $rootScope) ->
 				$scope.model.holes["Top left corner"] = true
 				$scope.model.holes["Top right corner"] = true
 				$scope.model.holes["Bottom left corner"] = true
-				$scope.model.holes["Top right corner"] = true
+				$scope.model.holes["Bottom right corner"] = true
 	$rootScope.setHole = $scope.setHole
 	$scope.showHole = (hole) ->
 		if hole == "4 hål" and $scope.model.shape == "rund"
