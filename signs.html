@@ -30,7 +30,7 @@
 			<div class="col-md-6">
 				<div class="input-group">
 					<span class="input-group-addon" id="basic-addon1">Skyltnamn</span>
-					<input ng-value="model.name" ng-model="model.name" type="text" class="form-control"
+					<input maxlength="22" ng-value="model.name" ng-model="model.name" type="text" class="form-control"
 					       placeholder="Skyltnamn" aria-describedby="basic-addon1">
 				</div>
 			</div>
@@ -205,7 +205,7 @@
 					<table class="table">
 						<thead>
 						<tr>
-							<th>#</th>
+							<th>Namn</th>
 							<th>Antal</th>
 							<th>Pris</th>
 							<th>Kostnad</th>
@@ -213,8 +213,8 @@
 						</thead>
 						<tbody>
 						<tr ng-class="{'success': current == $index}" ng-repeat="template in models track by $index"
-						    ng-hide="calcPrice(template) == 0">
-							<td>{{$index + 1}}</td>
+						    ng-hide="calcPrice(template)*template.order == 0">
+							<td>{{template.name}}</td>
 							<td>{{template.order}}</td>
 							<td>{{calcPrice(template)}} kr</td>
 							<td><span class="label label-success">{{calcPrice(template) * template.order}} kr</span>
