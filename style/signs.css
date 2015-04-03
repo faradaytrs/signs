@@ -1,3 +1,7 @@
+body input[type=number]::-webkit-inner-spin-button,
+body input[type=number]::-webkit-outer-spin-button {
+    opacity: 1;
+}
 body h3 {
   margin-top: 4px; }
 body .container {
