@@ -13,9 +13,9 @@ settings =
 	maxRadius: 450
 	minSize: 10
 	shapes: [
-		"rectangle"
-		"rounded rectangle"
-		"round"
+		"rektangulär"
+		"rundad rektangulär"
+		"rund"
 	]
 	holes_radius: 9
 	min_hole_padd: 5
@@ -30,52 +30,57 @@ settings =
 	]
 	textStyles: [
 		"Normal"
-		"Italic"
-		"Bold"
+		"Kursiv"
+		"Fet"
 	]
 	hole_rect: {
 		width: 10
 		height: 5
 	}
 	materials: [
-		"Plastic"
-		"Metal"
+		"Plast"
+		"Metall"
 	]
 	alignment: [
-		"Left"
-		"Center"
-		"Right"
+		"Vänster"
+		"Mitten"
+		"Höger"
 	]
 	themes: [
 		{
-			name: "black / white"
+			name: "vit / svart"
 			bgColor: "white"
 			textColor: "black"
 		}
 		{
-			name: "white / black"
-			bgColor: "#000"
-			textColor: "#FFF"
-		}
-		{
-			name: "black / yellow"
+			name: "gul / svart"
 			bgColor: "yellow"
 			textColor: "black"
 		}
 		{
-			name: "black / red"
-			bgColor: "red"
-			textColor: "black"
+			name: "grön / vit"
+			bgColor: "green"
+			textColor: "white"
 		}
 		{
-			name: "white / red"
+			name: "röd / vit"
 			bgColor: "red"
 			textColor: "white"
 		}
 		{
-			name: "red / white"
-			bgColor: "white"
-			textColor: "red"
+			name: "brun / vit"
+			bgColor: "brown"
+			textColor: "white"
+		}
+		{
+			name: "blå / vit"
+			bgColor: "blue"
+			textColor: "white"
+		}
+		{
+			name: "svart / vit"
+			bgColor: "black"
+			textColor: "white"
 		}
 	]
 	theme_metal: {
@@ -105,7 +110,7 @@ copyObj = (obj) ->
 
 #here we can setup default settings
 modelTemplate =
-	name: "Sign"
+	name: "Skylt"
 	shape: settings.shapes[0]
 	holes: {
 		"Top": false
@@ -123,9 +128,9 @@ modelTemplate =
 	order: 1
 	texts: [
 		{
-			text: "Your text here"
+			text: "Din text här"
 			size: 5
-			align: "Center"
+			align: "Mitten"
 			style: "Normal"
 		}
 	]
@@ -257,6 +262,17 @@ renderTopRule = (size) ->
 		stroke: 'black',
 		strokeWidth: settings.rules.width
 
+translateAlign = (align) ->
+	switch align
+		when "Vänster" then "left"
+		when "Mitten" then "center"
+		when "Höger" then "right"
+translateTextStyle = (style) ->
+	switch style
+		when "Normal" then "normal"
+		when "Kursiv" then "italic"
+		when "Fet" then "bold"
+
 createText = (align, str, x, y, width, font, size, color, style = "Normal") ->
 	textObj = new Konva.Text
 		x: x
@@ -264,11 +280,11 @@ createText = (align, str, x, y, width, font, size, color, style = "Normal") ->
 		text: str
 		fontSize: toPixel(size)
 		fontFamily: font
-		fontStyle: style.toLowerCase()
+		fontStyle: translateTextStyle(style)
 		fill: color
 		width: width
 #		padding: 20
-		align: align.toLowerCase()
+		align: translateAlign(align)
 
 createText2 = (align, str, x, y, font, size, color, style = "Normal") ->
 	textObj = new Konva.Text
@@ -277,10 +293,10 @@ createText2 = (align, str, x, y, font, size, color, style = "Normal") ->
 		text: str
 		fontSize: toPixel(size)
 		fontFamily: font
-		fontStyle: style.toLowerCase()
+		fontStyle: translateTextStyle(style)
 		fill: color
 #		padding: 20
-		align: align.toLowerCase()
+		align: translateAlign(align)
 
 simpleCreateText = (layer, model, obj) ->
 	textObj = createText(obj.align, obj.text, 0, 0, 0,
@@ -451,13 +467,13 @@ getHoles = (model, signBegin, signSize, padding, k) ->
 
 checkSize = (width, height, radius = false) ->
 	str = null;
-	if (height < settings.minSize) then str = "sign height is too small"
-	if (width < settings.minSize) then str = "sign width is too small"
-	if (height > settings.maxHeight) then str = "sign height is too big"
-	if (width > settings.maxWidth) then str = "sign radius is too big"
+	if (height < settings.minSize) then str = "Höjden på skylten är för liten"
+	if (width < settings.minSize) then str = "Bredden på skylten är för liten"
+	if (height > settings.maxHeight) then str = "Höjden på skylten är för stor"
+	if (width > settings.maxWidth) then str = "Bredden på skylten är för stor"
 	if radius
-		if (radius < settings.minSize)  then str = "sign radius is too small"
-		if (radius > settings.maxHeight) then str = "sign radius is too big"
+		if (radius < settings.minSize)  then str = "Diametern för skylten är för liten"
+		if (radius > settings.maxHeight) then str = "Diametern för skylten är för stor"
 	return str || false;
 
 clearStage = (stage) ->
@@ -479,7 +495,7 @@ onChange = (stage, model, errorCallback) ->
 	textSize = getTextSize(sizes)
 	textSize.maxTextSize = getMaxTextSize(model)
 
-	if model.shape is 'round'
+	if model.shape is 'rund'
 		signSize = {}
 		if (model.size.autoRadius)
 			padding = getRoundPadding(model, textSize)
@@ -492,7 +508,7 @@ onChange = (stage, model, errorCallback) ->
 			if (settings.debug)
 				console.log(padding.indent)
 			if (toPixel(model.size.radius) < textSize.width + padding.indent)
-				errorCallback("too small radius")
+				errorCallback("För liten diameter")
 				return
 	else
 		padding = getPadding(model, textSize)
@@ -500,7 +516,7 @@ onChange = (stage, model, errorCallback) ->
 
 		if (!model.size.autoWidth)
 			if (toPixel(model.size.width) < signSize.width)
-				errorCallback("too small width")
+				errorCallback("För liten bredd")
 				return
 			else
 				signSize.width = toPixel(model.size.width)
@@ -508,7 +524,7 @@ onChange = (stage, model, errorCallback) ->
 
 		if (!model.size.autoHeight)
 			if (toPixel(model.size.height) < signSize.height)
-				errorCallback("too small height")
+				errorCallback("För liten höjd")
 				return
 			else
 				signSize.height = toPixel(model.size.height)
@@ -521,7 +537,7 @@ onChange = (stage, model, errorCallback) ->
 
 	k = getBalancingCoefficient(signSize.width, signSize.height, settings.canvasWidth, settings.canvasHeight)
 
-	if model.shape is 'round'
+	if model.shape is 'rund'
 		sizes = getSizesTexts(model, k)
 		textSize = getTextSize(sizes)
 		textSize.maxTextSize = getMaxTextSize(model) * k
@@ -554,7 +570,7 @@ onChange = (stage, model, errorCallback) ->
 	signBegin.y = getSpace(settings.canvasHeight, signSize.height)
 
 	textBegin = {}
-	if model.shape is 'round'
+	if model.shape is 'rund'
 		textBegin.x = getSpace(settings.canvasWidth, textSize.width)
 		textBegin.y = getSpace(settings.canvasHeight, textSize.height)
 	else
@@ -600,7 +616,7 @@ reRender = (stage, model, size) ->
 	clearStage(stage)
 
 	color = {}
-	if (model.material is 'Plastic')
+	if (model.material is 'Plast')
 		color.bgColor = model.theme.bgColor
 		color.textColor = model.theme.textColor
 	else
@@ -626,10 +642,10 @@ reRender = (stage, model, size) ->
 	#	forEnd
 
 	switch model.shape
-		when 'rectangle'
+		when 'rektangulär'
 			shape = rectKonva(size.sign.x, size.sign.y, size.sign.width, size.sign.height,
 			  settings.borderWidth, color.bgColor, color.textColor)
-		when 'round'
+		when 'rund'
 			shape = circleKonva(size.sign.x, size.sign.y, size.sign.width / 2,
 			  settings.borderWidth, color.bgColor, color.textColor)
 			if (settings.debug)
@@ -639,7 +655,7 @@ reRender = (stage, model, size) ->
 			  settings.radius, settings.borderWidth, color.bgColor, color.textColor)
 
 	shapeLayer.add(shape)
-	if (settings.debug && model.shape is 'round')
+	if (settings.debug && model.shape is 'Rund')
 		shapeLayer.add(debug)
 
 	for hole, isShow of model.holes
@@ -663,27 +679,28 @@ reRender = (stage, model, size) ->
 signs.controller 'shapesController', ($scope) ->
 	$scope.shapes = settings.shapes
 	$scope.showShapes = (material) ->
-		material == "Plastic"
+		material == "Plast"
 signs.controller 'holesController', ($scope) ->
 	$scope.holes = settings.holes
 	$scope.showHoles = (material) ->
-		material == "Plastic"
+		material == "Plast"
 signs.controller 'fontsController', ($scope) ->
 	$scope.fonts = settings.fonts
 	$scope.showFonts = (material) ->
-		material == "Plastic" or material == "Metal"
+		material == "Plast" or material == "Metall"
 signs.controller 'materialsController', ($scope) ->
 	$scope.materials = settings.materials
 	$scope.changeMaterial = (material) ->
 		unless $scope.model.material is material
 			unless JSON.stringify($scope.model) == JSON.stringify(modelTemplate)
 				swal
-					title: "Are you sure?"
-					text: "You lose all current settings if you switch material!"
+					title: "Är du säker?"
+					text: "Du kommer att förlora alla nuvarande inställningar om du byter material!"
 					type: "warning"
 					showCancelButton: true
 					confirmButtonColor: "green"
-					confirmButtonText: "Okay!"
+					confirmButtonText: "Ja"
+					cancelButtonText: "Ångra"
 					closeOnConfirm: yes
 				, ->
 					$scope.$apply ->
@@ -696,23 +713,23 @@ signs.controller 'materialsController', ($scope) ->
 
 signs.controller 'sizeController', ($scope) ->
 	$scope.showSize = ->
-		$scope.model.material == "Plastic" or $scope.model.material == "Metal"
+		$scope.model.material == "Plast" or $scope.model.material == "Metall"
 	$scope.showRadius = ->
-		$scope.model.shape == "round"
+		$scope.model.shape == "rund"
 	$scope.showWidthHeight = ->
-		$scope.model.shape == "rectangle" or $scope.model.shape == "rounded rectangle"
+		$scope.model.shape == "rektangulär" or $scope.model.shape == "rundad rektangulär"
 	$scope.showRadiusError = () ->
-		$scope.sizeError == "too small radius"
+		$scope.sizeError == "För liten diameter"
 	$scope.showWidthError = () ->
-		$scope.sizeError == "too small width"
+		$scope.sizeError == "För liten bredd"
 	$scope.showHeightError = () ->
-		$scope.sizeError == "too small height"
+		$scope.sizeError == "För liten höjd"
 
 	#something here
 signs.controller 'themesController', ($scope) ->
 	$scope.themes = settings.themes
 	$scope.showThemes = (material) ->
-		material == "Plastic"
+		material == "Plast"
 signs.controller 'textController', ($scope) ->
 	$scope.alignment = settings.alignment
 	$scope.textStyles = settings.textStyles
@@ -742,11 +759,11 @@ signs.controller 'modelsController', ($scope) ->
 			console.warn error
 		$scope.sizeError = error
 		switch error
-			when "too small height"
+			when "För liten höjd"
 				1
-			when "too small width"
+			when "För liten bredd"
 				2
-			when "too small radius"
+			when "För liten diameter"
 				3
 	$scope.removeSign = ($index) ->
 		$scope.models.splice($index, 1)

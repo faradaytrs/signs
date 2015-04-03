@@ -4,7 +4,7 @@
 <head>
 	<meta charset="UTF-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-	<title>Online signs</title>
+	<title>Beställ skyltar online</title>
 	<script src="bower_components/sweetalert/lib/sweet-alert.min.js"></script>
 	<link rel="stylesheet" href="bower_components/sweetalert/lib/sweet-alert.css"/>
 	<script src="bower_components/konva/konva.min.js"></script>
@@ -24,13 +24,14 @@
 	<div class="container" ng-controller="modelsController">
 		<div class="row">
 			<div class="col-md-2">
-				<h3>Cost: <span class="label" ng-class="(calcPrice() == 0) ? 'label-danger' : 'label-success'">{{calcPrice()}} kr</span></h3>
+				<h3>Pris: <span class="label" ng-class="(calcPrice() == 0) ? 'label-danger' : 'label-success'">{{calcPrice()}} kr</span>
+				</h3>
 			</div>
 			<div class="col-md-6">
 				<div class="input-group">
-					<span class="input-group-addon" id="basic-addon1">Name of Sign</span>
+					<span class="input-group-addon" id="basic-addon1">Skyltnamn</span>
 					<input ng-value="model.name" ng-model="model.name" type="text" class="form-control"
-					       placeholder="Name of Sign" aria-describedby="basic-addon1">
+					       placeholder="Skyltnamn" aria-describedby="basic-addon1">
 				</div>
 			</div>
 			<div class="col-md-4">
@@ -45,15 +46,6 @@
 		</div>
 		<div class="row info-panel">
 			<div class="col-md-2">
-				<!--<div class="form-group">
-					<div class="input-group">
-						<label class="sr-only" for="order">Order</label>
-
-						<div class="input-group-addon">Order</div>
-						<input type="number" min="0" max="10000" id="order" maxlength="18" ng-model="model.order"
-						       class="form-control" placeholder="Amount" value="{{model.order}}"/>
-					</div>
-				</div>-->
 			</div>
 			<div class="col-md-6">
 				error message
@@ -65,7 +57,7 @@
 
 		<div class="row">
 			<div class="col-md-2 aside">
-				<h4>Signs:</h4>
+				<h4>Skyltar:</h4>
 				<div ng-repeat="model in models track by $index" class="sign">
 					<div class="btn-group btn-group-justified input-group models" role="group">
 						<div class="btn-group model">
@@ -88,12 +80,12 @@
 				</div>
 				<div class="new">
 					<button class="btn btn-block btn-primary" ng-click="newSign()"><span
-							class="glyphicon glyphicon-plus"></span> New Sign
+							class="glyphicon glyphicon-plus"></span> Ny skylt
 					</button>
 				</div>
 				<div class="import">
 					<button class="btn btn-block btn-success" ng-click="triggerImport()"><span
-							class="glyphicon glyphicon-upload"></span> Import Sign
+							class="glyphicon glyphicon-upload"></span> Importera
 					</button>
 				</div>
 				<input id="file" type="file" file-model='file' ng-hide="true"/>
@@ -136,7 +128,7 @@
 						</div>
 					</div>
 
-					<button ng-click="addText()" ng-hide="isDisabled()" class="btn btn-success">+</button>
+					<button ng-click="addText()" ng-hide="isDisabled()" class="btn btn-success">Lägg till rad</button>
 
 				</div>
 
@@ -158,7 +150,7 @@
 		<div class="row">
 			<div class="col-md-4">
 				<div ng-controller="shapesController" ng-show="showShapes(model.material)">
-					<h4>Shapes:</h4>
+					<h4>Skylttyp:</h4>
 
 					<div class="list-group">
 						<a ng-class="{'active': model.shape == shape}" ng-repeat="shape in shapes"
@@ -169,12 +161,12 @@
 			</div>
 			<div class="col-md-4">
 				<div ng-controller="sizeController" ng-show="showSize(model.material)">
-					<h4>Size: {{sizeError}}</h4>
+					<h4>Storlek: {{sizeError}}</h4>
 
 					<div class="width" ng-show="showWidthHeight()">
 						<div class="input-group" ng-class="{'has-error': showWidthError()}">
 							<span class="input-group-addon">
-					            <span>Width: </span>
+					            <span>Bredd: </span>
 					        </span>
 							<input min="{{minSize}}" max="{{maxWidth}}" ng-readonly="model.size.autoWidth"
 							       ng-model="model.size.width"
@@ -182,7 +174,7 @@
 							<span class="input-group-btn">
 								<button class="btn btn-default" ng-click="model.size.autoWidth = !model.size.autoWidth"
 								        ng-class="{'btn-success': model.size.autoWidth, 'btn-warning': !model.size.autoWidth}"
-								        type="button">Auto {{(model.size.autoWidth) ? 'ON' : 'OFF'}}
+								        type="button">{{(model.size.autoWidth) ? 'Automatiskt' : 'Manuellt'}}
 								</button>
 							</span>
 						</div>
@@ -191,7 +183,7 @@
 					<div class="height" ng-show="showWidthHeight()">
 						<div class="input-group" ng-class="{'has-error': showHeightError()}">
 							<span class="input-group-addon">
-					            <span>Height: </span>
+					            <span>Höjd: </span>
 					        </span>
 							<input min="{{minSize}}" max="{{maxHeight}}" ng-readonly="model.size.autoHeight"
 							       ng-model="model.size.height" ng-value="model.size.height" class="form-control"
@@ -201,7 +193,7 @@
 								<button class="btn btn-default"
 								        ng-click="model.size.autoHeight = !model.size.autoHeight"
 								        ng-class="{'btn-success': model.size.autoHeight, 'btn-warning': !model.size.autoHeight}"
-								        type="button">Auto {{(model.size.autoHeight) ? 'ON' : 'OFF'}}
+								        type="button">{{(model.size.autoHeight) ? 'Automatiskt' : 'Manuellt'}}
 								</button>
 							</span>
 						</div>
@@ -209,7 +201,7 @@
 					<div class="radius" ng-show="showRadius()">
 						<div class="input-group" ng-class="{'has-error': showRadiusError()}">
 							<span class="input-group-addon">
-					            <span>Radius: </span>
+					            <span>Diameter: </span>
 					        </span>
 							<input min="{{minSize}}" max="{{maxRadius}}" ng-readonly="model.size.autoRadius"
 							       ng-model="model.size.radius" ng-value="model.size.radius" class="form-control"
@@ -219,7 +211,7 @@
 								<button class="btn btn-default"
 								        ng-click="model.size.autoRadius = !model.size.autoRadius"
 								        ng-class="{'btn-success': model.size.autoRadius, 'btn-warning': !model.size.autoRadius}"
-								        type="button">Auto {{(model.size.autoRadius) ? 'ON' : 'OFF'}}
+								        type="button">{{(model.size.autoRadius) ? 'Automatiskt' : 'Manuellt'}}
 								</button>
 							</span>
 						</div>
@@ -229,7 +221,7 @@
 			</div>
 			<div class="col-md-4">
 				<div ng-controller="themesController" ng-show="showThemes(model.material)">
-					<h4>Themes:</h4>
+					<h4>Färg (text / skylt):</h4>
 
 					<div class="btn-group">
 						<button type="button" class="form-control btn btn-default dropdown-toggle"
@@ -243,7 +235,7 @@
 					</div>
 				</div>
 				<div ng-controller="fontsController" ng-show="showFonts(model.material)">
-					<h4>Fonts:</h4>
+					<h4>Font:</h4>
 
 					<div class="btn-group">
 						<button type="button" class="form-control btn btn-default dropdown-toggle"
@@ -262,13 +254,13 @@
 			<div class="col-md-2"></div>
 			<div class="col-md-6">
 				<div ng-hide="summary(models).price == 0" class="order">
-					<h3>Your order:</h3>
+					<h3>Din beställning:</h3>
 					<table class="table">
 						<thead>
 						<tr>
 							<th>#</th>
-							<th>Amount</th>
-							<th>Cost</th>
+							<th>Antal</th>
+							<th>Kostnad</th>
 						</tr>
 						</thead>
 						<tbody>
@@ -287,7 +279,7 @@
 						</tr>
 						</tfoot>
 					</table>
-					<button class="btn btn-success btn-lg">Order everything</button>
+					<button class="btn btn-success btn-lg">Beställ</button>
 				</div>
 			</div>
 		</div>
