@@ -482,6 +482,10 @@ clearStage = (stage) ->
 
 onChange = (stage, model, errorCallback) ->
 	console.clear()
+	for text in model.texts
+		if text.text == ""
+			clearStage(stage)
+			return
 
 	if (!model.size.autoHeight || !model.size.autoWidth|| !model.size.autoRadius)
 		if ((str = checkSize(model.size.width, model.size.height, model.size.radius)))
