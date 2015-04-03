@@ -19,14 +19,10 @@ settings =
 	]
 	holes_radius: 9
 	min_hole_padd: 5
-	holes: [
-		"Top"
-		"Top left corner"
-		"Top right corner"
-		"Middle left"
-		"Middle right"
-		"Bottom left corner"
-		"Bottom right corner"
+	holes_interface: [
+		"Inga"
+		"2 hål"
+		"4 hål"
 	]
 	textStyles: [
 		"Normal"
@@ -48,37 +44,37 @@ settings =
 	]
 	themes: [
 		{
-			name: "vit / svart"
+			name: "svart / vit"
 			bgColor: "white"
 			textColor: "black"
 		}
 		{
 			name: "gul / svart"
-			bgColor: "yellow"
-			textColor: "black"
+			bgColor: "black"
+			textColor: "yellow"
 		}
 		{
 			name: "grön / vit"
-			bgColor: "green"
-			textColor: "white"
+			bgColor: "white"
+			textColor: "green"
 		}
 		{
 			name: "röd / vit"
-			bgColor: "red"
-			textColor: "white"
+			bgColor: "white"
+			textColor: "red"
 		}
 		{
 			name: "brun / vit"
-			bgColor: "brown"
-			textColor: "white"
+			bgColor: "white"
+			textColor: "#964B00"
 		}
 		{
 			name: "blå / vit"
-			bgColor: "blue"
-			textColor: "white"
+			bgColor: "white"
+			textColor: "blue"
 		}
 		{
-			name: "svart / vit"
+			name: "vit / svart"
 			bgColor: "black"
 			textColor: "white"
 		}
@@ -95,7 +91,7 @@ settings =
 	]
 	maxLinesOfText: 8
 	margin: 15 # in pixels
-	radius: 5 # in pixels
+	radius: 15 # in pixels
 	borderWidth: 1.5 #in pixels
 	rules:
 		indent: 25
@@ -677,14 +673,43 @@ reRender = (stage, model, size) ->
 	textLayer.draw()
 
 #controllers
-signs.controller 'shapesController', ($scope) ->
+signs.controller 'shapesController', ($scope, $rootScope) ->
 	$scope.shapes = settings.shapes
 	$scope.showShapes = (material) ->
 		material == "Plast"
-signs.controller 'holesController', ($scope) ->
-	$scope.holes = settings.holes
+	$scope.setShape = (shape) ->
+		$scope.model.shape = shape
+		if shape == "rund"
+			$rootScope.setHole("Inga")
+signs.controller 'holesController', ($scope, $rootScope) ->
+	$scope.holes = settings.holes_interface
 	$scope.showHoles = (material) ->
 		material == "Plast"
+	$scope.getHoleName = ->
+		if $scope.model.holes["Middle left"] and $scope.model.holes["Middle right"]
+			return "2 hål"
+		else if $scope.model.holes["Top left corner"] and $scope.model.holes["Top right corner"] and $scope.model.holes["Bottom left corner"] and $scope.model.holes["Top right corner"]
+			return "4 hål"
+		"Inga"
+	$scope.setHole = (hole) ->
+		for key, value of $scope.model.holes
+			$scope.model.holes[key] = false
+		switch hole
+			when '2 hål'
+				$scope.model.holes["Middle left"] = true
+				$scope.model.holes["Middle right"] = true
+			when '4 hål'
+				$scope.model.holes["Top left corner"] = true
+				$scope.model.holes["Top right corner"] = true
+				$scope.model.holes["Bottom left corner"] = true
+				$scope.model.holes["Top right corner"] = true
+	$rootScope.setHole = $scope.setHole
+	$scope.showHole = (hole) ->
+		if hole == "4 hål" and $scope.model.shape == "rund"
+			return false
+		true
+
+
 signs.controller 'fontsController', ($scope) ->
 	$scope.fonts = settings.fonts
 	$scope.showFonts = (material) ->

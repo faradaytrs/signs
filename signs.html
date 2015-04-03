@@ -133,12 +133,18 @@
 				</div>
 
 				<div ng-controller="holesController" ng-show="showHoles(model.material)">
-					<h4>Holes:</h4>
-					<div class="checkbox" ng-repeat="hole in holes">
-						<label>
-							<input ng-value="hole" ng-model="model.holes[hole]" name="holes" type="checkbox"/>
-							<span>{{hole}}</span>
-						</label>
+					<h4>Hål:</h4>
+
+					<div class="btn-group">
+						<button type="button" class="form-control btn btn-default dropdown-toggle"
+						        data-toggle="dropdown">
+							{{getHoleName()}} <span class="caret"></span>
+						</button>
+						<ul class="dropdown-menu" role="menu">
+							<li ng-show="showHole(hole)" ng-repeat="hole in holes"><a href="#/"
+							                                                          ng-click="setHole(hole)">{{hole}}</a>
+							</li>
+						</ul>
 					</div>
 				</div>
 
@@ -154,7 +160,7 @@
 
 					<div class="list-group">
 						<a ng-class="{'active': model.shape == shape}" ng-repeat="shape in shapes"
-						   ng-click="model.shape = shape" href="#/" class="list-group-item">{{shape}}</a>
+						   ng-click="setShape(shape)" href="#/" class="list-group-item">{{shape}}</a>
 					</div>
 
 				</div>
