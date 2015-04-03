@@ -132,6 +132,34 @@
 
 				</div>
 
+				</div>
+
+
+			</div>
+
+		<div class="row">
+			<div class="col-md-4">
+				<div ng-controller="shapesController" ng-show="showShapes(model.material)">
+					<h4>Skylttyp:</h4>
+
+					<!--<div class="list-group">-->
+					<!--<a ng-class="{'active': model.shape == shape}" ng-repeat="shape in shapes"-->
+					<!--ng-click="setShape(shape)" href="#/" class="list-group-item">{{shape}}</a>-->
+					<!--</div>-->
+
+					<div class="btn-group">
+						<button type="button" class="form-control btn btn-default dropdown-toggle"
+						        data-toggle="dropdown">
+							{{model.shape}} <span class="caret"></span>
+						</button>
+						<ul class="dropdown-menu" role="menu">
+							<li ng-repeat="shape in shapes"><a href="#/" ng-click="setShape(shape)">{{shape}}</a>
+							</li>
+						</ul>
+					</div>
+
+				</div>
+
 				<div ng-controller="holesController" ng-show="showHoles(model.material)">
 					<h4>Hål:</h4>
 
@@ -147,26 +175,10 @@
 						</ul>
 					</div>
 				</div>
-
-				</div>
-
-
-			</div>
-
-		<div class="row">
-			<div class="col-md-4">
-				<div ng-controller="shapesController" ng-show="showShapes(model.material)">
-					<h4>Skylttyp:</h4>
-
-					<div class="list-group">
-						<a ng-class="{'active': model.shape == shape}" ng-repeat="shape in shapes"
-						   ng-click="setShape(shape)" href="#/" class="list-group-item">{{shape}}</a>
-					</div>
-
-				</div>
 			</div>
 			<div class="col-md-4">
-				<div ng-controller="sizeController" ng-show="showSize(model.material)">
+
+			<div ng-controller="sizeController" ng-show="showSize(model.material)">
 					<h4>Storlek: {{sizeError}}</h4>
 
 					<div class="width" ng-show="showWidthHeight()">

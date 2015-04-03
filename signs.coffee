@@ -91,7 +91,7 @@ settings =
 	]
 	maxLinesOfText: 8
 	margin: 15 # in pixels
-	radius: 15 # in pixels
+	radius: 5 # in pixels
 	borderWidth: 1.5 #in pixels
 	rules:
 		indent: 25
