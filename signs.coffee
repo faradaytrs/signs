@@ -908,12 +908,12 @@ signs.controller 'modelsController', ($scope) ->
 
 	, true
 	$scope.calcPrice = (model = $scope.model) ->
-		model.order * 20
+		20
 	$scope.summary = (models = $scope.models) ->
 		summary = {}
 		summary.price = 0
 		summary.order = 0
 		for model in models
-			summary.price += $scope.calcPrice(model)
+			summary.price += $scope.calcPrice(model) * model.order
 			summary.order += model.order
 		summary
