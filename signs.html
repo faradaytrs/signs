@@ -138,48 +138,9 @@
 			</div>
 
 		<div class="row">
-			<div class="col-md-2">
-				<div ng-controller="shapesController" ng-show="showShapes(model.material)">
-					<h4>Skylttyp:</h4>
+			<div class="col-md-3">
 
-					<!--<div class="list-group">-->
-					<!--<a ng-class="{'active': model.shape == shape}" ng-repeat="shape in shapes"-->
-					<!--ng-click="setShape(shape)" href="#/" class="list-group-item">{{shape}}</a>-->
-					<!--</div>-->
-
-					<div class="btn-group">
-						<button type="button" class="form-control btn btn-default dropdown-toggle"
-						        data-toggle="dropdown">
-							{{model.shape}} <span class="caret"></span>
-						</button>
-						<ul class="dropdown-menu" role="menu">
-							<li ng-repeat="shape in shapes"><a href="#/" ng-click="setShape(shape)">{{shape}}</a>
-							</li>
-						</ul>
-					</div>
-
-				</div>
-
-				<div ng-controller="holesController" ng-show="showHoles(model.material)">
-					<h4>Hål:</h4>
-
-					<div class="btn-group">
-						<button type="button" class="form-control btn btn-default dropdown-toggle"
-						        data-toggle="dropdown">
-							{{getHoleName()}} <span class="caret"></span>
-						</button>
-						<ul class="dropdown-menu" role="menu">
-							<li ng-show="showHole(hole)" ng-repeat="hole in holes"><a href="#/"
-							                                                          ng-click="setHole(hole)">{{hole}}</a>
-							</li>
-						</ul>
-					</div>
-				</div>
-			</div>
-			<div class="col-md-1"></div>
-			<div class="col-md-4">
-
-			<div ng-controller="sizeController" ng-show="showSize(model.material)">
+				<div ng-controller="sizeController" ng-show="showSize(model.material)">
 					<h4>Storlek: {{sizeError}}</h4>
 
 					<div class="width" ng-show="showWidthHeight()">
@@ -238,43 +199,9 @@
 
 				</div>
 			</div>
-			<div class="col-md-1"></div>
-			<div class="col-md-4">
-				<div ng-controller="themesController" ng-show="showThemes(model.material)">
-					<h4>Färg (text / skylt):</h4>
-
-					<div class="btn-group">
-						<button type="button" class="form-control btn btn-default dropdown-toggle"
-						        data-toggle="dropdown">
-							{{model.theme.name}} <span class="caret"></span>
-						</button>
-						<ul class="dropdown-menu" role="menu">
-							<li ng-repeat="theme in themes"><a href="#/"
-							                                   ng-click="model.theme = theme">{{theme.name}}</a></li>
-						</ul>
-					</div>
-				</div>
-				<div ng-controller="fontsController" ng-show="showFonts(model.material)">
-					<h4>Font:</h4>
-
-					<div class="btn-group">
-						<button type="button" class="form-control btn btn-default dropdown-toggle"
-						        data-toggle="dropdown">
-							{{model.font}} <span class="caret"></span>
-						</button>
-						<ul class="dropdown-menu" role="menu">
-							<li ng-repeat="font in fonts"><a href="#/"
-							                                 ng-click="model.font = font">{{font}}</a></li>
-						</ul>
-					</div>
-				</div>
-			</div>
-		</div>
-		<div class="row">
-			<div class="col-md-3"></div>
 			<div class="col-md-5">
 				<div ng-hide="summary(models).price == 0" class="order">
-					<h3>Din beställning:</h3>
+					<h4>Din beställning:</h4>
 					<table class="table">
 						<thead>
 						<tr>
@@ -304,6 +231,69 @@
 						</tfoot>
 					</table>
 					<button class="btn btn-success btn-lg">Beställ</button>
+				</div>
+			</div>
+			<div class="col-md-2">
+				<div ng-controller="shapesController" ng-show="showShapes(model.material)">
+					<h4>Skylttyp:</h4>
+
+					<div class="btn-group">
+						<button type="button" class="form-control btn btn-default dropdown-toggle"
+						        data-toggle="dropdown">
+							{{model.shape}} <span class="caret"></span>
+						</button>
+						<ul class="dropdown-menu" role="menu">
+							<li ng-repeat="shape in shapes"><a href="#/" ng-click="setShape(shape)">{{shape}}</a>
+							</li>
+						</ul>
+					</div>
+
+				</div>
+
+				<div ng-controller="holesController" ng-show="showHoles(model.material)">
+					<h4>Hål:</h4>
+
+					<div class="btn-group">
+						<button type="button" class="form-control btn btn-default dropdown-toggle"
+						        data-toggle="dropdown">
+							{{getHoleName()}} <span class="caret"></span>
+						</button>
+						<ul class="dropdown-menu" role="menu">
+							<li ng-show="showHole(hole)" ng-repeat="hole in holes"><a href="#/"
+							                                                          ng-click="setHole(hole)">{{hole}}</a>
+							</li>
+						</ul>
+					</div>
+				</div>
+			</div>
+			<div class="col-md-2">
+				<div ng-controller="themesController" ng-show="showThemes(model.material)">
+					<h4>Färg (text / skylt):</h4>
+
+					<div class="btn-group">
+						<button type="button" class="form-control btn btn-default dropdown-toggle"
+						        data-toggle="dropdown">
+							{{model.theme.name}} <span class="caret"></span>
+						</button>
+						<ul class="dropdown-menu" role="menu">
+							<li ng-repeat="theme in themes"><a href="#/"
+							                                   ng-click="model.theme = theme">{{theme.name}}</a></li>
+						</ul>
+					</div>
+				</div>
+				<div ng-controller="fontsController" ng-show="showFonts(model.material)">
+					<h4>Font:</h4>
+
+					<div class="btn-group">
+						<button type="button" class="form-control btn btn-default dropdown-toggle"
+						        data-toggle="dropdown">
+							{{model.font}} <span class="caret"></span>
+						</button>
+						<ul class="dropdown-menu" role="menu">
+							<li ng-repeat="font in fonts"><a href="#/"
+							                                 ng-click="model.font = font">{{font}}</a></li>
+						</ul>
+					</div>
 				</div>
 			</div>
 		</div>
