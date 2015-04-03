@@ -483,10 +483,10 @@ clearStage = (stage) ->
 
 onChange = (stage, model, errorCallback) ->
 	console.clear()
-	for text in model.texts
+	###for text in model.texts
 		if !text.size || text.size == ""
 			clearStage(stage)
-			return
+			return###
 
 	### если undefined или NaN ###
 	if (!model.size.width || !model.size.height)
