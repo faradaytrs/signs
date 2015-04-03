@@ -462,12 +462,13 @@ getHoles = (model, signBegin, signSize, padding, k) ->
 	}
 	holes
 
+### width, height in mm ###
 checkSize = (width, height, radius = false) ->
 	str = null;
-	if (height < toPixel(settings.minSize)) then str = "Höjden på skylten är för liten"
-	if (width < toPixel(settings.minSize)) then str = "Bredden på skylten är för liten"
-	if (height > toPixel(settings.maxHeight)) then str = "Höjden på skylten är för stor"
-	if (width > toPixel(settings.maxWidth)) then str = "Bredden på skylten är för stor"
+	if (height < settings.minSize) then str = "Höjden på skylten är för liten"
+	if (width < settings.minSize) then str = "Bredden på skylten är för liten"
+	if (height > settings.maxHeight) then str = "Höjden på skylten är för stor"
+	if (width > settings.maxWidth) then str = "Bredden på skylten är för stor"
 	if radius
 		if (radius < settings.minSize)  then str = "Diametern för skylten är för liten"
 		if (radius > settings.maxHeight) then str = "Diametern för skylten är för stor"
@@ -486,6 +487,11 @@ onChange = (stage, model, errorCallback) ->
 		if !text.size || text.size == ""
 			clearStage(stage)
 			return
+
+	### если undefined или NaN ###
+	if (!model.size.width || !model.size.height)
+		clearStage(stage)
+		return
 
 	if (!model.size.autoHeight || !model.size.autoWidth || !model.size.autoRadius)
 		if ((str = checkSize(model.size.width, model.size.height, model.size.radius)) != false)
@@ -532,7 +538,7 @@ onChange = (stage, model, errorCallback) ->
 				textSize.height = signSize.height - padding.height()
 				padding.text = (textSize.height - getTextHeight(sizes)) / model.texts.length
 
-	if ((str = checkSize(signSize.width, signSize.height)) != false)
+	if ((str = checkSize(toMillimeters(signSize.width), toMillimeters(signSize.height))) != false)
 		errorCallback(str)
 		return
 
