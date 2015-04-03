@@ -66,4 +66,18 @@ body .number-addon {
     width: 1.4% !important;
 }
 
+body .error {
+    text-align: center;
+    margin: 0px;
+    padding: 5px;
+}
+
+body .error-message {
+    margin-bottom: 4px;
+}
+
+body .error-block {
+    height: 32px;
+}
+
 /*# sourceMappingURL=signs.css.map */

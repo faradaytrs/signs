@@ -47,8 +47,10 @@
 		<div class="row info-panel">
 			<div class="col-md-2">
 			</div>
-			<div class="col-md-6">
-				error message
+			<div class="col-md-6 error-block">
+				<div ng-show="sizeError != null" class="alert alert-danger error" role="alert">
+					<strong class="error-message">{{sizeError}}!</strong>
+				</div>
 			</div>
 			<div class="col-md-4">
 
