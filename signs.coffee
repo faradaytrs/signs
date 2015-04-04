@@ -415,14 +415,6 @@ getRoundPadding = (model, textSize) ->
 	is_right = h["Middle right"] || h["Top right corner"] || h["Bottom right corner"]
 	padding_ = if is_left || is_right then 2 * padding else padding
 
-	###if model.size.autoRadius && !signSize?
-		radius = hypotenuse(textSize.height, textSize.width) / 2
-		paddingX = radius - textSize.width / 2
-		paddingY = radius - textSize.height / 2
-	else
-		paddingX = (signSize.width - textSize.width) / 2 - padding
-		paddingY = (signSize.height - textSize.height) / 2 - padding###
-
 	{
 		indent: padding_
 		text: 0
@@ -486,7 +478,6 @@ getHoles = (model, signBegin, signSize, padding, k) ->
 	}
 	holes
 
-### width, height in mm ###
 checkSize = (width, height, radius = false) ->
 	str = null;
 	if (height < settings.minSize) then str = "Höjden på skylten är för liten"
@@ -507,12 +498,7 @@ clearStage = (stage) ->
 
 onChange = (stage, model, errorCallback) ->
 	console.clear()
-	###for text in model.texts
-		if !text.size || text.size == ""
-			clearStage(stage)
-			return###
 
-	### если undefined или NaN ###
 	if (!model.size.width || !model.size.height)
 		clearStage(stage)
 		return
@@ -607,10 +593,6 @@ onChange = (stage, model, errorCallback) ->
 	else
 		textBegin.x = signBegin.x + padding.left
 		textBegin.y = signBegin.y + (padding.top + padding.text / 2)
-	#padding.text *= k
-
-	#model.size.width = Math.round(signSize.width / settings.PIXEL_SIZE)
-	#model.size.height = Math.round(signSize.height / settings.PIXEL_SIZE)
 
 	size = {
 		k: k #to delete
@@ -742,7 +724,6 @@ signs.controller 'holesController', ($scope, $rootScope) ->
 		if hole == "4 hål" and $scope.model.shape == "rund"
 			return false
 		true
-
 
 signs.controller 'fontsController', ($scope) ->
 	$scope.fonts = settings.fonts
@@ -908,14 +889,8 @@ signs.controller 'modelsController', ($scope) ->
 							model.holes["Bottom left corner"] = true
 					console.log model
 
-
-			#sheet to model object
-			#push to models
-
 			reader.onerror = (event) ->
 				console.error("Problems reading file, code:  " + event.target.error.code)
-
-
 
 	$scope.triggerImport = ->
 		$('#file').trigger('click')
