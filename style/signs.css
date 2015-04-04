@@ -76,13 +76,11 @@ body .error-message {
 body .error-block {
     height: 32px;
 }
-
 body label {
     font-weight: normal !important;
 }
-
 body .tape {
-    margin-top: 20px;
+    margin-top: 15px;
 }
 
 /*# sourceMappingURL=signs.css.map */
