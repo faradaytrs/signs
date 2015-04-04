@@ -118,7 +118,7 @@
 							<button ng-click="decreaseSize($index)" class="btn btn-danger btn-xs">-</button>
 							<!--<span>{{model.texts[$index].size}}</span>-->
 							<input class="input-field form-control input-xs" ng-model="model.texts[$index].size"
-							       type="text" onkeypress="return numbersOnly(event);"/>
+							       type="text" onkeypress="return floatsOnly(this, event);"/>
 							<button ng-click="increaseSize($index)" class="btn btn-success btn-xs">+</button>
 						</div>
 						<div class="btn-group align" role="group">

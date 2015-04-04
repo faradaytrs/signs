@@ -1,10 +1,27 @@
 #Created by Andrey Izotov faradaytrs@gmail.com
 
 window.numbersOnly = (e) ->
-  unicode = if e.charCode then e.charCode else e.keyCode;
-  if (unicode!=8)
-      if (unicode<48||unicode>57)
-          return false
+  unicode = if e.charCode then e.charCode else e.keyCode
+  if unicode != 8
+    if unicode < 48 or unicode > 57
+      return false
+  return
+window.floatsOnly = (el, e) ->
+  has_decimal = el.value.indexOf('.') >= 0
+  unicode = if e.charCode then e.charCode else e.keyCode
+  if unicode == 8
+    return true
+  if has_decimal
+    if el.value.indexOf('.') < el.value.length - 1
+      return false
+  if unicode >= 48 and unicode <= 57
+    return true
+  if unicode == 46 and !has_decimal
+    return true
+  if unicode == 44 and !has_decimal
+    el.value = el.value + '.'
+    return false
+  false
 
 signs = angular.module('Signs', ['file-model'])
 #first one is default
