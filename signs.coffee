@@ -1,5 +1,11 @@
 #Created by Andrey Izotov faradaytrs@gmail.com
 
+window.numbersOnly = (e) ->
+  unicode = if e.charCode then e.charCode else e.keyCode;
+  if (unicode!=8)
+      if (unicode<48||unicode>57)
+          return false
+
 signs = angular.module('Signs', ['file-model'])
 #first one is default
 settings =
