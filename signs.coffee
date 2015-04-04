@@ -139,6 +139,7 @@ modelTemplate =
 		autoWidth: true
 	}
 	font: "Arial"
+	tape: false
 
 getModels = ->
 	if localStorage.models?
