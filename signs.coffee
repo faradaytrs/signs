@@ -829,7 +829,7 @@ signs.controller 'modelsController', ($scope) ->
 		reader = new FileReader()
 		reader.readAsBinaryString(newVal)
 		$scope.addTextRow = (model, row, rowIndex, textIndex, sizeIndex) ->
-			if row[rowIndex]?
+			if row[rowIndex]? and row[sizeIndex]?
 				defaultText = copyObj(modelTemplate.texts[0])
 				model.texts[textIndex] = defaultText
 				model.texts[textIndex].text = row[rowIndex]
@@ -888,7 +888,7 @@ signs.controller 'modelsController', ($scope) ->
 			console.log json_sheet
 			for index in [1..json_sheet.length]
 				row = json_sheet[index]
-				if row? and row[1]? # Rad 1
+				if row? and row[1] and row[9]? # Rad 1
 					console.log row
 					model = copyObj(modelTemplate)
 
