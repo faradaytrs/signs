@@ -830,7 +830,7 @@ signs.controller 'modelsController', ($scope) ->
 		reader.readAsBinaryString(newVal)
 		$scope.addTextRow = (model, row, rowIndex, textIndex, sizeIndex) ->
 			if row[rowIndex]?
-				defaultText = modelTemplate.texts[0]
+				defaultText = copyObj(modelTemplate.texts[0])
 				model.texts[textIndex] = defaultText
 				model.texts[textIndex].text = row[rowIndex]
 				model.texts[textIndex].size = row[sizeIndex]
