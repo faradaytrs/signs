@@ -141,7 +141,6 @@ modelTemplate =
 		"Bottom right corner": false
 	}
 	holes_rect: false
-	fonts: settings.fonts[0]
 	material: settings.materials[0]
 	theme: settings.themes[0]
 	order: 1
@@ -825,6 +824,12 @@ signs.controller 'modelsController', ($scope) ->
 	$scope.$watch 'file', (newVal) ->
 		reader = new FileReader()
 		reader.readAsBinaryString(newVal)
+		$scope.addTextRow = (model, row, rowIndex, textIndex, sizeIndex) ->
+			if row[rowIndex]?
+				defaultText = modelTemplate.texts[0]
+				model.texts[textIndex] = defaultText
+				model.texts[textIndex].text = row[rowIndex]
+				model.texts[textIndex].size = row[sizeIndex]
 		reader.onload = (event) ->
 			contents = event.target.result
 			if newVal.name.match(/^.*(xls)$/)
@@ -838,42 +843,28 @@ signs.controller 'modelsController', ($scope) ->
 			else
 				return
 			console.log json_sheet
-			for row, index in json_sheet
-				if index == 0 then break
-				if row[1]? # Rad 1
+			for index in [1..json_sheet.length]
+				row = json_sheet[index]
+				if row? and row[1]? # Rad 1
 					console.log row
 					model = copyObj(modelTemplate)
+
 					if row[0]? # Antal
-						model.order = row[0]
-					if row[1]? # Rad 1
-						model.texts[0].text = row[1]
-						model.texts[9].size = row[9]
-					if row[2]? # Rad 2
-						model.texts[1].text = row[2]
-						model.texts[10].size = row[10]
-					if row[3]? # Rad 3
-						model.texts[2].text = row[3]
-						model.texts[11].size = row[11]
-					if row[4]? # Rad 4
-						model.texts[3].text = row[4]
-						model.texts[12].size = row[12]
-					if row[5]? # Rad 5
-						model.texts[4].text = row[5]
-						model.texts[13].size = row[13]
-					if row[6]? # Rad 6
-						model.texts[5].text = row[6]
-						model.texts[14].size = row[14]
-					if row[7]? # Rad 7
-						model.texts[6].text = row[7]
-						model.texts[15].size = row[15]
-					if row[8]? # Rad 8
-						model.texts[7].text = row[8]
-						model.texts[16].size = row[16]
+						model.order = parseInt(row[0])
+
+					$scope.addTextRow(model, row, 1, 0, 9) # Rad 1
+					$scope.addTextRow(model, row, 2, 1, 10) # Rad 2
+					$scope.addTextRow(model, row, 3, 2, 11) # Rad 3
+					$scope.addTextRow(model, row, 4, 3, 12) # Rad 4
+					$scope.addTextRow(model, row, 5, 4, 13) # Rad 5
+					$scope.addTextRow(model, row, 6, 5, 14) # Rad 6
+					$scope.addTextRow(model, row, 7, 6, 15) # Rad 7
+					$scope.addTextRow(model, row, 8, 7, 16) # Rad 1
 					if row[18]? #width
-						model.size.width = row[18]
+						model.size.width = parseInt(row[18])
 						model.size.autoWidth = false
 					if row[19]? #height
-						model.size.height = row[19]
+						model.size.height = parseInt(row[19])
 						model.size.autoHeight = false
 					# todo make theme import
 					if row[20]? #tape
@@ -887,7 +878,8 @@ signs.controller 'modelsController', ($scope) ->
 							model.holes["Top right corner"] = true
 							model.holes["Bottom right corner"] = true
 							model.holes["Bottom left corner"] = true
-					console.log model
+					$scope.$apply ->
+						$scope.models.push model
 
 			reader.onerror = (event) ->
 				console.error("Problems reading file, code:  " + event.target.error.code)
