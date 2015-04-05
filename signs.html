@@ -65,7 +65,7 @@
 						<div class="btn-group model">
 							<button id="sign" ng-click="updateCurrentModel($index)"
 							        ng-class="{'active': $index == current}" class="btn btn-block btn-default">
-								{{model.name}}
+								{{model.name | limitTo: 9}}{{model.name.length > 9 ? '...' : ''}}
 							</button>
 						</div>
 						<div class="input-group-btn number-addon">
