@@ -873,7 +873,6 @@ signs.controller 'modelsController', ($scope) ->
 				}
 				else
 					modelTemplate.theme
-			console.log model.theme
 		reader.onload = (event) ->
 			contents = event.target.result
 			if newVal.name.match(/^.*(xls)$/)
