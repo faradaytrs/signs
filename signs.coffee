@@ -924,6 +924,7 @@ signs.controller 'modelsController', ($scope) ->
 							model.holes["Bottom left corner"] = true
 					$scope.$apply ->
 						$scope.models.push model
+						$scope.updateCurrentModel($scope.models.length - 1)
 
 			reader.onerror = (event) ->
 				console.error("Problems reading file, code:  " + event.target.error.code)
