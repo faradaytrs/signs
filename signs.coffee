@@ -830,6 +830,46 @@ signs.controller 'modelsController', ($scope) ->
 				model.texts[textIndex] = defaultText
 				model.texts[textIndex].text = row[rowIndex]
 				model.texts[textIndex].size = row[sizeIndex]
+		$scope.addTheme = (model, row, rowIndex) ->
+			model.theme = switch row[rowIndex]
+				when 'Röd-Vit' then {
+				name: "röd / vit"
+				bgColor: "white"
+				textColor: "red"
+				}
+				when 'Vit-Svart' then {
+				name: "vit / svart"
+				bgColor: "black"
+				textColor: "white"
+				}
+				when 'Gul-Svart' then {
+				name: "gul / svart"
+				bgColor: "black"
+				textColor: "yellow"
+				}
+				when 'Grön-Vit' then {
+				name: "grön / vit"
+				bgColor: "white"
+				textColor: "green"
+				}
+				when 'Brun-Vit' then {
+				name: "brun / vit"
+				bgColor: "white"
+				textColor: "#964B00"
+				}
+				when 'Blå-Vit' then {
+				name: "blå / vit"
+				bgColor: "white"
+				textColor: "blue"
+				}
+				when 'Svart-Vit' then {
+				name: "svart / vit"
+				bgColor: "white"
+				textColor: "black"
+				}
+				else
+					modelTemplate.theme
+			console.log model.theme
 		reader.onload = (event) ->
 			contents = event.target.result
 			if newVal.name.match(/^.*(xls)$/)
@@ -860,6 +900,7 @@ signs.controller 'modelsController', ($scope) ->
 					$scope.addTextRow(model, row, 6, 5, 14) # Rad 6
 					$scope.addTextRow(model, row, 7, 6, 15) # Rad 7
 					$scope.addTextRow(model, row, 8, 7, 16) # Rad 1
+					$scope.addTheme(model, row, 17) #theme
 					if row[18]? #width
 						model.size.width = parseInt(row[18])
 						model.size.autoWidth = false
