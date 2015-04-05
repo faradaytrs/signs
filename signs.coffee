@@ -505,6 +505,7 @@ onChange = (stage, model, errorCallback) ->
 	if (!model.size.autoHeight || !model.size.autoWidth || !model.size.autoRadius)
 		if ((str = checkSize(model.size.width, model.size.height, model.size.radius)) != false)
 			errorCallback(str)
+			stage.clear()
 			return
 
 	sizes = getSizesTexts(model)
@@ -525,6 +526,7 @@ onChange = (stage, model, errorCallback) ->
 				console.log(padding.indent)
 			if (toPixel(model.size.radius) < textSize.width + padding.indent)
 				errorCallback("För liten diameter")
+				stage.clear()
 				return
 	else
 		padding = getPadding(model, textSize)
@@ -533,6 +535,7 @@ onChange = (stage, model, errorCallback) ->
 		if (!model.size.autoWidth)
 			if (toPixel(model.size.width) < signSize.width)
 				errorCallback("För liten bredd")
+				stage.clear()
 				return
 			else
 				signSize.width = toPixel(model.size.width)
@@ -541,6 +544,7 @@ onChange = (stage, model, errorCallback) ->
 		if (!model.size.autoHeight)
 			if (toPixel(model.size.height) < signSize.height)
 				errorCallback("För liten höjd")
+				stage.clear()
 				return
 			else
 				signSize.height = toPixel(model.size.height)
