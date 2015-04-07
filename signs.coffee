@@ -496,7 +496,7 @@ clearStage = (stage) ->
 	return
 
 onChange = (stage, model, errorCallback) ->
-	console.clear()
+	#console.clear()
 
 	if (!model.size.width || !model.size.height)
 		clearStage(stage)
@@ -625,6 +625,12 @@ onChange = (stage, model, errorCallback) ->
 	console.log("x: #{size.sign.x};	y: #{size.sign.y}")
 	console.log("width: #{size.sign.width}; height: #{size.sign.height}")
 
+	#putting new sizes to model
+	setTimeout ->
+		model.size.width = size.sign.origin.width
+		model.size.height = size.sign.origin.height
+	, 5
+
 	errorCallback(null)
 	reRender(stage, model, size)
 
@@ -685,6 +691,7 @@ reRender = (stage, model, size) ->
 
 	leftRule = renderLeftRule(size)
 	topRule = renderTopRule(size)
+
 	shapeLayer.add(leftRule)
 	shapeLayer.add(topRule)
 
@@ -928,7 +935,7 @@ signs.controller 'modelsController', ($scope) ->
 
 			reader.onerror = (event) ->
 				console.error("Problems reading file, code:  " + event.target.error.code)
-
+	, true
 	$scope.triggerImport = ->
 		$('#file').trigger('click')
 		return
