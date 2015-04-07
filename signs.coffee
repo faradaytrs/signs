@@ -495,7 +495,7 @@ clearStage = (stage) ->
 		layer.destroy()
 	return
 
-onChange = (stage, model, errorCallback) ->
+onChange = (stage, model, errorCallback, updateSizesCallback) ->
 	#console.clear()
 
 	if (!model.size.width || !model.size.height)
@@ -626,10 +626,7 @@ onChange = (stage, model, errorCallback) ->
 	console.log("width: #{size.sign.width}; height: #{size.sign.height}")
 
 	#putting new sizes to model
-	setTimeout ->
-		model.size.width = size.sign.origin.width
-		model.size.height = size.sign.origin.height
-	, 5
+	updateSizesCallback(size.sign.origin.width, size.sign.origin.height)
 
 	errorCallback(null)
 	reRender(stage, model, size)
@@ -805,6 +802,14 @@ signs.controller 'modelsController', ($scope) ->
 	$scope.maxHeight = settings.maxHeight
 	$scope.maxWidth = settings.maxWidth
 	$scope.maxRadius = settings.maxRadius
+	$scope.blockRendering = false
+	$scope.updateSizesCallback = (width, height) ->
+		$scope.blockRendering = true
+		$scope.model.size.width = width
+		$scope.model.size.height = height
+		setTimeout ->
+			$scope.blockRendering = false
+		, 1
 	$scope.errorCallback = (error) ->
 		if error?
 			console.warn error
@@ -956,9 +961,8 @@ signs.controller 'modelsController', ($scope) ->
 		saveModels($scope.models)
 	, true
 	$scope.$watch 'model', ->
-		# todo rework rerender system to improve performance
-		$scope.onChange($scope.stage, $scope.model, $scope.errorCallback)
-
+		if $scope.blockRendering == false
+			$scope.onChange($scope.stage, $scope.model, $scope.errorCallback, $scope.updateSizesCallback)
 	, true
 	$scope.calcPrice = (model = $scope.model) ->
 		20
