@@ -496,7 +496,7 @@ clearStage = (stage) ->
 	return
 
 onChange = (stage, model, errorCallback, updateSizesCallback) ->
-	#console.clear()
+	console.clear()
 
 	if (!model.size.width || !model.size.height)
 		clearStage(stage)
