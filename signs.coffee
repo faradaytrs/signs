@@ -173,7 +173,6 @@ getModels = ->
 
 saveModels = (models) ->
 	localStorage.models = JSON.stringify(models)
-	console.log models
 
 roundRect = (x, y, width, height, radius, borderWidth, fillColor, strokeColor) ->
 	new Konva.Shape
