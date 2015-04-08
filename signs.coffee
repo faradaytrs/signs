@@ -67,39 +67,39 @@ settings =
 	]
 	themes: [
 		{
-			name: "svart / vit"
-			bgColor: "white"
+			name: "vit / svart"
 			textColor: "black"
+			bgColor: "white"
 		}
 		{
 			name: "gul / svart"
-			bgColor: "black"
-			textColor: "yellow"
+			textColor: "black"
+			bgColor: "yellow"
 		}
 		{
 			name: "grön / vit"
-			bgColor: "white"
-			textColor: "green"
+			textColor: "white"
+			bgColor: "green"
 		}
 		{
 			name: "röd / vit"
-			bgColor: "white"
-			textColor: "red"
+			textColor: "white"
+			bgColor: "red"
 		}
 		{
 			name: "brun / vit"
-			bgColor: "white"
-			textColor: "#964B00"
+			textColor: "white"
+			bgColor: "#964B00"
 		}
 		{
 			name: "blå / vit"
-			bgColor: "white"
-			textColor: "blue"
+			textColor: "white"
+			bgColor: "blue"
 		}
 		{
-			name: "vit / svart"
-			bgColor: "black"
+			name: "svart / vit"
 			textColor: "white"
+			bgColor: "black"
 		}
 	]
 	theme_metal: {
@@ -849,38 +849,38 @@ signs.controller 'modelsController', ($scope) ->
 			model.theme = switch row[rowIndex]
 				when 'Röd-Vit' then {
 				name: "röd / vit"
-				bgColor: "white"
-				textColor: "red"
+				textColor: "white"
+				bgColor: "red"
 				}
 				when 'Vit-Svart' then {
 				name: "vit / svart"
-				bgColor: "black"
-				textColor: "white"
+				textColor: "black"
+				bgColor: "white"
 				}
 				when 'Gul-Svart' then {
 				name: "gul / svart"
-				bgColor: "black"
-				textColor: "yellow"
+				textColor: "black"
+				bgColor: "yellow"
 				}
 				when 'Grön-Vit' then {
 				name: "grön / vit"
-				bgColor: "white"
-				textColor: "green"
+				textColor: "white"
+				bgColor: "green"
 				}
 				when 'Brun-Vit' then {
 				name: "brun / vit"
-				bgColor: "white"
-				textColor: "#964B00"
+				textColor: "white"
+				bgColor: "#964B00"
 				}
 				when 'Blå-Vit' then {
 				name: "blå / vit"
-				bgColor: "white"
-				textColor: "blue"
+				textColor: "white"
+				bgColor: "blue"
 				}
 				when 'Svart-Vit' then {
 				name: "svart / vit"
-				bgColor: "white"
-				textColor: "black"
+				textColor: "white"
+				bgColor: "black"
 				}
 				else
 					modelTemplate.theme
