@@ -162,6 +162,7 @@ modelTemplate =
 	}
 	font: "Arial"
 	tape: false
+	comment: ""
 
 getModels = ->
 	if localStorage.models?
