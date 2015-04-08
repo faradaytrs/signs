@@ -82,9 +82,12 @@ body label {
 body .tape {
     margin-top: 15px;
 }
-
 body .comment {
     margin-top: 20px;
+}
+
+body .ng-modal-dialog-content input, body .ng-modal-dialog-content textarea, body .ng-modal-dialog-content button {
+    margin-top: 10px;
 }
 
 /*# sourceMappingURL=signs.css.map */

@@ -5,6 +5,7 @@
 	<meta charset="UTF-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=Edge" />
 	<title>Beställ skyltar online</title>
+	<script src="bower_components/circular-json/build/circular-json.js"></script>
 	<script src="bower_components/sweetalert/lib/sweet-alert.min.js"></script>
 	<link rel="stylesheet" href="bower_components/sweetalert/lib/sweet-alert.css"/>
 	<script src="bower_components/konva/konva.min.js"></script>
@@ -16,6 +17,8 @@
 	<script src="bower_components/js-xls/dist/xls.min.js"></script>
 	<script src="bower_components/js-xlsx/dist/xlsx.min.js"></script>
 	<script src="bower_components/angular/angular.min.js"></script>
+	<script src="bower_components/ngModal/dist/ng-modal.min.js"></script>
+	<link rel="stylesheet" href="bower_components/ngModal/dist/ng-modal.css"/>
 	<script src='bower_components/angular-file-model/angular-file-model.js'></script>
 	<script src="signs.js"></script>
 	<link rel="stylesheet" href="style/signs.css"/>
@@ -239,7 +242,7 @@
 						</tr>
 						</tfoot>
 					</table>
-					<button class="btn btn-success btn-lg">Beställ</button>
+					<button ng-click="order(models)" class="btn btn-success btn-lg">Beställ</button>
 				</div>
 			</div>
 			<div class="col-md-2">
@@ -310,6 +313,97 @@
 					</div>
 				</div>
 			</div>
+		</div>
+
+		<div class="order" ng-controller="orderController" class="model-order">
+			<modal-dialog show='show' dialog-title='Order' height='600px' width='700px'>
+				<div class="row">
+					<div class="col-md-2"></div>
+					<div class="col-md-4">
+						<input type="text" class="form-control" required="true" placeholder="Förnamn"
+						       ng-value="client.name.first" ng-model="client.name.first"/>
+					</div>
+					<div class="col-md-4">
+						<input type="text" class="form-control" required="true" placeholder="Efternamn"
+						       ng-value="client.name.last" ng-model="client.name.last"/>
+					</div>
+					<div class="col-md-4"></div>
+				</div>
+				<div class="row">
+					<div class="col-md-2"></div>
+					<div class="col-md-8">
+						<input type="text" class="form-control" required="true" placeholder="Företag"
+						       ng-value="client.company" ng-model="client.company"/>
+					</div>
+					<div class="col-md-2"></div>
+				</div>
+				<div class="row">
+					<div class="col-md-2"></div>
+					<div class="col-md-8">
+						<input type="text" class="form-control" required="true" placeholder="Orgnr/Personnr"
+						       ng-value="client.number" ng-model="client.number"/>
+					</div>
+					<div class="col-md-2"></div>
+				</div>
+				<!--<div class="row">
+					<div class="col-md-2"></div>
+					<div class="col-md-8">
+						<input type="text" class="form-control" required="true" placeholder="c/o"/>
+					</div>
+					<div class="col-md-2"></div>
+				</div>-->
+				<div class="row">
+					<div class="col-md-2"></div>
+					<div class="col-md-8">
+						<input type="text" class="form-control" required="true" placeholder="Adress"
+						       ng-value="client.address" ng-model="client.address"/>
+					</div>
+					<div class="col-md-2"></div>
+				</div>
+				<div class="row">
+					<div class="col-md-2"></div>
+					<div class="col-md-4">
+						<input type="text" class="form-control" required="true" placeholder="Postnummer"
+						       ng-value="client.postCode" ng-model="client.postCode"/>
+					</div>
+					<div class="col-md-4">
+						<input type="text" class="form-control" required="true" placeholder="Postort"
+						       ng-model="client.postTown" ng-value="client.postTown"/>
+					</div>
+					<div class="col-md-4"></div>
+				</div>
+				<div class="row">
+					<div class="col-md-2"></div>
+					<div class="col-md-8">
+						<input type="text" class="form-control" required="true" placeholder="Telefon"
+						       ng-value="client.phone" ng-model="client.phone"/>
+					</div>
+					<div class="col-md-2"></div>
+				</div>
+				<div class="row">
+					<div class="col-md-2"></div>
+					<div class="col-md-8">
+						<input type="text" class="form-control" required="true" placeholder="E-post"
+						       ng-value="client.email" ng-model="client.email"/>
+					</div>
+					<div class="col-md-2"></div>
+				</div>
+				<div class="row">
+					<div class="col-md-2"></div>
+					<div class="col-md-8">
+						<textarea class="form-control" name="" id="" cols="30" rows="4" placeholder="Meddelande"
+						          ng-value="client.comment" ng-model="client.comment"></textarea>
+					</div>
+					<div class="col-md-2"></div>
+				</div>
+				<div class="row">
+					<div class="col-md-8"></div>
+					<div class="col-md-2">
+						<button ng-click="finishOrder()" class="btn btn-success btn-lg">Beställ</button>
+					</div>
+					<div class="col-md-2"></div>
+				</div>
+			</modal-dialog>
 		</div>
 	</div>
 </body>

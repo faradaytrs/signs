@@ -23,7 +23,7 @@ window.floatsOnly = (el, e) ->
     return false
   false
 
-signs = angular.module('Signs', ['file-model'])
+signs = angular.module('Signs', ['file-model', 'ngModal'])
 #first one is default
 settings =
 	pixel_size: 8
@@ -974,3 +974,31 @@ signs.controller 'modelsController', ($scope) ->
 			summary.price += $scope.calcPrice(model) * model.order
 			summary.order += model.order
 		summary
+signs.controller 'orderController', ($scope, $rootScope, $http) ->
+	$rootScope.order = (models) ->
+		$scope.show = true
+		$scope.models = copyObj(models)
+	$scope.client =
+		name:
+			first: ""
+			last: ""
+		phone: ""
+		email: ""
+		company: ""
+		number: ""
+		address: ""
+		comment: ""
+		postCode: ""
+		postTown: ""
+	$scope.show = false
+	$scope.finishOrder = () ->
+		console.log $scope.client
+		console.log $scope.models
+		$scope.show = false
+		$http.post "mail.php",
+			client: JSON.stringify($scope.client, null, 2)
+			models: JSON.stringify($scope.models, null, 2)
+		swal
+			title: "Thank you for ordering our signs"
+			text: "We answer you asap"
+			type: "success"
