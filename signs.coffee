@@ -399,8 +399,8 @@ getPadding = (model, textSize) ->
 	{
 		top: padding
 		bottom: padding
-	left: if (is_left) then padding + toPixel(2.5) else padding
-	right: if (is_right) then padding + toPixel(2.5) else padding
+		left:  if (is_left) then padding + toPixel(2.5) else padding
+		right: if (is_right) then padding + toPixel(2.5) else padding
 		width: () -> this.left + this.right
 		height: () -> this.top + this.bottom
 		hole: padding
