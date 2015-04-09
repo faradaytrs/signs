@@ -808,6 +808,7 @@ signs.controller 'modelsController', ($scope) ->
 		$scope.blockRendering = true
 		$scope.model.size.width = width
 		$scope.model.size.height = height
+		$scope.model.size.radius = width
 		setTimeout ->
 			$scope.blockRendering = false
 		, 1

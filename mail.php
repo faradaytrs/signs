@@ -13,13 +13,13 @@ $mail->isSMTP();
 $mail->Host = 'smtp.gmail.com';
 $mail->SMTPAuth = true;
 $mail->Username = 'faradaytrs@gmail.com';
-$mail->Password = 'secret';
+$mail->Password = 'OrodruinGotBroken1';
 $mail->SMTPSecure = 'tls';
 $mail->Port = 587;
 
 $mail->From = 'from@example.com';
 $mail->FromName = 'Mailer';
-$mail->addAddress('faradaytrs@gmail.com', 'Joe User');
+$mail->addAddress('episkbo@gmail.com', 'Joe User');
 
 $mail->isHTML(false);
 
