@@ -709,12 +709,13 @@ signs.controller 'holesController', ($scope, $rootScope) ->
 	$scope.holes = settings.holes_interface
 	$scope.showHoles = (material) ->
 		material == "Plast"
-	$scope.getHoleName = ->
-		if $scope.model.holes["Middle left"] and $scope.model.holes["Middle right"]
+	$scope.getHoleName = (model = $scope.model) ->
+		if model.holes["Middle left"] and model.holes["Middle right"]
 			return "2 hål"
-		else if $scope.model.holes["Top left corner"] and $scope.model.holes["Top right corner"] and $scope.model.holes["Bottom left corner"] and $scope.model.holes["Top right corner"]
+		else if model.holes["Top left corner"] and model.holes["Top right corner"] and model.holes["Bottom left corner"] and model.holes["Top right corner"]
 			return "4 hål"
 		"Inga"
+	$rootScope.getHoleName = $scope.getHoleName
 	$scope.setHole = (hole) ->
 		for key, value of $scope.model.holes
 			$scope.model.holes[key] = false
@@ -983,6 +984,9 @@ signs.controller 'orderController', ($scope, $rootScope, $http) ->
 		dirtyModels = copyObj(models)
 		for model in dirtyModels
 			unless model.order == 0
+				model.holes = $rootScope.getHoleName(model)
+				delete model.theme.$$hashKey
+				delete model.hole_rect
 				$scope.models.push model
 	$scope.client =
 		name:
