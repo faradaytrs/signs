@@ -985,8 +985,9 @@ signs.controller 'orderController', ($scope, $rootScope, $http) ->
 		for model in dirtyModels
 			unless model.order == 0
 				model.holes = $rootScope.getHoleName(model)
-				delete model.theme.$$hashKey
-				delete model.hole_rect
+				model.theme = model.theme.name
+				delete model.holes_rect
+				console.log model
 				$scope.models.push model
 	$scope.client =
 		name:
