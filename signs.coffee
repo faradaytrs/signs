@@ -978,7 +978,11 @@ signs.controller 'modelsController', ($scope) ->
 signs.controller 'orderController', ($scope, $rootScope, $http) ->
 	$rootScope.order = (models) ->
 		$scope.show = true
-		$scope.models = copyObj(models)
+		$scope.models = []
+		dirtyModels = copyObj(models)
+		for model in dirtyModels
+			unless model.order == 0
+				$scope.models.push model
 	$scope.client =
 		name:
 			first: ""
@@ -993,8 +997,6 @@ signs.controller 'orderController', ($scope, $rootScope, $http) ->
 		postTown: ""
 	$scope.show = false
 	$scope.finishOrder = () ->
-		console.log $scope.client
-		console.log $scope.models
 		$scope.show = false
 		$http.post "mail.php",
 			client: JSON.stringify($scope.client, null, 2)
