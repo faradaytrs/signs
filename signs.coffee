@@ -399,8 +399,8 @@ getPadding = (model, textSize) ->
 	{
 		top: padding
 		bottom: padding
-		left:  if (is_left) then 2*padding else padding
-		right: if (is_right) then 2*padding else padding
+	left: if (is_left) then padding + toPixel(2.5) else padding
+	right: if (is_right) then padding + toPixel(2.5) else padding
 		width: () -> this.left + this.right
 		height: () -> this.top + this.bottom
 		hole: padding
@@ -412,7 +412,7 @@ getRoundPadding = (model, textSize) ->
 	h = model.holes
 	is_left = h["Middle left"] || h["Top left corner"] || h["Bottom left corner"]
 	is_right = h["Middle right"] || h["Top right corner"] || h["Bottom right corner"]
-	padding_ = if is_left || is_right then 2 * padding else padding
+	padding_ = if is_left || is_right then padding + toPixel(2.5) else padding
 
 	{
 		indent: padding_
