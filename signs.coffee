@@ -358,6 +358,9 @@ getTextSize = (sizes) ->
 		height: sum
 	}
 
+round5 = (x) ->
+	Math.ceil(x/5)*5
+
 getTextWidth = (sizes) ->
 	maxLen = 0
 	for size in sizes
@@ -372,7 +375,9 @@ getTextHeight = (sizes) ->
 
 getSignSize = (textSize, padding) ->
 	{
+		#width: round5((textSize.width + padding.width())/settings.pixel_size)*settings.pixel_size
 		width: textSize.width + padding.width()
+		#height: round5((textSize.height + padding.height())/settings.pixel_size)*settings.pixel_size
 		height: textSize.height + padding.height()
 	}
 
