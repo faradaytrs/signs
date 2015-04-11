@@ -120,6 +120,7 @@ settings =
 		indent: 25
 		width: 3
 	debug: false
+	roundTo: 5
 
 hypotenuse = (a, b = a) ->
 	Math.sqrt(a * a + b * b)
@@ -375,10 +376,10 @@ getTextHeight = (sizes) ->
 
 getSignSize = (textSize, padding) ->
 	{
-		#width: roundTo((textSize.width + padding.width())/settings.pixel_size)*settings.pixel_size
-		width: textSize.width + padding.width()
-		#height: roundTo((textSize.height + padding.height())/settings.pixel_size)*settings.pixel_size
-		height: textSize.height + padding.height()
+		width: roundTo((textSize.width + padding.width())/settings.pixel_size, settings.roundTo)*settings.pixel_size
+		#width: textSize.width + padding.width()
+		height: roundTo((textSize.height + padding.height())/settings.pixel_size, settings.roundTo)*settings.pixel_size
+		#height: textSize.height + padding.height()
 	}
 
 getSignWidth = (size, padding) ->
@@ -554,7 +555,7 @@ onChange = (stage, model, errorCallback, updateSizesCallback) ->
 			else
 				signSize.height = toPixel(model.size.height)
 				textSize.height = signSize.height - padding.height()
-				padding.text = (textSize.height - getTextHeight(sizes)) / model.texts.length
+		padding.text = (textSize.height - getTextHeight(sizes)) / model.texts.length
 
 	if ((str = checkSize(toMillimeters(signSize.width), toMillimeters(signSize.height))) != false)
 		clearStage(stage)
