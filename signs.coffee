@@ -374,13 +374,17 @@ getTextHeight = (sizes) ->
 		sum += size.height
 	sum
 
-getSignSize = (textSize, padding) ->
-	{
-		width: roundTo((textSize.width + padding.width())/settings.pixel_size, settings.roundTo)*settings.pixel_size
-		#width: textSize.width + padding.width()
-		height: roundTo((textSize.height + padding.height())/settings.pixel_size, settings.roundTo)*settings.pixel_size
-		#height: textSize.height + padding.height()
-	}
+getSignSize = (textSize, padding, round=false) ->
+	if round
+		{
+			width: roundTo((textSize.width + padding.width())/settings.pixel_size, settings.roundTo)*settings.pixel_size
+			height: roundTo((textSize.height + padding.height())/settings.pixel_size, settings.roundTo)*settings.pixel_size
+		}
+	else
+		{
+			width: textSize.width + padding.width()
+			height: textSize.height + padding.height()
+		}
 
 getSignWidth = (size, padding) ->
 	size + padding
@@ -555,7 +559,7 @@ onChange = (stage, model, errorCallback, updateSizesCallback) ->
 			else
 				signSize.height = toPixel(model.size.height)
 				textSize.height = signSize.height - padding.height()
-		padding.text = (textSize.height - getTextHeight(sizes)) / model.texts.length
+				padding.text = (textSize.height - getTextHeight(sizes)) / model.texts.length
 
 	if ((str = checkSize(toMillimeters(signSize.width), toMillimeters(signSize.height))) != false)
 		clearStage(stage)
