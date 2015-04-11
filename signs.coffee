@@ -395,7 +395,7 @@ getTextHeight = (sizes) ->
 		sum += size.height
 	sum
 
-getSignSize = (textSize, padding, round=true) ->
+getSignSize = (textSize, padding, round = false) ->
 	if round
 		{
 			width: roundTo((textSize.width + padding.width())/settings.pixel_size, settings.roundTo)*settings.pixel_size
@@ -605,7 +605,7 @@ onChange = (stage, model, errorCallback, updateSizesCallback) ->
 			textSize.maxTextSize = getMaxTextSize(model) * k
 			padding = getPadding(model, textSize)
 			signSize = getSignSize(textSize, padding)
-			padding.text = (signSize.height - textSize.height) / ( model.texts.length + 1)
+			#padding.text = (signSize.height - textSize.height) / ( model.texts.length + 1)
 		else
 			signSize.width *= k
 			signSize.height *= k
@@ -1001,10 +1001,14 @@ signs.controller 'modelsController', ($scope) ->
 			$scope.onChange($scope.stage, $scope.model, $scope.errorCallback, $scope.updateSizesCallback)
 	, true
 	$scope.calcPrice = (model = $scope.model) ->
-		20
+		holes = 0
+		for key, value of model.holes
+			if value
+				holes += 1
+		Math.floor(model.size.width * model.size.height * 0.075 + 5 + holes)
 	$scope.summary = (models = $scope.models) ->
 		summary = {}
-		summary.price = 0
+		summary.price = 50
 		summary.order = 0
 		for model in models
 			summary.price += $scope.calcPrice(model) * model.order

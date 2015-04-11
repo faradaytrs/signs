@@ -224,6 +224,12 @@
 						</tr>
 						</thead>
 						<tbody>
+						<tr class="warning">
+							<td>Expeditionsavgift</td>
+							<td>#</td>
+							<td>#</td>
+							<td><span class="label label-success">50 kr</span></td>
+						</tr>
 						<tr ng-class="{'success': current == $index}" ng-repeat="template in models track by $index"
 						    ng-hide="calcPrice(template)*template.order == 0">
 							<td>{{template.name}}</td>
