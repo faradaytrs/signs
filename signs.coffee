@@ -119,7 +119,7 @@ settings =
 	rules:
 		indent: 25
 		width: 3
-	debug: false
+	debug: true
 	roundTo: 5
 
 hypotenuse = (a, b = a) ->
@@ -605,7 +605,7 @@ onChange = (stage, model, errorCallback, updateSizesCallback) ->
 			textSize.maxTextSize = getMaxTextSize(model) * k
 			padding = getPadding(model, textSize)
 			signSize = getSignSize(textSize, padding)
-			padding.text = (signSize.height - textSize.height) / ( model.texts.length + 1)
+			padding.text = (signSize.height - textSize.height - padding.height()) / model.texts.length
 		else
 			signSize.width *= k
 			signSize.height *= k
@@ -675,8 +675,8 @@ reRender = (stage, model, size) ->
 		color.bgColor = settings.theme_metal.bgColor
 		color.textColor = settings.theme_metal.textColor
 
-	shapeLayer = new Konva.Layer()
-	textLayer = new Konva.Layer()
+	shapeLayer = new Konva.Layer
+	textLayer = new Konva.Layer
 	stage.add shapeLayer
 	stage.add textLayer
 
@@ -686,7 +686,7 @@ reRender = (stage, model, size) ->
 			model.font, size.k * text.size, color.textColor, text.style)
 
 		if (settings.debug)
-			rect = simpleRect(size.text.x, size.text.y, size.text.width, textKonva.getHeight())
+			rect = simpleRect(size.text.x, posY, size.text.width, textKonva.getHeight())
 		posY += textKonva.getHeight() + size.padding.text
 
 		if (settings.debug)
@@ -698,6 +698,10 @@ reRender = (stage, model, size) ->
 		when 'rektangulär'
 			shape = rectKonva(size.sign.x, size.sign.y, size.sign.width, size.sign.height,
 			  settings.borderWidth, color.bgColor, color.textColor)
+			if (settings.debug)
+				debug = simpleRect(
+				  size.sign.x + size.padding.left, size.sign.y + size.padding.top,
+				  size.sign.width - size.padding.width(), size.sign.height - size.padding.height())
 		when 'rund'
 			shape = circleKonva(size.sign.x, size.sign.y, size.sign.width / 2,
 			  settings.borderWidth, color.bgColor, color.textColor)
@@ -708,7 +712,7 @@ reRender = (stage, model, size) ->
 			  settings.radius, settings.borderWidth, color.bgColor, color.textColor)
 
 	shapeLayer.add(shape)
-	if (settings.debug && model.shape is 'Rund')
+	if (settings.debug && debug?)
 		shapeLayer.add(debug)
 
 	for hole, isShow of model.holes
