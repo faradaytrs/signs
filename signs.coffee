@@ -121,6 +121,7 @@ settings =
 		width: 3
 	debug: false
 	roundTo: 5
+	orderBasicPrice: 50
 
 hypotenuse = (a, b = a) ->
 	Math.sqrt(a * a + b * b)
@@ -1006,9 +1007,10 @@ signs.controller 'modelsController', ($scope) ->
 			if value
 				holes += 1
 		Math.floor(model.size.width * model.size.height * 0.075 + 5 + holes)
+	$scope.orderBasicPrice = settings.orderBasicPrice
 	$scope.summary = (models = $scope.models) ->
 		summary = {}
-		summary.price = 50
+		summary.price = $scope.orderBasicPrice
 		summary.order = 0
 		for model in models
 			summary.price += $scope.calcPrice(model) * model.order
