@@ -294,7 +294,7 @@ translateTextStyle = (style) ->
 		when "Fet" then "bold"
 
 createText = (align, str, x, y, width, font, size, color, style = "Normal") ->
-	textObj = new Konva.Text
+	new Konva.Text
 		x: x
 		y: y
 		text: str
@@ -308,7 +308,7 @@ createText = (align, str, x, y, width, font, size, color, style = "Normal") ->
 		align: translateAlign(align)
 
 createText2 = (align, str, x, y, font, size, color, style = "Normal") ->
-	textObj = new Konva.Text
+	new Konva.Text
 		x: x
 		y: y
 		text: str
@@ -325,6 +325,27 @@ simpleCreateText = (layer, model, obj) ->
 	console.log(textObj.getTextHeight())
 	layer.add textObj
 	textObj
+
+createTextWarning = (stage, str) ->
+	sett = settings.errMsg
+
+	layer = new Konva.Layer
+	stage.add(layer)
+
+	msg = new Konva.Text
+		text: str
+		fontSize: sett.size
+
+	w = msg.getTextWidth()
+	h = msg.getTextHeight()
+	x = getSpace(settings.canvasWidth, w);
+	y = getSpace(settings.canvasHeight, h);
+
+	msg = createText2(null, str, x, y, null, 60, 'red')
+	layer.add roundRect(x - sett.padd.x, y - sett.padd.y, w + 2 * sett.padd.x, h + 2 * sett.padd.y,
+	  settings.radius, 2, 'white', 'red');
+	layer.add msg
+	layer.draw
 
 getSpace = (width, squareWidth) ->
 	width / 2 - squareWidth / 2
@@ -374,7 +395,7 @@ getTextHeight = (sizes) ->
 		sum += size.height
 	sum
 
-getSignSize = (textSize, padding, round=false) ->
+getSignSize = (textSize, padding, round=true) ->
 	if round
 		{
 			width: roundTo((textSize.width + padding.width())/settings.pixel_size, settings.roundTo)*settings.pixel_size
@@ -584,7 +605,7 @@ onChange = (stage, model, errorCallback, updateSizesCallback) ->
 			textSize.maxTextSize = getMaxTextSize(model) * k
 			padding = getPadding(model, textSize)
 			signSize = getSignSize(textSize, padding)
-
+			padding.text = (signSize.height - textSize.height) / ( model.texts.length + 1)
 		else
 			signSize.width *= k
 			signSize.height *= k
@@ -635,6 +656,7 @@ onChange = (stage, model, errorCallback, updateSizesCallback) ->
 	console.log("sign")
 	console.log("x: #{size.sign.x};	y: #{size.sign.y}")
 	console.log("width: #{size.sign.width}; height: #{size.sign.height}")
+	console.log "text padding: #{padding.text}"
 
 	#putting new sizes to model
 	updateSizesCallback(size.sign.origin.width, size.sign.origin.height)
@@ -658,13 +680,14 @@ reRender = (stage, model, size) ->
 	stage.add shapeLayer
 	stage.add textLayer
 
+	posY = size.text.y
 	for text, id in model.texts
-		textKonva = createText(text.align, text.text, size.text.x, size.text.y, size.text.width,
+		textKonva = createText(text.align, text.text, size.text.x, posY, size.text.width,
 			model.font, size.k * text.size, color.textColor, text.style)
 
 		if (settings.debug)
 			rect = simpleRect(size.text.x, size.text.y, size.text.width, textKonva.getHeight())
-		size.text.y += textKonva.getHeight() + size.padding.text
+		posY += textKonva.getHeight() + size.padding.text
 
 		if (settings.debug)
 			textLayer.add(rect)
