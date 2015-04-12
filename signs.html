@@ -212,7 +212,7 @@
 				</div>
 			</div>
 			<div class="col-md-5">
-				<div ng-hide="summary(models).price == 0" class="order">
+				<div ng-hide="summary(models).price <= orderBasicPrice" class="order">
 					<h4>Din beställning:</h4>
 					<table class="table table-bordered table-hover table-condensed">
 						<thead>
