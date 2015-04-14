@@ -831,7 +831,8 @@ signs.controller 'textController', ($scope) ->
 	$scope.increaseSize = (index, size = 1) ->
 		$scope.model.texts[index].size = parseInt($scope.model.texts[index].size) + size
 	$scope.decreaseSize = (index, size = 1) ->
-		$scope.increaseSize(index, -size)
+		if $scope.model.texts[index].size >= 1
+			$scope.increaseSize(index, -size)
 
 signs.controller 'modelsController', ($scope) ->
 	$scope.minSize = settings.minSize
@@ -996,6 +997,7 @@ signs.controller 'modelsController', ($scope) ->
 		#$scope.reRender($scope.model, settings.canvasHeight, settings.canvasWidth)
 	$scope.$watch 'models', ->
 		saveModels($scope.models)
+
 	, true
 	$scope.$watch 'model', ->
 		if $scope.blockRendering == false
@@ -1006,7 +1008,7 @@ signs.controller 'modelsController', ($scope) ->
 		for key, value of model.holes
 			if value
 				holes += 1
-		Math.floor(model.size.width * model.size.height * 0.075 + 5 + holes)
+		Math.floor(model.size.width * model.size.height * 0.0075 + 5 + holes)
 	$scope.orderBasicPrice = settings.orderBasicPrice
 	$scope.summary = (models = $scope.models) ->
 		summary = {}
