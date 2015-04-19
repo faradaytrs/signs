@@ -1008,7 +1008,9 @@ signs.controller 'modelsController', ($scope) ->
 		for key, value of model.holes
 			if value
 				holes += 1
-		Math.floor(model.size.width * model.size.height * 0.0075 + 5 + holes)
+		price = model.size.width * model.size.height * 0.0075 + 5 + holes
+		if model.shape == "rundad rektangulär" then price += 2
+		Math.floor(price)
 	$scope.orderBasicPrice = settings.orderBasicPrice
 	$scope.summary = (models = $scope.models) ->
 		summary = {}
