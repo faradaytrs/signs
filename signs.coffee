@@ -983,12 +983,15 @@ signs.controller 'modelsController', ($scope) ->
 		$('#file').trigger('click')
 		return
 
+	$scope.copySelected = ->
+		$scope.newSign($scope.model)
+
 	$scope.onChange = onChange
 	$scope.models = getModels()
 	$scope.current = 0 #by default
 
-	$scope.newSign = ->
-		$scope.models.push copyObj(modelTemplate)
+	$scope.newSign = (template = modelTemplate) ->
+		$scope.models.push copyObj(template)
 		$scope.updateCurrentModel($scope.models.length - 1)
 	$scope.model = $scope.models[$scope.current]
 	$scope.updateCurrentModel = (index) ->

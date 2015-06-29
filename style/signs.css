@@ -1,12 +1,10 @@
 body input[type=number]::-webkit-inner-spin-button,
 body input[type=number]::-webkit-outer-spin-button {
-    opacity: 1;
-}
+  opacity: 1; }
 body h3 {
   margin-top: 4px; }
 body .container {
-    margin-top: 60px;
-}
+  margin-top: 60px; }
   body .container .preview {
     height: 500px;
     width: 555px;
@@ -35,9 +33,7 @@ body .size {
   display: inline-block;
   position: relative;
   top: -7px; }
-body .sign {
-  margin-bottom: 5px; }
-body .new {
+body .sign, body .import, body .new {
   margin-bottom: 5px; }
 body .aside {
   max-height: 502px;
@@ -47,47 +43,35 @@ body .aside {
 body .models {
   width: 100%; }
 body .model {
-    width: 3% !important;
-}
+  width: 3% !important; }
 body .input-field {
   height: 25px !important;
-    width: 40px;
+  width: 40px;
   padding: 0px;
   text-align: center;
   display: inline-block; }
 body .info-panel {
-    margin-top: 20px;
-}
+  margin-top: 20px; }
 body .number {
-    text-align: center !important;
-    padding: 0;
-}
+  text-align: center !important;
+  padding: 0; }
 body .number-addon {
-    width: 1.4% !important;
-}
+  width: 1.4% !important; }
 body .error {
-    text-align: center;
-    margin: 0px;
-    padding: 5px;
-}
+  text-align: center;
+  margin: 0px;
+  padding: 5px; }
 body .error-message {
-    margin-bottom: 4px;
-}
+  margin-bottom: 4px; }
 body .error-block {
-    height: 32px;
-}
+  height: 32px; }
 body label {
-    font-weight: normal !important;
-}
+  font-weight: normal !important; }
 body .tape {
-    margin-top: 15px;
-}
+  margin-top: 15px; }
 body .comment {
-    margin-top: 20px;
-}
-
+  margin-top: 20px; }
 body .ng-modal-dialog-content input, body .ng-modal-dialog-content textarea, body .ng-modal-dialog-content button {
-    margin-top: 10px;
-}
+  margin-top: 10px; }
 
 /*# sourceMappingURL=signs.css.map */
