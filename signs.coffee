@@ -303,7 +303,7 @@ createText = (align, str, x, y, width, font, size, color, style = "Normal") ->
 		fontFamily: font
 		fontStyle: translateTextStyle(style)
 		fill: color
-		width: width
+		#width: width
 		wrap: 'none'
 #		padding: 20
 		align: translateAlign(align)
