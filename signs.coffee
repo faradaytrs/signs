@@ -119,8 +119,9 @@ settings =
 	rules:
 		indent: 25
 		width: 3
-	debug: true
+	debug: false
 	roundTo: 5
+	orderBasicPrice: 50
 
 hypotenuse = (a, b = a) ->
 	Math.sqrt(a * a + b * b)
@@ -302,7 +303,7 @@ createText = (align, str, x, y, width, font, size, color, style = "Normal") ->
 		fontFamily: font
 		fontStyle: translateTextStyle(style)
 		fill: color
-		width: width
+		#width: width
 		wrap: 'none'
 #		padding: 20
 		align: translateAlign(align)
@@ -395,7 +396,7 @@ getTextHeight = (sizes) ->
 		sum += size.height
 	sum
 
-getSignSize = (textSize, padding, round=true) ->
+getSignSize = (textSize, padding, round = false) ->
 	if round
 		{
 			width: roundTo((textSize.width + padding.width())/settings.pixel_size, settings.roundTo)*settings.pixel_size
@@ -605,7 +606,7 @@ onChange = (stage, model, errorCallback, updateSizesCallback) ->
 			textSize.maxTextSize = getMaxTextSize(model) * k
 			padding = getPadding(model, textSize)
 			signSize = getSignSize(textSize, padding)
-			padding.text = (signSize.height - textSize.height - padding.height()) / model.texts.length
+			#padding.text = (signSize.height - textSize.height) / ( model.texts.length + 1)
 		else
 			signSize.width *= k
 			signSize.height *= k
@@ -675,8 +676,8 @@ reRender = (stage, model, size) ->
 		color.bgColor = settings.theme_metal.bgColor
 		color.textColor = settings.theme_metal.textColor
 
-	shapeLayer = new Konva.Layer
-	textLayer = new Konva.Layer
+	shapeLayer = new Konva.Layer()
+	textLayer = new Konva.Layer()
 	stage.add shapeLayer
 	stage.add textLayer
 
@@ -686,7 +687,7 @@ reRender = (stage, model, size) ->
 			model.font, size.k * text.size, color.textColor, text.style)
 
 		if (settings.debug)
-			rect = simpleRect(size.text.x, posY, size.text.width, textKonva.getHeight())
+			rect = simpleRect(size.text.x, size.text.y, size.text.width, textKonva.getHeight())
 		posY += textKonva.getHeight() + size.padding.text
 
 		if (settings.debug)
@@ -698,10 +699,6 @@ reRender = (stage, model, size) ->
 		when 'rektangulär'
 			shape = rectKonva(size.sign.x, size.sign.y, size.sign.width, size.sign.height,
 			  settings.borderWidth, color.bgColor, color.textColor)
-			if (settings.debug)
-				debug = simpleRect(
-				  size.sign.x + size.padding.left, size.sign.y + size.padding.top,
-				  size.sign.width - size.padding.width(), size.sign.height - size.padding.height())
 		when 'rund'
 			shape = circleKonva(size.sign.x, size.sign.y, size.sign.width / 2,
 			  settings.borderWidth, color.bgColor, color.textColor)
@@ -834,7 +831,8 @@ signs.controller 'textController', ($scope) ->
 	$scope.increaseSize = (index, size = 1) ->
 		$scope.model.texts[index].size = parseInt($scope.model.texts[index].size) + size
 	$scope.decreaseSize = (index, size = 1) ->
-		$scope.increaseSize(index, -size)
+		if $scope.model.texts[index].size >= 1
+			$scope.increaseSize(index, -size)
 
 signs.controller 'modelsController', ($scope) ->
 	$scope.minSize = settings.minSize
@@ -985,12 +983,15 @@ signs.controller 'modelsController', ($scope) ->
 		$('#file').trigger('click')
 		return
 
+	$scope.copySelected = ->
+		$scope.newSign($scope.model)
+
 	$scope.onChange = onChange
 	$scope.models = getModels()
 	$scope.current = 0 #by default
 
-	$scope.newSign = ->
-		$scope.models.push copyObj(modelTemplate)
+	$scope.newSign = (template = modelTemplate) ->
+		$scope.models.push copyObj(template)
 		$scope.updateCurrentModel($scope.models.length - 1)
 	$scope.model = $scope.models[$scope.current]
 	$scope.updateCurrentModel = (index) ->
@@ -999,16 +1000,24 @@ signs.controller 'modelsController', ($scope) ->
 		#$scope.reRender($scope.model, settings.canvasHeight, settings.canvasWidth)
 	$scope.$watch 'models', ->
 		saveModels($scope.models)
+
 	, true
 	$scope.$watch 'model', ->
 		if $scope.blockRendering == false
 			$scope.onChange($scope.stage, $scope.model, $scope.errorCallback, $scope.updateSizesCallback)
 	, true
 	$scope.calcPrice = (model = $scope.model) ->
-		20
+		holes = 0
+		for key, value of model.holes
+			if value
+				holes += 1
+		price = model.size.width * model.size.height * 0.0075 + 5 + holes
+		if model.shape == "rundad rektangulär" then price += 2
+		Math.floor(price)
+	$scope.orderBasicPrice = settings.orderBasicPrice
 	$scope.summary = (models = $scope.models) ->
 		summary = {}
-		summary.price = 0
+		summary.price = $scope.orderBasicPrice
 		summary.order = 0
 		for model in models
 			summary.price += $scope.calcPrice(model) * model.order

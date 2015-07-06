@@ -20,7 +20,7 @@
 	<script src="bower_components/ngModal/dist/ng-modal.min.js"></script>
 	<link rel="stylesheet" href="bower_components/ngModal/dist/ng-modal.css"/>
 	<script src='bower_components/angular-file-model/angular-file-model.js'></script>
-	<script src="signs.js"></script>
+	<script src="signs.min.js"></script>
 	<link rel="stylesheet" href="style/signs.css"/>
 	<link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
 	<link rel="icon" href="favicon.ico" type="image/x-icon">
@@ -40,13 +40,13 @@
 				</div>
 			</div>
 			<div class="col-md-4">
-				<ul class="nav nav-pills" ng-controller="materialsController">
+				<!--<ul class="nav nav-pills" ng-controller="materialsController">
 					<li class="disabled" role="presentation"><a href="#">Material:</a></li>
 					<li role="presentation" ng-class="{'active': model.material == material}"
 					    ng-repeat="material in materials">
 						<a ng-click="changeMaterial(material)"
 						   href="#/">{{material}}</a></li>
-				</ul>
+				</ul>-->
 			</div>
 		</div>
 		<div class="row info-panel">
@@ -93,6 +93,11 @@
 				<div class="import">
 					<button class="btn btn-block btn-success" ng-click="triggerImport()"><span
 							class="glyphicon glyphicon-upload"></span> Importera
+					</button>
+				</div>
+				<div class="copy">
+					<button class="btn btn-block btn-warning" ng-click="copySelected()"><span
+							class="glyphicon glyphicon-duplicate"></span> Copy selected
 					</button>
 				</div>
 				<input id="file" type="file" file-model='file' ng-hide="true"/>
@@ -212,7 +217,7 @@
 				</div>
 			</div>
 			<div class="col-md-5">
-				<div ng-hide="summary(models).price == 0" class="order">
+				<div ng-hide="summary(models).price <= orderBasicPrice" class="order">
 					<h4>Din beställning:</h4>
 					<table class="table table-bordered table-hover table-condensed">
 						<thead>
@@ -224,6 +229,12 @@
 						</tr>
 						</thead>
 						<tbody>
+						<tr class="warning" ng-hide="orderBasicPrice == 0">
+							<td>Expeditionsavgift</td>
+							<td>#</td>
+							<td>#</td>
+							<td><span class="label label-success">{{orderBasicPrice}} kr</span></td>
+						</tr>
 						<tr ng-class="{'success': current == $index}" ng-repeat="template in models track by $index"
 						    ng-hide="calcPrice(template)*template.order == 0">
 							<td>{{template.name}}</td>
