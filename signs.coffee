@@ -179,7 +179,7 @@ saveModels = (models) ->
 
 roundRect = (x, y, width, height, radius, borderWidth, fillColor, strokeColor) ->
 	new Konva.Shape
-		drawFunc: (ctx) ->
+		sceneFunc: (ctx) ->
 			ctx.beginPath()
 			ctx.moveTo(x + radius, y)
 			ctx.lineTo(x + width - radius, y)
@@ -258,7 +258,7 @@ renderLeftRule = (size) ->
 	#left
 	x = size.sign.x - settings.rules.indent
 	new Konva.Shape
-		drawFunc: (context) ->
+		sceneFunc: (context) ->
 			context.beginPath()
 			context.moveTo(x, size.sign.y)
 			context.lineTo(x, size.sign.y + size.sign.height)
@@ -271,7 +271,7 @@ renderTopRule = (size) ->
 	#top
 	y = size.sign.y - settings.rules.indent
 	new Konva.Shape
-		drawFunc: (context) ->
+		sceneFunc: (context) ->
 			#line
 			context.beginPath()
 			context.moveTo(size.sign.x, y)
@@ -303,7 +303,7 @@ createText = (align, str, x, y, width, font, size, color, style = "Normal") ->
 		fontFamily: font
 		fontStyle: translateTextStyle(style)
 		fill: color
-		#width: width
+		width: width
 		wrap: 'none'
 #		padding: 20
 		align: translateAlign(align)
@@ -351,7 +351,7 @@ createTextWarning = (stage, str) ->
 getSpace = (width, squareWidth) ->
 	width / 2 - squareWidth / 2
 
-getSizesTexts = (model, k = 1) ->
+getTextSizes = (model, k = 1) ->
 	sizes = []
 	for text in model.texts
 		textObj = createText2(text.align, text.text, 0, 0,
@@ -369,7 +369,7 @@ getMaxTextSize = (model) ->
 		if text.size > max then max = text.size
 	max
 
-getTextSize = (sizes) ->
+getRectForText = (sizes) ->
 	maxLen = 0
 	sum = 0
 	for size in sizes
@@ -396,16 +396,18 @@ getTextHeight = (sizes) ->
 		sum += size.height
 	sum
 
-getSignSize = (textSize, padding, round = false) ->
+getSignSize = (textSize, padding, round = true) ->
 	if round
 		{
 			width: roundTo((textSize.width + padding.width())/settings.pixel_size, settings.roundTo)*settings.pixel_size
 			height: roundTo((textSize.height + padding.height())/settings.pixel_size, settings.roundTo)*settings.pixel_size
+			padding: padding
 		}
 	else
 		{
 			width: textSize.width + padding.width()
 			height: textSize.height + padding.height()
+			padding: padding
 		}
 
 getSignWidth = (size, padding) ->
@@ -445,7 +447,6 @@ getRoundPadding = (model, textSize) ->
 	is_left = h["Middle left"] || h["Top left corner"] || h["Bottom left corner"]
 	is_right = h["Middle right"] || h["Top right corner"] || h["Bottom right corner"]
 	padding_ = if is_left || is_right then padding + toPixel(2.5) else padding
-
 	{
 		indent: padding_
 		text: 0
@@ -516,7 +517,7 @@ checkSize = (width, height, radius = false) ->
 	if (height > settings.maxHeight) then str = "Höjden på skylten är för stor"
 	if (width > settings.maxWidth) then str = "Bredden på skylten är för stor"
 	if radius
-		if (radius < settings.minSize)  then str = "Diametern för skylten är för liten"
+		if (radius < settings.minSize) then str = "Diametern för skylten är för liten"
 		if (radius > settings.maxHeight) then str = "Diametern för skylten är för stor"
 	return str || false;
 
@@ -528,6 +529,56 @@ clearStage = (stage) ->
 	return
 
 onChange = (stage, model, errorCallback, updateSizesCallback) ->
+
+	calcRound = (text) ->
+		sign = {}
+		padding = getRoundPadding(model, text)
+		if (model.size.autoRadius)
+			sign.width = getSignWidth(text.width, padding.indent) # в функцию getWidthSign для каждого model.shape
+			sign.height = getSignHeight(text.height, padding.indent)
+			sign.height = sign.width = getMax(sign.width, sign.height)
+		else
+			# размер вручную
+			sign.width = sign.height = toPixel(model.size.radius) # <- diameter
+			if (settings.debug)
+				console.log(padding.indent)
+			return false if (toPixel(model.size.radius) < text.width + padding.indent)
+		sign
+
+	calcRect = (text) ->
+		padding = getPadding(model, text)
+		sign = getSignSize(text, padding)
+
+		if (!model.size.autoWidth)
+			return 'w' if (toPixel(model.size.width) < sign.width)
+
+			sign.width = toPixel(model.size.width)
+			text.width = sign.width - padding.width()
+
+		if (!model.size.autoHeight)
+			return 'h' if (toPixel(model.size.height) < sign.height)
+
+			sign.height = toPixel(model.size.height)
+			text.height = sign.height - padding.height()
+			padding.text = (text.height - getTextHeight(sizes)) / model.texts.length
+		sign
+
+	getSignBegin = (signSize) ->
+		{
+			x: getSpace(settings.canvasWidth, signSize.width)
+			y: getSpace(settings.canvasHeight, signSize.height)
+		}
+
+	getTextBegin = (signBegin, textSize,  padding) ->
+		textBegin = {}
+		if model.shape is 'rund'
+			textBegin.x = getSpace(settings.canvasWidth, textSize.width)
+			textBegin.y = getSpace(settings.canvasHeight, textSize.height)
+		else
+			textBegin.x = signBegin.x + padding.left
+			textBegin.y = signBegin.y + (padding.top + padding.text / 2)
+		textBegin
+
 	console.clear()
 
 	if (!model.size.width || !model.size.height)
@@ -540,48 +591,26 @@ onChange = (stage, model, errorCallback, updateSizesCallback) ->
 			clearStage(stage)
 			return
 
-	sizes = getSizesTexts(model)
-	textSize = getTextSize(sizes)
+	sizes = getTextSizes(model)
+	textSize = getRectForText(sizes)
 	textSize.maxTextSize = getMaxTextSize(model)
 
 	if model.shape is 'rund'
-		signSize = {}
-		if (model.size.autoRadius)
-			padding = getRoundPadding(model, textSize)
-			signSize.width = getSignWidth(textSize.width, padding.indent) # в функцию getWidthSign для каждого model.shape
-			signSize.height = getSignHeight(textSize.height, padding.indent)
-			signSize.height = signSize.width = getMax(signSize.width, signSize.height)
-		else
-			signSize.width = signSize.height = toPixel(model.size.radius) # <- diameter
-			padding = getRoundPadding(model, textSize)
-			if (settings.debug)
-				console.log(padding.indent)
-			if (toPixel(model.size.radius) < textSize.width + padding.indent)
-				errorCallback("För liten diameter")
-				clearStage(stage)
-				return
+		signSize = calcRound(textSize)
+		if !signSize
+			errorCallback("För liten diameter")
+			clearStage(stage)
+			return
 	else
-		padding = getPadding(model, textSize)
-		signSize = getSignSize(textSize, padding)
-
-		if (!model.size.autoWidth)
-			if (toPixel(model.size.width) < signSize.width)
-				errorCallback("För liten bredd")
-				clearStage(stage)
-				return
-			else
-				signSize.width = toPixel(model.size.width)
-				textSize.width = signSize.width - padding.width()
-
-		if (!model.size.autoHeight)
-			if (toPixel(model.size.height) < signSize.height)
-				errorCallback("För liten höjd")
-				clearStage(stage)
-				return
-			else
-				signSize.height = toPixel(model.size.height)
-				textSize.height = signSize.height - padding.height()
-				padding.text = (textSize.height - getTextHeight(sizes)) / model.texts.length
+		signSize = calcRect(textSize)
+		padding = signSize.padding
+		if typeof signSize == 'string'
+			errors =
+				h: "För liten höjd"
+				w: "För liten höjd"
+			errorCallback(errors[signSize])
+			clearStage(stage)
+			return
 
 	if ((str = checkSize(toMillimeters(signSize.width), toMillimeters(signSize.height))) != false)
 		clearStage(stage)
@@ -591,8 +620,8 @@ onChange = (stage, model, errorCallback, updateSizesCallback) ->
 	k = getBalancingCoefficient(signSize.width, signSize.height, settings.canvasWidth, settings.canvasHeight)
 
 	if model.shape is 'rund'
-		sizes = getSizesTexts(model, k)
-		textSize = getTextSize(sizes)
+		sizes = getTextSizes(model, k)
+		textSize = getRectForText(sizes) # уже за zoom-ено
 		textSize.maxTextSize = getMaxTextSize(model) * k
 		padding = getRoundPadding(model, textSize)
 
@@ -601,13 +630,14 @@ onChange = (stage, model, errorCallback, updateSizesCallback) ->
 		padding.indent *= k
 	else
 		if (model.size.autoWidth && model.size.autoHeight)
-			sizes = getSizesTexts(model, k)
-			textSize = getTextSize(sizes)
+			sizes = getTextSizes(model, k)
+			textSize = getRectForText(sizes)
 			textSize.maxTextSize = getMaxTextSize(model) * k
 			padding = getPadding(model, textSize)
 			signSize = getSignSize(textSize, padding)
 			#padding.text = (signSize.height - textSize.height) / ( model.texts.length + 1)
 		else
+			# размеры вводятся вручную
 			signSize.width *= k
 			signSize.height *= k
 			textSize.width *= k
@@ -618,17 +648,8 @@ onChange = (stage, model, errorCallback, updateSizesCallback) ->
 			padding.right *= k
 			padding.text *= k
 
-	signBegin = {}
-	signBegin.x = getSpace(settings.canvasWidth, signSize.width)
-	signBegin.y = getSpace(settings.canvasHeight, signSize.height)
-
-	textBegin = {}
-	if model.shape is 'rund'
-		textBegin.x = getSpace(settings.canvasWidth, textSize.width)
-		textBegin.y = getSpace(settings.canvasHeight, textSize.height)
-	else
-		textBegin.x = signBegin.x + padding.left
-		textBegin.y = signBegin.y + (padding.top + padding.text / 2)
+	signBegin = getSignBegin(signSize)
+	textBegin = getTextBegin(signBegin, textSize, padding)
 
 	size = {
 		k: k #to delete
