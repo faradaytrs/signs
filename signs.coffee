@@ -396,7 +396,7 @@ getTextHeight = (sizes) ->
 		sum += size.height
 	sum
 
-getSignSize = (textSize, padding, round = false) ->
+getSignSize = (textSize, padding, round = true) ->
 	if round
 		{
 			width: roundTo((textSize.width + padding.width())/settings.pixel_size, settings.roundTo)*settings.pixel_size
@@ -635,6 +635,7 @@ onChange = (stage, model, errorCallback, updateSizesCallback) ->
 			textSize.maxTextSize = getMaxTextSize(model) * k
 			padding = getPadding(model, textSize)
 			signSize = getSignSize(textSize, padding)
+			#padding.text = (signSize.height - textSize.height) / ( model.texts.length + 1)
 		else
 			# размеры вводятся вручную
 			signSize.width *= k
@@ -704,7 +705,7 @@ reRender = (stage, model, size) ->
 	posY = size.text.y
 	for text, id in model.texts
 		textKonva = createText(text.align, text.text, size.text.x, posY, size.text.width,
-			model.font, (size.k-0.0001) * text.size, color.textColor, text.style)
+			model.font, size.k * text.size, color.textColor, text.style)
 
 		if (settings.debug)
 			rect = simpleRect(size.text.x, size.text.y, size.text.width, textKonva.getHeight())
