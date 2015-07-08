@@ -406,7 +406,7 @@ getTextHeight = (sizes) ->
 		sum += size.height
 	sum
 
-getSignSize = (textSize, padding, round = true) ->
+getSignSize = (textSize, padding, round = false) ->
 	if round
 		{
 			width: toPixel(roundTo(toMillimeters(textSize.width + padding.width()), settings.roundTo))
@@ -667,8 +667,8 @@ onChange = (stage, model, errorCallback, updateSizesCallback) ->
 			width: signSize.width
 			height: signSize.height
 			origin:
-				width: Math.round(toMillimeters(signSize.width) / k)
-				height: Math.round(toMillimeters(signSize.height) / k)
+				width: roundTo(toMillimeters(signSize.width) / k, 1)
+				height: roundTo(toMillimeters(signSize.height) / k, 1)
 		text:
 			x: textBegin.x
 			y: textBegin.y
