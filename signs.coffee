@@ -352,8 +352,9 @@ getSpace = (width, squareWidth) ->
 	width / 2 - squareWidth / 2
 
 ###
-#  @param model in mm
-#  @return pix
+#	Размер строк в пикселях
+#   @param model in mm
+#   @return размеры в пикселях
 ###
 getRenderTextSizes = (model, k = 1) ->
 	sizes = []
@@ -367,8 +368,10 @@ getRenderTextSizes = (model, k = 1) ->
 	sizes
 
 ###
-# max size of font in mm
-# @return mm
+#   Максимальный размер шрифта в миллиметрах
+#   max size of font in mm
+#   @param texts массив объектов с размерами текста в мм
+#   @return mm
 ###
 getMaxTextSize = (texts) ->
 	max = 0
@@ -377,8 +380,9 @@ getMaxTextSize = (texts) ->
 	toPixel(max)
 
 ###
-# @param sizes
-# @param texts
+#   Размер прямоугольника вокруг строк
+#   @param sizes
+#   @param texts
 ###
 getRectForText = (sizes) ->
 	width = 0
@@ -391,21 +395,33 @@ getRectForText = (sizes) ->
 		height: height
 	}
 
+###
+#	Округление
+###
 roundTo = (x, to = 1) ->
   Math.ceil(x / to) * to;
 
+###
+#	Ширина текста в мм
+###
 getTextWidth = (sizes) ->
 	maxLen = 0
 	for size in sizes
 		if size.width > maxLen then maxLen = size.width
 	maxLen
 
+###
+#	Высота текста в мм
+###
 getTextHeight = (sizes) ->
 	sum = 0
 	for size in sizes
 		sum += size.height
 	sum
 
+###
+#	Размер знака в пикселях
+###
 getSignSize = (textSize, padding, round = false) ->
 	if round
 		{
@@ -593,7 +609,7 @@ onChange = (stage, model, errorCallback, updateSizesCallback) ->
 	console.clear()
 
 	if (!model.size.width || !model.size.height)
-		console.log('wtf')
+		console.log('hmm')
 		clearStage(stage)
 		return
 
@@ -638,20 +654,32 @@ onChange = (stage, model, errorCallback, updateSizesCallback) ->
 		signSize.height *= k
 		padding.indent *= k
 	else
-		if (model.size.autoWidth && model.size.autoHeight)
-			sizes = getRenderTextSizes(model, k)
-			textRect = getRectForText(sizes, model.texts, k)
-			padding = getPadding(model, getMaxTextSize(model.texts) * k)
-			signSize = getSignSize(textRect, padding)
-			#padding.text = (signSize.height - textRect.height) / ( model.texts.length + 1)
+		if (model.size.autoWidth || model.size.autoHeight)
+			new_sizes = getRenderTextSizes(model, k)
+			_textRect = getRectForText(new_sizes)
+			_padding = getPadding(model, getMaxTextSize(model.texts) * k)
+			_signSize = getSignSize(_textRect, _padding)
+
+		if (model.size.autoWidth)
+			signSize.width = _signSize.width
+			textRect.width = _textRect.width
+			padding.top = _padding.top
+			padding.bottom = _padding.bottom
 		else
-			# размеры вводятся вручную
 			signSize.width *= k
-			signSize.height *= k
 			textRect.width *= k
-			textRect.height *= k
 			padding.top *= k
 			padding.bottom *= k
+
+		if (model.size.autoHeight)
+			signSize.height = _signSize.height
+			textRect.height = _textRect.height
+			padding.left = _padding.left
+			padding.right = _padding.right
+			padding.text = _padding.text
+		else
+			signSize.height *= k
+			textRect.height *= k
 			padding.left *= k
 			padding.right *= k
 			padding.text *= k
