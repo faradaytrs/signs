@@ -119,7 +119,7 @@ settings =
 	rules:
 		indent: 25
 		width: 3
-	debug: false
+	debug: true
 	roundTo: 5
 	orderBasicPrice: 50
 
@@ -580,7 +580,7 @@ onChange = (stage, model, errorCallback, updateSizesCallback) ->
 			return 'w' if (toPixel(model.size.width) < sign.width)
 
 			sign.width = toPixel(model.size.width)
-			text.width = sign.width - padding.width()
+			#text.width = sign.width - padding.width()
 
 		if (!model.size.autoHeight)
 			return 'h' if (toPixel(model.size.height) < sign.height)
@@ -654,35 +654,40 @@ onChange = (stage, model, errorCallback, updateSizesCallback) ->
 		signSize.height *= k
 		padding.indent *= k
 	else
+		textRect.height *= k
+		textRect.width *= k
+		_signSize = signSize
 		if (model.size.autoWidth || model.size.autoHeight)
-			new_sizes = getRenderTextSizes(model, k)
-			_textRect = getRectForText(new_sizes)
 			_padding = getPadding(model, getMaxTextSize(model.texts) * k)
-			_signSize = getSignSize(_textRect, _padding)
+			_signSize = getSignSize(textRect, _padding)
+			console.warn("INITIAL: ", _signSize)
+			_signSize.width = toPixel(roundTo(toMillimeters(_signSize.width) / k, settings.roundTo) * k)
+			_signSize.height = toPixel(roundTo(toMillimeters(_signSize.height) / k, settings.roundTo) * k)
+			console.warn("ROUNDED: ", _signSize)
 
 		if (model.size.autoWidth)
 			signSize.width = _signSize.width
-			textRect.width = _textRect.width
-			padding.top = _padding.top
-			padding.bottom = _padding.bottom
+			textRect.width = _signSize.width - _padding.width()
+			padding.left = _padding.left
+			padding.right = _padding.right
 		else
 			signSize.width *= k
-			textRect.width *= k
-			padding.top *= k
-			padding.bottom *= k
+			padding.left *= k
+			padding.right *= k
+			textRect.width = signSize.width - padding.width()
 
 		if (model.size.autoHeight)
 			signSize.height = _signSize.height
-			textRect.height = _textRect.height
-			padding.left = _padding.left
-			padding.right = _padding.right
+			padding.top = _padding.top
+			padding.bottom = _padding.bottom
+
 			padding.text = _padding.text
 		else
 			signSize.height *= k
-			textRect.height *= k
-			padding.left *= k
-			padding.right *= k
+			padding.top *= k
+			padding.bottom *= k
 			padding.text *= k
+
 
 	signBegin = getSignBegin(signSize)
 	textBegin = getTextBegin(signBegin, textRect, padding)
