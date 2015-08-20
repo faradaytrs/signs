@@ -633,8 +633,8 @@ onChange = (stage, model, errorCallback, updateSizesCallback) ->
 		padding = signSize.padding
 		if typeof signSize == 'string'
 			errors =
+				w: "För liten bredd"
 				h: "För liten höjd"
-				w: "För liten höjd"
 			errorCallback(errors[signSize])
 			clearStage(stage)
 			return
