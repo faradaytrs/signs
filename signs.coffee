@@ -609,7 +609,7 @@ onChange = (stage, model, errorCallback, updateSizesCallback) ->
 	console.clear()
 
 	if (!model.size.width || !model.size.height)
-		console.log('hmm')
+		errorCallback('Недопустимый размер')
 		clearStage(stage)
 		return
 
