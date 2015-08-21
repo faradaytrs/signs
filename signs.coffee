@@ -149,7 +149,7 @@ modelTemplate =
 	texts: [
 		{
 			text: "Din text här"
-			size: 5
+			size: 10
 			align: "Mitten"
 			style: "Normal"
 		}
