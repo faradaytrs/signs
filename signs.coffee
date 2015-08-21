@@ -1,34 +1,34 @@
 #Created by Andrey Izotov faradaytrs@gmail.com
 
 window.numbersOnly = (e) ->
-  unicode = if e.charCode then e.charCode else e.keyCode
-  if unicode != 8
-    if unicode < 48 or unicode > 57
-      return false
-  return
+	unicode = if e.charCode then e.charCode else e.keyCode
+	if unicode != 8
+		if unicode < 48 or unicode > 57
+			return false
+	return
 window.floatsOnly = (el, e) ->
-  has_decimal = el.value.indexOf('.') >= 0
-  unicode = if e.charCode then e.charCode else e.keyCode
-  if unicode == 8
-    return true
-  if has_decimal
-    if el.value.indexOf('.') < el.value.length - 1
-      return false
-  if unicode >= 48 and unicode <= 57
-    return true
-  if unicode == 46 and !has_decimal
-    return true
-  if unicode == 44 and !has_decimal
-    el.value = el.value + '.'
-    return false
-  false
+	has_decimal = el.value.indexOf('.') >= 0
+	unicode = if e.charCode then e.charCode else e.keyCode
+	if unicode == 8
+		return true
+	if has_decimal
+		if el.value.indexOf('.') < el.value.length - 1
+			return false
+	if unicode >= 48 and unicode <= 57
+		return true
+	if unicode == 46 and !has_decimal
+		return true
+	if unicode == 44 and !has_decimal
+		el.value = el.value + '.'
+		return false
+	false
 
 signs = angular.module('Signs', ['file-model', 'ngModal'])
 #first one is default
 settings =
 	pixel_size: 8
 	magic_coeff: 0.75
-	step_coeff: 0.9
+	step_coeff: 0.95
 	canvasHeight: 500
 	canvasWidth: 555
 	maxWidth: 690
@@ -195,9 +195,9 @@ roundRect = (x, y, width, height, radius, borderWidth, fillColor, strokeColor) -
 		fill: fillColor || 'black'
 		stroke: strokeColor || 'black'
 		strokeWidth: borderWidth
-		shadowOffsetX : 3
-		shadowOffsetY : 2
-		shadowBlur : 15
+		shadowOffsetX: 3
+		shadowOffsetY: 2
+		shadowBlur: 15
 
 rectKonva = (x, y, width, height, borderWidth, fillColor, strokeColor) ->
 	new Konva.Rect
@@ -209,9 +209,9 @@ rectKonva = (x, y, width, height, borderWidth, fillColor, strokeColor) ->
 		fill: fillColor || 'black'
 		stroke: strokeColor || 'black'
 		strokeWidth: borderWidth
-		shadowOffsetX : 3
-		shadowOffsetY : 2
-		shadowBlur : 15
+		shadowOffsetX: 3
+		shadowOffsetY: 2
+		shadowBlur: 15
 
 simpleRect = (x, y, width, height) ->
 	new Konva.Rect
@@ -255,7 +255,7 @@ circleKonva = (x, y, radius, borderWidth, fillColor, strokeColor) ->
 		shadowBlur: 15
 
 renderLeftRule = (size) ->
-	#left
+#left
 	x = size.sign.x - settings.rules.indent
 	new Konva.Shape
 		sceneFunc: (context) ->
@@ -268,18 +268,18 @@ renderLeftRule = (size) ->
 		stroke: 'black',
 		strokeWidth: settings.rules.width
 renderTopRule = (size) ->
-	#top
+#top
 	y = size.sign.y - settings.rules.indent
 	new Konva.Shape
 		sceneFunc: (context) ->
-			#line
+#line
 			context.beginPath()
 			context.moveTo(size.sign.x, y)
 			context.lineTo(size.sign.x + size.sign.width, y)
 			context.closePath()
 			context.fillStrokeShape(@)
 			context.fillText("#{size.sign.origin.width} mm", size.sign.x + size.sign.width / 2 - 10, y - 10)
-		#size
+#size
 		stroke: 'black',
 		strokeWidth: settings.rules.width
 
@@ -344,7 +344,7 @@ createTextWarning = (stage, str) ->
 
 	msg = createText2(null, str, x, y, null, 60, 'red')
 	layer.add roundRect(x - sett.padd.x, y - sett.padd.y, w + 2 * sett.padd.x, h + 2 * sett.padd.y,
-	  settings.radius, 2, 'white', 'red');
+		settings.radius, 2, 'white', 'red');
 	layer.add msg
 	layer.draw
 
@@ -362,7 +362,7 @@ getRenderTextSizes = (model, k = 1) ->
 		textObj = createText2(text.align, text.text, 0, 0,
 			model.font, text.size * k, model.theme.textColor, text.style)
 		sizes.push {
-			width:  textObj.getTextWidth()
+			width: textObj.getTextWidth()
 			height: textObj.getTextHeight()
 		}
 	sizes
@@ -391,15 +391,15 @@ getRectForText = (sizes) ->
 		if size.width > width then width = size.width
 		height += size.height
 	{
-		width: width
-		height: height
+	width: width
+	height: height
 	}
 
 ###
 #	Округление
 ###
 roundTo = (x, to = 1) ->
-  Math.ceil(x / to) * to;
+	Math.ceil(x / to) * to;
 
 ###
 #	Ширина текста в мм
@@ -425,15 +425,15 @@ getTextHeight = (sizes) ->
 getSignSize = (textSize, padding, round = false) ->
 	if round
 		{
-			width: toPixel(roundTo(toMillimeters(textSize.width + padding.width()), settings.roundTo))
-			height: toPixel(roundTo(toMillimeters(textSize.height + padding.height()), settings.roundTo))
-			padding: padding
+		width: toPixel(roundTo(toMillimeters(textSize.width + padding.width()), settings.roundTo))
+		height: toPixel(roundTo(toMillimeters(textSize.height + padding.height()), settings.roundTo))
+		padding: padding
 		}
 	else
 		{
-			width: textSize.width + padding.width()
-			height: textSize.height + padding.height()
-			padding: padding
+		width: textSize.width + padding.width()
+		height: textSize.height + padding.height()
+		padding: padding
 		}
 
 getSignWidth = (size, padding) ->
@@ -457,14 +457,14 @@ getPadding = (model, maxTextSize) ->
 	is_left = h["Middle left"] || h["Top left corner"] || h["Bottom left corner"]
 	is_right = h["Middle right"] || h["Top right corner"] || h["Bottom right corner"]
 	{
-		top: padding
-		bottom: padding
-		left:  if (is_left) then padding + toPixel(2.5) else padding
-		right: if (is_right) then padding + toPixel(2.5) else padding
-		width: () -> this.left + this.right
-		height: () -> this.top + this.bottom
-		hole: padding
-		text: 0
+	top: padding
+	bottom: padding
+	left: if (is_left) then padding + toPixel(2.5) else padding
+	right: if (is_right) then padding + toPixel(2.5) else padding
+	width: () -> this.left + this.right
+	height: () -> this.top + this.bottom
+	hole: padding
+	text: 0
 	}
 
 getRoundPadding = (model, maxTextSize) ->
@@ -474,20 +474,20 @@ getRoundPadding = (model, maxTextSize) ->
 	is_right = h["Middle right"] || h["Top right corner"] || h["Bottom right corner"]
 	padding_ = if is_left || is_right then padding + toPixel(2.5) else padding
 	{
-		indent: padding_
-		text: 0
-		hole: padding
+	indent: padding_
+	text: 0
+	hole: padding
 	}
 
 getBalancingCoefficient = (width, height, canvasWidth, canvasHeight) ->
-	fatalWidth = width/canvasWidth
-	fatalHeight = height/canvasHeight
+	fatalWidth = width / canvasWidth
+	fatalHeight = height / canvasHeight
 	oneWeUse = if fatalHeight > fatalWidth then fatalHeight else fatalWidth
 	if oneWeUse > settings.magic_coeff
 		new_k = oneWeUse
 		while new_k > settings.magic_coeff
-			new_k = new_k *= settings.step_coeff
-		new_k/oneWeUse
+			new_k *= settings.step_coeff
+		(new_k / oneWeUse).toFixed(4)
 	else
 		1
 
@@ -496,12 +496,12 @@ getHoles = (model, signBegin, signSize, padding, k) ->
 	holes.radius = k * settings.holes_radius
 	padding = if (holes.radius * 2 < settings.min_hole_padd) then settings.min_hole_padd else holes.radius * 2
 
-	top =     signBegin.y + padding
-	bottom =  signBegin.y + signSize.height - padding
-	middle =  signBegin.y + signSize.height / 2
+	top = signBegin.y + padding
+	bottom = signBegin.y + signSize.height - padding
+	middle = signBegin.y + signSize.height / 2
 
-	left =    signBegin.x + padding
-	right =   signBegin.x + signSize.width - padding
+	left = signBegin.x + padding
+	right = signBegin.x + signSize.width - padding
 	middle_ = signBegin.x + signSize.width / 2
 
 	holes.coord = {
@@ -555,8 +555,7 @@ clearStage = (stage) ->
 	stage.getLayers().toArray().forEach((la) -> la.destroy())
 	return
 
-onChange = (stage, model, errorCallback, updateSizesCallback) ->
-
+onChange = (stage, model, errorCallback, updateSize) ->
 	calcRound = (text, maxTextSize) ->
 		sign = {}
 		padding = getRoundPadding(model, maxTextSize)
@@ -565,7 +564,7 @@ onChange = (stage, model, errorCallback, updateSizesCallback) ->
 			sign.height = getSignHeight(text.height, padding.indent)
 			sign.height = sign.width = getMax(sign.width, sign.height)
 		else
-			# размер вручную
+# размер вручную
 			sign.width = sign.height = toPixel(model.size.radius) # <- diameter
 			if (settings.debug)
 				console.log(padding.indent)
@@ -580,7 +579,7 @@ onChange = (stage, model, errorCallback, updateSizesCallback) ->
 			return 'w' if (toPixel(model.size.width) < sign.width)
 
 			sign.width = toPixel(model.size.width)
-			#text.width = sign.width - padding.width()
+		#text.width = sign.width - padding.width()
 
 		if (!model.size.autoHeight)
 			return 'h' if (toPixel(model.size.height) < sign.height)
@@ -592,8 +591,8 @@ onChange = (stage, model, errorCallback, updateSizesCallback) ->
 
 	getSignBegin = (signSize) ->
 		{
-			x: getSpace(settings.canvasWidth, signSize.width)
-			y: getSpace(settings.canvasHeight, signSize.height)
+		x: getSpace(settings.canvasWidth, signSize.width)
+		y: getSpace(settings.canvasHeight, signSize.height)
 		}
 
 	getTextBegin = (begin, text, padding) ->
@@ -662,7 +661,7 @@ onChange = (stage, model, errorCallback, updateSizesCallback) ->
 			_signSize = getSignSize(textRect, _padding)
 			console.warn("INITIAL: ", _signSize)
 			_signSize.width = toPixel(roundTo(toMillimeters(_signSize.width) / k, settings.roundTo) * k)
-			_signSize.height = toPixel(roundTo(toMillimeters(_signSize.height) / k, settings.roundTo) * k)
+			#_signSize.height = toPixel(roundTo(toMillimeters(_signSize.height) / k, settings.roundTo) * k)
 			console.warn("ROUNDED: ", _signSize)
 
 		if (model.size.autoWidth)
@@ -722,7 +721,8 @@ onChange = (stage, model, errorCallback, updateSizesCallback) ->
 	console.log "text padding: #{padding.text}"
 
 	#putting new sizes to model
-	updateSizesCallback(size.sign.origin.width, size.sign.origin.height)
+	updateSize.width(size.sign.origin.width)
+	updateSize.height(size.sign.origin.height)
 
 	errorCallback(null)
 	reRender(stage, model, size)
@@ -760,15 +760,15 @@ reRender = (stage, model, size) ->
 	switch model.shape
 		when 'rektangulär'
 			shape = rectKonva(size.sign.x, size.sign.y, size.sign.width, size.sign.height,
-			  settings.borderWidth, color.bgColor, color.textColor)
+				settings.borderWidth, color.bgColor, color.textColor)
 		when 'rund'
 			shape = circleKonva(size.sign.x, size.sign.y, size.sign.width / 2,
-			  settings.borderWidth, color.bgColor, color.textColor)
+				settings.borderWidth, color.bgColor, color.textColor)
 			if (settings.debug)
 				debug = simpleRect(size.sign.x, size.sign.y, size.sign.width, size.sign.height)
 		else
 			shape = roundRect(size.sign.x, size.sign.y, size.sign.width, size.sign.height,
-			  settings.radius, settings.borderWidth, color.bgColor, color.textColor)
+				settings.radius, settings.borderWidth, color.bgColor, color.textColor)
 
 	shapeLayer.add(shape)
 	if (settings.debug && debug?)
@@ -778,7 +778,7 @@ reRender = (stage, model, size) ->
 		if (isShow)
 			if (model.holes_rect)
 				hole = whiteRect(size.holes.coord[hole].x, size.holes.coord[hole].y,
-				  settings.hole_rect.width, settings.hole_rect.height)
+					settings.hole_rect.width, settings.hole_rect.height)
 			else
 				hole = simpleCircle(size.holes.coord[hole].x, size.holes.coord[hole].y, size.holes.radius)
 			shapeLayer.add(hole)
@@ -871,7 +871,7 @@ signs.controller 'sizeController', ($scope) ->
 	$scope.showHeightError = () ->
 		$scope.sizeError == "För liten höjd"
 
-	#something here
+#something here
 signs.controller 'themesController', ($scope) ->
 	$scope.themes = settings.themes
 	$scope.showThemes = (material) ->
@@ -902,7 +902,7 @@ signs.controller 'modelsController', ($scope) ->
 	$scope.maxWidth = settings.maxWidth
 	$scope.maxRadius = settings.maxRadius
 	$scope.blockRendering = false
-	$scope.updateSizesCallback = (width, height) ->
+	$scope.updateSizes = (width, height) ->
 		$scope.blockRendering = true
 		$scope.model.size.width = width
 		$scope.model.size.height = height
@@ -910,6 +910,25 @@ signs.controller 'modelsController', ($scope) ->
 		setTimeout ->
 			$scope.blockRendering = false
 		, 1
+	$scope.updateSize =
+		width: (width) ->
+			$scope.blockRendering = true
+			$scope.model.size.width = width
+			setTimeout ->
+				$scope.blockRendering = false
+			, 1
+		height: (height) ->
+			$scope.blockRendering = true
+			$scope.model.size.height = height
+			setTimeout ->
+				$scope.blockRendering = false
+			, 1
+		radius: (radius) ->
+			$scope.blockRendering = true
+			$scope.model.size.radius = radius
+			setTimeout ->
+				$scope.blockRendering = false
+			, 1
 	$scope.errorCallback = (error) ->
 		if error?
 			console.warn error
@@ -1059,14 +1078,14 @@ signs.controller 'modelsController', ($scope) ->
 	$scope.updateCurrentModel = (index) ->
 		$scope.current = index
 		$scope.model = $scope.models[$scope.current]
-		#$scope.reRender($scope.model, settings.canvasHeight, settings.canvasWidth)
+	#$scope.reRender($scope.model, settings.canvasHeight, settings.canvasWidth)
 	$scope.$watch 'models', ->
 		saveModels($scope.models)
 
 	, true
 	$scope.$watch 'model', ->
-		if $scope.blockRendering == false
-			$scope.onChange($scope.stage, $scope.model, $scope.errorCallback, $scope.updateSizesCallback)
+		unless $scope.blockRendering
+			$scope.onChange($scope.stage, $scope.model, $scope.errorCallback, $scope.updateSize)
 	, true
 	$scope.calcPrice = (model = $scope.model) ->
 		holes = 0
