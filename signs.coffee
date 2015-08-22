@@ -659,8 +659,8 @@ onChange = (stage, model, errorCallback, updateSize) ->
 		if (model.size.autoWidth || model.size.autoHeight)
 			_padding = getPadding(model, getMaxTextSize(model.texts) * k)
 			_signSize = getSignSize(textRect, _padding)
-			_signSize.width = toPixel(roundTo(+toMillimeters(_signSize.width / k).toFixed(0), settings.roundTo) * k)
-			_signSize.height = toPixel(roundTo(+toMillimeters(_signSize.height  / k).toFixed(0), settings.roundTo) * k)
+			_signSize.width = toPixel(roundTo(+toMillimeters(_signSize.width).toFixed(0) / k, settings.roundTo) * k)
+			#_signSize.height = toPixel(roundTo(+toMillimeters(_signSize.height  / k), settings.roundTo) * k)
 			console.warn("ROUNDED: ", _signSize)
 
 		if (model.size.autoWidth)
