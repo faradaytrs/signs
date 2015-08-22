@@ -656,14 +656,16 @@ onChange = (stage, model, errorCallback, updateSize) ->
 		textRect.height *= k
 		textRect.width *= k
 		_signSize = signSize
-		if (model.size.autoWidth || model.size.autoHeight)
+		if model.size.autoWidth || model.size.autoHeight
 			_padding = getPadding(model, getMaxTextSize(model.texts) * k)
 			_signSize = getSignSize(textRect, _padding)
-			_signSize.width = toPixel(roundTo(toMillimeters(_signSize.width).toFixed(0) / k, settings.roundTo) * k)
-			#_signSize.height = toPixel(roundTo(+toMillimeters(_signSize.height).ToFixed(0) / k, settings.roundTo) * k)
-			#console.warn("ROUNDED: ", _signSize)
+			console.warn("INITIAL: ", (toMillimeters(_signSize.width) / k).toFixed(0), toMillimeters(_signSize.height).toFixed(0) / k)
+			# rounding width
+			#_signSize.width = toPixel(roundTo(toMillimeters(_signSize.width / k).toFixed(0)), settings.roundTo) * k
+			_signSize.width = toPixel(roundTo(toMillimeters(_signSize.width / k), settings.roundTo).toFixed(0)) * k
+			console.warn("ROUNDED: ", _signSize)
 
-		if (model.size.autoWidth)
+		if model.size.autoWidth
 			signSize.width = _signSize.width
 			textRect.width = _signSize.width - _padding.width()
 			padding.left = _padding.left
@@ -674,7 +676,7 @@ onChange = (stage, model, errorCallback, updateSize) ->
 			padding.right *= k
 			textRect.width = signSize.width - padding.width()
 
-		if (model.size.autoHeight)
+		if model.size.autoHeight
 			signSize.height = _signSize.height
 			padding.top = _padding.top
 			padding.bottom = _padding.bottom
