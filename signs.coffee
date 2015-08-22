@@ -27,8 +27,8 @@ signs = angular.module('Signs', ['file-model', 'ngModal'])
 #first one is default
 settings =
 	pixel_size: 8
-	magic_coeff: 0.75
-	step_coeff: 0.95
+	magic_coeff: 0.65
+	step_coeff: 0.9
 	canvasHeight: 500
 	canvasWidth: 555
 	maxWidth: 690
@@ -119,7 +119,7 @@ settings =
 	rules:
 		indent: 25
 		width: 3
-	debug: true
+	debug: no
 	roundTo: 5
 	orderBasicPrice: 50
 
@@ -659,7 +659,6 @@ onChange = (stage, model, errorCallback, updateSize) ->
 		if (model.size.autoWidth || model.size.autoHeight)
 			_padding = getPadding(model, getMaxTextSize(model.texts) * k)
 			_signSize = getSignSize(textRect, _padding)
-			console.warn("INITIAL: ", _signSize)
 			_signSize.width = toPixel(roundTo(toMillimeters(_signSize.width) / k, settings.roundTo) * k)
 			#_signSize.height = toPixel(roundTo(toMillimeters(_signSize.height) / k, settings.roundTo) * k)
 			console.warn("ROUNDED: ", _signSize)
@@ -699,8 +698,8 @@ onChange = (stage, model, errorCallback, updateSize) ->
 			width: signSize.width
 			height: signSize.height
 			origin:
-				width: roundTo(toMillimeters(signSize.width) / k, 1)
-				height: roundTo(toMillimeters(signSize.height) / k, 1)
+				width: +toMillimeters(signSize.width / k).toFixed(0)
+				height: +toMillimeters(signSize.height / k).toFixed(0)
 		text:
 			x: textBegin.x
 			y: textBegin.y
@@ -721,8 +720,12 @@ onChange = (stage, model, errorCallback, updateSize) ->
 	console.log "text padding: #{padding.text}"
 
 	#putting new sizes to model
-	updateSize.width(size.sign.origin.width)
-	updateSize.height(size.sign.origin.height)
+	if model.size.autoWidth
+		# console.warn "Updated width"
+		updateSize.width(size.sign.origin.width)
+	if model.size.autoHeight
+		# console.warn "Updated height"
+		updateSize.height(size.sign.origin.height)
 
 	errorCallback(null)
 	reRender(stage, model, size)
