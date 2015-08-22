@@ -1,5 +1,6 @@
 bower_components/*
 .idea/*
-signs.js
-signs.js.map
-signs.min.js
+*.js
+*.js.map
+style/*.css
+style/*.css.map
