@@ -659,7 +659,7 @@ onChange = (stage, model, errorCallback, updateSize) ->
 		if model.size.autoWidth || model.size.autoHeight
 			_padding = getPadding(model, getMaxTextSize(model.texts) * k)
 			_signSize = getSignSize(textRect, _padding)
-			console.warn("INITIAL: ", (toMillimeters(_signSize.width) / k).toFixed(0), toMillimeters(_signSize.height).toFixed(0) / k)
+			console.warn("INITIAL: ", (toMillimeters(_signSize.width) / k), toMillimeters(_signSize.height) / k)
 			# rounding width
 			#_signSize.width = toPixel(roundTo(toMillimeters(_signSize.width / k).toFixed(0)), settings.roundTo) * k
 			_signSize.width = toPixel(roundTo(toMillimeters(_signSize.width / k), settings.roundTo).toFixed(0)) * k
@@ -680,7 +680,6 @@ onChange = (stage, model, errorCallback, updateSize) ->
 			signSize.height = _signSize.height
 			padding.top = _padding.top
 			padding.bottom = _padding.bottom
-
 			padding.text = _padding.text
 		else
 			signSize.height *= k
