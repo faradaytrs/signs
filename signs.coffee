@@ -1142,10 +1142,6 @@ signs.controller 'orderController', ($scope, $rootScope, $http) ->
 				client: $scope.client
 				models: $scope.models
 			, null, 3
-		document.write JSON.stringify
-			client: $scope.client
-			models: $scope.models
-		, null, 3
 		swal
 			title: "Thank you for ordering our signs"
 			text: "We answer you asap"
