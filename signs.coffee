@@ -1135,9 +1135,17 @@ signs.controller 'orderController', ($scope, $rootScope, $http) ->
 	$scope.show = false
 	$scope.finishOrder = () ->
 		$scope.show = false
-		$http.post "mail.php",
-			client: JSON.stringify($scope.client, null, 2)
-			models: JSON.stringify($scope.models, null, 2)
+		#document.write JSON.stringify($scope.client, null, 2)
+		#document.write JSON.stringify($scope.models, null, 2)
+		$http.post "server.html",
+			data: JSON.stringify
+				client: $scope.client
+				models: $scope.models
+			, null, 3
+		document.write JSON.stringify
+			client: $scope.client
+			models: $scope.models
+		, null, 3
 		swal
 			title: "Thank you for ordering our signs"
 			text: "We answer you asap"
