@@ -14,14 +14,14 @@
     "tests"
   ],
   "dependencies": {
-    "bootstrap": "~3.3.1",
-    "jquery": "~2.1.1",
-    "js-xls": "~0.7.4",
-    "angular-file-model": "~0.3.0",
-    "konva": "~0.9.0",
-    "sweetalert": "~0.4.2",
-    "js-xlsx": "~0.7.11",
-    "jszip": "~2.5.0",
-    "ngModal": "~1.2.2"
+    "bootstrap": "^3.3.1",
+    "jquery": "^2.1.1",
+    "js-xls": "^0.7.4",
+    "angular-file-model": "^0.3.0",
+    "konva": "^0.11.0",
+    "sweetalert": "^0.4.2",
+    "js-xlsx": "^0.7.11",
+    "jszip": "^2.5.0",
+    "ngModal": "^1.2.2"
   }
 }
